@@ -1,4 +1,6 @@
 #NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
-#Sat Feb 03 13:28:07 CST 2018
+#Mon Feb 05 22:13:43 CST 2018
+spring-boot-maven-plugin-1.5.9.RELEASE.jar>nexus=
+spring-boot-maven-plugin-1.5.9.RELEASE.pom>nexus=
 spring-boot-maven-plugin-1.5.9.RELEASE.jar>central=
 spring-boot-maven-plugin-1.5.9.RELEASE.pom>central=

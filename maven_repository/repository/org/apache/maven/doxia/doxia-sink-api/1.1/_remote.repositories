@@ -1,4 +1,6 @@
 #NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
-#Sat Feb 03 14:02:09 CST 2018
+#Mon Feb 05 22:13:54 CST 2018
 doxia-sink-api-1.1.jar>central=
 doxia-sink-api-1.1.pom>central=
+doxia-sink-api-1.1.pom>nexus=
+doxia-sink-api-1.1.jar>nexus=

@@ -1,4 +1,6 @@
 #NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
-#Sat Feb 03 13:31:41 CST 2018
+#Mon Feb 05 22:13:42 CST 2018
 spring-boot-autoconfigure-1.5.9.RELEASE.jar>central=
 spring-boot-autoconfigure-1.5.9.RELEASE.pom>central=
+spring-boot-autoconfigure-1.5.9.RELEASE.pom>nexus=
+spring-boot-autoconfigure-1.5.9.RELEASE.jar>nexus=
