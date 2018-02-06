@@ -25,7 +25,6 @@ public class DynamicDataSourceAspect {
     @Before("@annotation(DS)")
     public void beforeSwitchDS(JoinPoint point){
     	
-    	log.info("=====beforeSwitchDS===="); 
         //获得当前访问的class
         Class<?> className = point.getTarget().getClass();
 
@@ -36,12 +35,6 @@ public class DynamicDataSourceAspect {
         
         DataSourceEnum dataSource = DataSourceContextHolder.DEFAULT_DS;
         
-        for(Class clz : argClass) {
-        	dataSource = getFieldsValue(clz);
-        }
-        
-        log.info("=====choose data source is {}====", dataSource); 
-        
         try {
             // 得到访问的方法对象
             Method method = className.getMethod(methodName, argClass);
@@ -51,6 +44,7 @@ public class DynamicDataSourceAspect {
                 DS annotation = method.getAnnotation(DS.class);
                 // 取出注解中的数据源名
                 dataSource = annotation.value();
+                log.info("注解中的数据源 is {}", dataSource);
             }
         } catch (Exception e) {
             e.printStackTrace();

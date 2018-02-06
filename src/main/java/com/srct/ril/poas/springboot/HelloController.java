@@ -15,11 +15,10 @@ public class HelloController {
 	
 	private static final Logger log = LoggerFactory.getLogger(HelloController.class);
  
-	@DS(DataSourceEnum.CONFIG)
 	@RequestMapping("/hello")
     public String hello(Model m) {	
     	log.info("==============hello==========");
-        return "Hello Spring Boot!" + DataSourceEnum.CONFIG.toString();
+        return "Hello Spring Boot! " + DataSourceEnum.CONFIG.toString();
     }
  
 }

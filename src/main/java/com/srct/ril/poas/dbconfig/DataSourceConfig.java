@@ -16,16 +16,18 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
   
   
 @Configuration
-@ConfigurationProperties(prefix = "my.db.config")
+@PropertySource(value = { "application.properties" })
 public class DataSourceConfig {  
 	
 	public static final Logger log = LoggerFactory.getLogger(DataSourceConfig.class);
 	
+	@Value("${my.db.config.dbcount}")
 	private int dbCount;
 	
     @Bean(name = "configMasterDS")  
@@ -48,8 +50,9 @@ public class DataSourceConfig {
     }
     
     @Bean(name = "dynamicConfigDS")
+    
     public DataSource dynamicDataSource() {
-    	
+
     	log.info("============数据源一共{}个=================", dbCount);
     	
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
@@ -57,11 +60,18 @@ public class DataSourceConfig {
         dynamicDataSource.setDefaultTargetDataSource(configDataSource());
 
         // 配置多数据源
-        Map<Object, Object> dsMap = new HashMap<>(dbCount);
+        Map<Object, Object> dsMap = new HashMap<>(0);
         dsMap.put(DataSourceEnum.CONFIG, configDataSource());
         dsMap.put(DataSourceEnum.GREAT, greatDataSource());
-        dsMap.put(DataSourceEnum.DREAM, dreamDataSource());
+        dsMap.put(DataSourceEnum.DREAM, dreamDataSource());      
 
+        if(dsMap.size() != dbCount) {
+        	log.error("Need check data source Map!!!!");
+        }
+        
+        log.info("{}",((DataSource)dsMap.get(DataSourceEnum.CONFIG)).toString());
+        
+        
         dynamicDataSource.setTargetDataSources(dsMap);
         return dynamicDataSource;
     }
@@ -83,8 +93,6 @@ public class DataSourceConfig {
         // Here is very important, if don't config this, will can't switch datasource
         // put all datasource into SqlSessionFactoryBean, then will autoconfig SqlSessionFactory
         sqlSessionFactoryBean.setDataSource(dynamicDataSource());
-        
-        log.info("============make mybatis seesion=================");
         
         return sqlSessionFactoryBean;
     }
