@@ -1,6 +1,7 @@
 #NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
-#Mon Feb 05 22:13:42 CST 2018
+#Tue Feb 06 15:14:32 CST 2018
 spring-boot-devtools-1.5.9.RELEASE.jar>nexus=
 spring-boot-devtools-1.5.9.RELEASE.jar>central=
 spring-boot-devtools-1.5.9.RELEASE.pom>central=
+spring-boot-devtools-1.5.9.RELEASE-sources.jar>nexus=
 spring-boot-devtools-1.5.9.RELEASE.pom>nexus=
