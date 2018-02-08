@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.srct.ril.poas.dao.mapper.ModelMapMapper;
   
@@ -33,9 +36,6 @@ public class DataSourceConfig {
 	@Value("${my.db.config.dbcount}")
 	private int dbCount;
 	
-	@Autowired
-	private ModelMapMapper modelMapDao;
-	
     @Bean(name = "configMasterDS")  
     @Primary //主数据库  
     @ConfigurationProperties(prefix = "config.datasource") // application.properteis中对应属性的前缀  
@@ -43,24 +43,19 @@ public class DataSourceConfig {
         return DruidDataSourceBuilder.create().build();
     }
       
-    @Bean(name = "greatSlaveDS")  
-    @ConfigurationProperties(prefix = "great.datasource") // application.properteis中对应属性的前缀  
-    public DataSource greatDataSource() {  
-        return DruidDataSourceBuilder.create().build();  
+    @Bean(name = "modelSlaveDS") 
+    @ConfigurationProperties(prefix = "model.datasource") // application.properteis中对应属性的前缀  
+    public DataSource modelDataSource() {
+    	return DruidDataSourceBuilder.create().build(); 
     }  
-      
-    @Bean(name = "dreamSlaveDS")  
-    @ConfigurationProperties(prefix = "dream.datasource") // application.properteis中对应属性的前缀  
-    public DataSource dreamDataSource() {  
-        return DruidDataSourceBuilder.create().build();  
-    }
     
-    @Bean(name = "dynamicConfigDS")
-    
+    @Bean(name = "dynamicDataSource")     
     public DataSource dynamicDataSource() {
+    	
     	
     	log.info("============本地数据源一共{}个=================", dbCount);
     	
+   
 //    	ModelMapExample example = new ModelMapExample();
 //    	dbCount = modelMapDao.countByExample(example);
     	
@@ -73,15 +68,12 @@ public class DataSourceConfig {
         // 配置多数据源
         Map<Object, Object> dsMap = new HashMap<>(0);
         dsMap.put(DataSourceEnum.CONFIG, configDataSource());
-        dsMap.put(DataSourceEnum.GREAT, greatDataSource());
-        dsMap.put(DataSourceEnum.DREAM, dreamDataSource());      
+        dsMap.put(DataSourceEnum.GREAT, modelDataSource());
+        dsMap.put(DataSourceEnum.DREAM, modelDataSource());      
 
         if(dsMap.size() != dbCount) {
         	log.error("Need check data source Map!!!!");
         }
-        
-        log.info("{}",((DataSource)dsMap.get(DataSourceEnum.CONFIG)).toString());
-        
         
         dynamicDataSource.setTargetDataSources(dsMap);
         return dynamicDataSource;
@@ -104,7 +96,7 @@ public class DataSourceConfig {
         // Here is very important, if don't config this, will can't switch datasource
         // put all datasource into SqlSessionFactoryBean, then will autoconfig SqlSessionFactory
         sqlSessionFactoryBean.setDataSource(dynamicDataSource());
-        
+        log.info("sqlSessionFactoryBean");
         return sqlSessionFactoryBean;
     }
     
@@ -115,7 +107,12 @@ public class DataSourceConfig {
      */
     @Bean
     public PlatformTransactionManager transactionManager() {
+    	log.info("transactionManager");
         return new DataSourceTransactionManager(dynamicDataSource());
+    }
+    
+    public DataSource getDynamicDataSource() {
+    	return dynamicDataSource();
     }
     
     

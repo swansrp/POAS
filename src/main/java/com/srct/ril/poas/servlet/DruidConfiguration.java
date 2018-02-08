@@ -1,6 +1,5 @@
 package com.srct.ril.poas.servlet;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -11,13 +10,12 @@ import com.alibaba.druid.support.http.WebStatFilter;
 
 @Configuration
 public class DruidConfiguration {
-    
-    /**
+
+	/**
      * 注册一个StatViewServlet
      * @return
      */
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.druid.stat-view-servlet") // application.properteis中对应属性的前缀  
     public ServletRegistrationBean DruidStatViewServle(){
        //org.springframework.boot.context.embedded.ServletRegistrationBean提供类的进行注册.
        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new StatViewServlet(),"/druid/*");
@@ -34,7 +32,6 @@ public class DruidConfiguration {
        //是否能够重置数据.
        servletRegistrationBean.addInitParameter("resetEnable","false");
        return servletRegistrationBean;
-//    	return new ServletRegistrationBean();
     }
     
     /**
@@ -42,7 +39,6 @@ public class DruidConfiguration {
      * @return
      */
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.druid.web-stat-filter") // application.properteis中对应属性的前缀 
     public FilterRegistrationBean druidStatFilter(){
        
        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new WebStatFilter());
@@ -53,7 +49,6 @@ public class DruidConfiguration {
        //添加不需要忽略的格式信息.
        filterRegistrationBean.addInitParameter("exclusions","*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
        return filterRegistrationBean;
-    	//return new FilterRegistrationBean();
     }
     
 }
