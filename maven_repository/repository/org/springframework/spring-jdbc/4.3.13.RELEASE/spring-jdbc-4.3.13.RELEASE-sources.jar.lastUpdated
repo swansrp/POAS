@@ -1,0 +1,4 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Thu Feb 08 09:38:11 CST 2018
+@default-nexus-http\://maven.aliyun.com/nexus/content/groups/public/.lastUpdated=1518053891173
+http\://maven.aliyun.com/nexus/content/groups/public/.error=Could not transfer artifact org.springframework\:spring-jdbc\:jar\:sources\:4.3.13.RELEASE from/to nexus (http\://maven.aliyun.com/nexus/content/groups/public/)\: connect timed out

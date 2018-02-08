@@ -38,15 +38,30 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!--生成对应表及类名-->
-        <table tableName="modelmap_" domainObjectName="ModelMap" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="false">
+        <table tableName="modelmap_" domainObjectName="ModelMap" 
+	        enableCountByExample="true" 
+	        enableUpdateByExample="true" 
+	        enableDeleteByExample="true" 
+	        enableSelectByExample="true" 
+	        selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
-        <table tableName="sourcemap_" domainObjectName="SourceMap" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="false">
+        <table tableName="sourcemap_" domainObjectName="SourceMap" 
+        	enableCountByExample="true" 
+        	enableUpdateByExample="true" 
+        	enableDeleteByExample="true" 
+        	enableSelectByExample="true" 
+        	selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
-        <table tableName="urlmap_" domainObjectName="UrlMap" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="false">
+        <table tableName="urlmap_" domainObjectName="UrlMap" 
+	        enableCountByExample="true" 
+	        enableUpdateByExample="true" 
+	        enableDeleteByExample="true" 
+	        enableSelectByExample="true" 
+	        selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
@@ -83,7 +98,12 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!--生成对应表及类名-->
-        <table tableName="JD" domainObjectName="StoreJD" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="false">
+        <table tableName="JD" domainObjectName="StoreJD" 
+        	enableCountByExample="true" 
+        	enableUpdateByExample="true" 
+        	enableDeleteByExample="true" 
+        	enableSelectByExample="true" 
+        	selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>

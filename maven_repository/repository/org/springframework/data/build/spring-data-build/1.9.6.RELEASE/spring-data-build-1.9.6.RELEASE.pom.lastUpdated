@@ -1,0 +1,4 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Thu Feb 08 11:04:54 CST 2018
+@default-nexus-http\://maven.aliyun.com/nexus/content/groups/public/.lastUpdated=1518059094891
+http\://maven.aliyun.com/nexus/content/groups/public/.error=Could not transfer artifact org.springframework.data.build\:spring-data-build\:pom\:1.9.6.RELEASE from/to nexus (http\://maven.aliyun.com/nexus/content/groups/public/)\: A\:\\eclipse-workspace\\POAS\\maven_repository\\repository\\org\\springframework\\data\\build\\spring-data-build\\1.9.6.RELEASE\\aether-e607f870-59ba-424d-a536-dd4405429c13-spring-data-build-1.9.6.RELEASE.pom-in-progress (\u7CFB\u7EDF\u627E\u4E0D\u5230\u6307\u5B9A\u7684\u6587\u4EF6\u3002)

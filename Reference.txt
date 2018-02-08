@@ -1,0 +1,8 @@
+
+注解动态切换数据库: http://blog.csdn.net/neosmith/article/details/61202084
+数据库路由动态新建数据库参数: https://www.cnblogs.com/wsss/p/5475057.html
+方法参数注入方式: http://blog.csdn.net/catoop/article/details/50564513 
+代码创建Bean: http://blog.csdn.net/catoop/article/details/50558333
+Spring和Mybatis整合的三种方式: https://www.cnblogs.com/ClassNotFoundException/p/6425558.html
+Druid配置信息的定制：http://blog.csdn.net/blueheart20/article/details/52384032
+@ConfigurationProperties：http://blog.csdn.net/yingxiake/article/details/51263071
