@@ -1,5 +1,7 @@
 package com.srct.ril.poas.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,5 +25,11 @@ public class ModelMapController {
 	@DS(DataSourceEnum.CONFIG)
 	public CommonResponse getProduct(@PathVariable("id") int modelId) throws ServiceException {
         return Response.generateResponse(modelMapService.select(modelId));
+    }
+	
+	@RequestMapping("/name")
+	@DS(DataSourceEnum.CONFIG)
+	public List<String> getProduct() throws ServiceException {
+        return modelMapService.getNameList();
     }
 }
