@@ -1,18 +1,10 @@
 package com.srct.ril.poas.dbconfig;
 
-public enum DataSourceEnum {
-	CONFIG("Configuration"),
-	GREAT("GREAT"),
-	DREAM("DREAM");
+public class DataSourceEnum {
+	public final static String CONFIG = "Configuration";
+	public final static String MODEL = "Model";
 	
-	private String name;
-	
-	DataSourceEnum(String name) {
-		this.name = name;
-	}
-	
-	@Override
-	public String toString() {
-		return name;		
+	public static String getEnum(String name) {
+		return name;
 	}
 }

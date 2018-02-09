@@ -10,18 +10,18 @@ public class DataSourceContextHolder {
     /**
      * 默认数据源
      */
-    public static final DataSourceEnum DEFAULT_DS = DataSourceEnum.CONFIG;
+    public static final String DEFAULT_DS = DataSourceEnum.CONFIG;
 
-    private static final ThreadLocal<DataSourceEnum> contextHolder = new ThreadLocal<>();
+    private static final ThreadLocal<String> contextHolder = new ThreadLocal<>();
 
     // 设置数据源名
-    public static void setDB(DataSourceEnum dbType) {
-        log.debug("切换到{}数据源", dbType);
+    public static void setDB(String dbType) {
+        log.info("切换到{}数据源", dbType);
         contextHolder.set(dbType);
     }
 
     // 获取数据源名
-    public static DataSourceEnum getDB() {
+    public static String getDB() {
         return (contextHolder.get());
     }
 

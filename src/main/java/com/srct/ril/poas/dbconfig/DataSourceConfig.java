@@ -28,13 +28,9 @@ import com.srct.ril.poas.dao.mapper.ModelMapMapper;
   
   
 @Configuration
-@PropertySource(value = { "application.properties" })
 public class DataSourceConfig {  
 	
-	public static final Logger log = LoggerFactory.getLogger(DataSourceConfig.class);
-	
-	@Value("${my.db.config.dbcount}")
-	private int dbCount;
+	private static final Logger log = LoggerFactory.getLogger(DataSourceConfig.class);
 	
     @Bean(name = "configMasterDS")  
     @Primary //主数据库  
@@ -42,24 +38,9 @@ public class DataSourceConfig {
     public DataSource configDataSource() {     
         return DruidDataSourceBuilder.create().build();
     }
-      
-    @Bean(name = "modelSlaveDS") 
-    @ConfigurationProperties(prefix = "model.datasource") // application.properteis中对应属性的前缀  
-    public DataSource modelDataSource() {
-    	return DruidDataSourceBuilder.create().build(); 
-    }  
     
     @Bean(name = "dynamicDataSource")     
     public DataSource dynamicDataSource() {
-    	
-    	
-    	log.info("============本地数据源一共{}个=================", dbCount);
-    	
-   
-//    	ModelMapExample example = new ModelMapExample();
-//    	dbCount = modelMapDao.countByExample(example);
-    	
-    	log.info("============远程数据源一共{}个=================", dbCount);
     	    	
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
         // 默认数据源
@@ -68,12 +49,6 @@ public class DataSourceConfig {
         // 配置多数据源
         Map<Object, Object> dsMap = new HashMap<>(0);
         dsMap.put(DataSourceEnum.CONFIG, configDataSource());
-        dsMap.put(DataSourceEnum.GREAT, modelDataSource());
-        dsMap.put(DataSourceEnum.DREAM, modelDataSource());      
-
-        if(dsMap.size() != dbCount) {
-        	log.error("Need check data source Map!!!!");
-        }
         
         dynamicDataSource.setTargetDataSources(dsMap);
         return dynamicDataSource;

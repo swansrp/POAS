@@ -6,3 +6,5 @@
 Spring和Mybatis整合的三种方式: https://www.cnblogs.com/ClassNotFoundException/p/6425558.html
 Druid配置信息的定制：http://blog.csdn.net/blueheart20/article/details/52384032
 @ConfigurationProperties：http://blog.csdn.net/yingxiake/article/details/51263071
+AOP日志，记录调用类、方法、方法参数名称、方法参数值（包括对象和基本类型）
+http://blog.csdn.net/paincupid/article/details/51176149

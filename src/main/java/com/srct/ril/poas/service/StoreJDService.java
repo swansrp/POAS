@@ -1,11 +1,18 @@
 package com.srct.ril.poas.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.srct.ril.poas.dao.mapper.StoreJDMapper;
+import com.srct.ril.poas.dao.pojo.ModelMapExample;
 import com.srct.ril.poas.dao.pojo.StoreJD;
+import com.srct.ril.poas.dao.pojo.StoreJDExample;
+import com.srct.ril.poas.dao.pojo.StoreJDExample.Criteria;
 import com.srct.ril.poas.utils.ServiceException;
 
+@Service
 public class StoreJDService {
 	@Autowired
 	private StoreJDMapper StoreJDDao;
@@ -18,10 +25,18 @@ public class StoreJDService {
      * @return
      * @throws ServiceException
      */
-    public StoreJD select(int modelId) throws ServiceException {
-    	StoreJD storeJD = StoreJDDao.selectByPrimaryKey(modelId);
+    public List<StoreJD> select(String modelName, String startTime, String endTime) throws ServiceException {
+    	
+    	StoreJDExample ex = new StoreJDExample();
+    	ex.setDistinct(false);
+    	Criteria criteria = ex.createCriteria();
+    	criteria.andDateGreaterThan(startTime);
+    	criteria.andDateLessThan(endTime);
+    	
+    	
+    	List<StoreJD> storeJD = StoreJDDao.selectByExample(ex);
         if (storeJD == null) {
-            throw new ServiceException("store JD:" + modelId + " not found");
+            throw new ServiceException("["+modelName+"] store JD from " + startTime + "to" + endTime + " not found" );
         }
         return storeJD;
     }

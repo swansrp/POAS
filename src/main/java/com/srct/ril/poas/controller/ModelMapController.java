@@ -15,13 +15,13 @@ import com.srct.ril.poas.service.ModelMapService;
 import com.srct.ril.poas.utils.ServiceException;
 
 @RestController
-@RequestMapping("/model")
+@RequestMapping("/config")
 public class ModelMapController {
 
 	@Autowired
     private ModelMapService modelMapService;
 	
-	@RequestMapping("/{id}")
+	@RequestMapping("model/{id}")
 	@DS(DataSourceEnum.CONFIG)
 	public CommonResponse getProduct(@PathVariable("id") int modelId) throws ServiceException {
         return Response.generateResponse(modelMapService.select(modelId));

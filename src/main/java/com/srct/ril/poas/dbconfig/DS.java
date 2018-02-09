@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
         ElementType.METHOD
 })
 public @interface DS {
-	DataSourceEnum value() default DataSourceEnum.CONFIG;
+	String value() default DataSourceEnum.CONFIG;
 }

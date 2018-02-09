@@ -4,19 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.srct.ril.poas.dao.mapper.ModelMapMapper;
 import com.srct.ril.poas.service.ModelMapService;
-import com.srct.ril.poas.utils.BeanUtil;
 
 @Component
 public class DataSourceLifecycle implements SmartLifecycle {
@@ -28,8 +24,24 @@ public class DataSourceLifecycle implements SmartLifecycle {
     private ModelMapService modelMapService;
 	@Autowired
 	private DataSourceConfig dsc;
-	@Autowired
-	private SqlSessionFactoryBean sqlSessionFactoryBean;
+	@Value("${my.db.config.url}")  
+    private String dbIP;
+	
+	@Value("${my.db.config.port}")
+	private String dbPort;
+	
+	@Value("${my.db.config.property}")
+	private String dbProp;
+	     
+    @Value("${my.db.config.username}")  
+    private String username;  
+      
+    @Value("${my.db.config.password}")  
+    private String password;  
+      
+    @Value("${my.db.config.driver}")  
+    private String driverClassName;  
+	
 	
 	/**
      * 1. 我们主要在该方法中启动任务或者其他异步服务，比如开启MQ接收消息<br/>
@@ -39,30 +51,28 @@ public class DataSourceLifecycle implements SmartLifecycle {
 	@Override
 	public void start() {
 		// TODO Auto-generated method stub
+		
+		DataSourceContextHolder.setDB(DataSourceEnum.CONFIG);
+		
 		List<String> modelDBNameList = modelMapService.getNameList();
 		log.info("========={}===========", modelDBNameList);
 
 		DynamicDataSource dds = (DynamicDataSource)dsc.dynamicDataSource();
-		// 配置多数据源
-		DruidDataSource mds = (DruidDataSource)dsc.configDataSource();
-		log.info("========={}===========", mds.getUrl());
 		
-		mds = (DruidDataSource)dsc.modelDataSource();
-		//mds.setUrl("jdbc:mysql://106.14.115.34:3306?Configuration");
-		log.info("========={}===========", mds.getUrl());
-        Map<Object, Object> dsMap = new HashMap<>(0);
-        dsMap.put(DataSourceEnum.CONFIG, mds);
-        
+        Map<Object, Object> dsMap = new HashMap<>(modelDBNameList.size()+1);
+        dsMap.put(DataSourceEnum.CONFIG, dsc.configDataSource());
+        for(String name : modelDBNameList) {
+        	DruidDataSource datasource = new DruidDataSource();  
+        	//jdbc:mysql://${my.db.config.url}:${my.db.config.port}/Configuration?${my.db.config.property}
+            String dbUrl = "jdbc:mysql://" + this.dbIP + ":" + this.dbPort + "/" + name + "?" + this.dbProp;
+            datasource.setUrl(dbUrl);  
+            datasource.setUsername(username);  
+            datasource.setPassword(password);  
+            datasource.setDriverClassName(driverClassName);
+        	dsMap.put(name, datasource);
+        }
         dds.setTargetDataSources(dsMap);
         dds.afterPropertiesSet();
-        
-        sqlSessionFactoryBean.setDataSource(dds);
-        try {
-			sqlSessionFactoryBean.afterPropertiesSet();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
         
 		modelDBNameList = modelMapService.getNameList();
 		log.info("========={}===========", modelDBNameList);
