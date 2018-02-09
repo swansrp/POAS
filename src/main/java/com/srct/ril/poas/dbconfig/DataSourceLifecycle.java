@@ -73,9 +73,7 @@ public class DataSourceLifecycle implements SmartLifecycle {
         }
         dds.setTargetDataSources(dsMap);
         dds.afterPropertiesSet();
-        
-		modelDBNameList = modelMapService.getNameList();
-		log.info("========={}===========", modelDBNameList);
+
 		isRunning = true;
 	}
 
