@@ -44,25 +44,6 @@ public class DynamicDataSourceAspect {
         String methodName = point.getSignature().getName();  
         //得到方法的参数的类型
         Class[] argClass = ((MethodSignature)point.getSignature()).getParameterTypes();
-
-        String modelDBName = null;
-        
-        try {
-        	//获取参数名称
-			String[] paramNames = getFieldsName(this.getClass(), clazzName, methodName);
-			Object[] args = point.getArgs();
-			for(int index=0;index<paramNames.length;index++) {
-				
-				log.info("paramNames {} args {} ", paramNames[index],args[index]);
-				if(paramNames[index].equals("modelName")) {
-					modelDBName = (String)args[index];					
-				}
-			}
-			
-		} catch (NotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}  
         
         String dataSource = DataSourceContextHolder.DEFAULT_DS;
         
@@ -85,7 +66,25 @@ public class DynamicDataSourceAspect {
         if(dataSource.equals(DataSourceEnum.CONFIG)) {
             DataSourceContextHolder.setDB(dataSource);
         } else {
-        	DataSourceContextHolder.setDB(modelDBName);
+
+            String modelDBName = null; 
+        	try {
+            	//获取参数名称
+    			String[] paramNames = getFieldsName(this.getClass(), clazzName, methodName);
+    			Object[] args = point.getArgs();
+    			for(int index=0;index<paramNames.length;index++) {
+    				log.info("paramNames {} args {} ", paramNames[index],args[index]);
+    				if(paramNames[index].equals("modelName")) {
+    					modelDBName = (String)args[index];
+    					break;
+    				}
+    			}
+            	DataSourceContextHolder.setDB(modelDBName);
+    		} catch (NotFoundException e1) {
+    			// TODO Auto-generated catch block
+    			e1.printStackTrace();
+    		} 
+
         }
 
     }

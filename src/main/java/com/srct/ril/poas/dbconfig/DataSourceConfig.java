@@ -1,36 +1,53 @@
 package com.srct.ril.poas.dbconfig;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
-import com.srct.ril.poas.dao.mapper.ModelMapMapper;
+import com.srct.ril.poas.service.ModelMapService;
   
   
 @Configuration
 public class DataSourceConfig {  
 	
 	private static final Logger log = LoggerFactory.getLogger(DataSourceConfig.class);
+	
+	@Autowired
+    private ModelMapService modelMapService;
+	
+	@Value("${my.db.config.url}")  
+    private static String dbIP;
+	
+	@Value("${my.db.config.port}")
+	private static String dbPort;
+	
+	@Value("${my.db.config.property}")
+	private static String dbProp;
+	     
+    @Value("${my.db.config.username}")  
+    private static String username;  
+      
+    @Value("${my.db.config.password}")  
+    private static String password;  
+      
+    @Value("${my.db.config.driver}")  
+    private static String driverClassName;  
 	
     @Bean(name = "configMasterDS")  
     @Primary //主数据库  
@@ -39,7 +56,7 @@ public class DataSourceConfig {
         return DruidDataSourceBuilder.create().build();
     }
     
-    @Bean(name = "dynamicDataSource")     
+    @Bean(name = "dynamicDataSource")
     public DataSource dynamicDataSource() {
     	    	
         DynamicDataSource dynamicDataSource = new DynamicDataSource();
@@ -86,8 +103,29 @@ public class DataSourceConfig {
         return new DataSourceTransactionManager(dynamicDataSource());
     }
     
-    public DataSource getDynamicDataSource() {
-    	return dynamicDataSource();
+    public void updateDynamicDataSource() {
+
+		DataSourceContextHolder.setDB(DataSourceEnum.CONFIG);
+    	List<String> modelDBNameList = modelMapService.getNameList();
+		log.info("========={}===========", modelDBNameList);
+
+		DynamicDataSource dds = (DynamicDataSource)dynamicDataSource();
+		
+        Map<Object, Object> dsMap = new HashMap<>(modelDBNameList.size()+1);
+        dsMap.put(DataSourceEnum.CONFIG, configDataSource());
+        for(String name : modelDBNameList) {
+        	DruidDataSource datasource = new DruidDataSource();  
+        	//jdbc:mysql://${my.db.config.url}:${my.db.config.port}/Configuration?${my.db.config.property}
+            String dbUrl = "jdbc:mysql://" + dbIP + ":" + dbPort + "/" + name + "?" + dbProp;
+            datasource.setUrl(dbUrl);  
+            datasource.setUsername(username);  
+            datasource.setPassword(password);  
+            datasource.setDriverClassName(driverClassName);
+        	dsMap.put(name, datasource);
+        }
+        dds.setTargetDataSources(dsMap);
+        dds.afterPropertiesSet();
+
     }
     
     

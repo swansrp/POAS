@@ -9,12 +9,16 @@ import org.springframework.stereotype.Service;
 import com.srct.ril.poas.dao.mapper.ModelMapMapper;
 import com.srct.ril.poas.dao.pojo.ModelMap;
 import com.srct.ril.poas.dao.pojo.ModelMapExample;
+import com.srct.ril.poas.dbconfig.DataSourceConfig;
 import com.srct.ril.poas.utils.ServiceException;
 
 @Service
 public class ModelMapService {
 	@Autowired
 	private ModelMapMapper modelMapDao;
+	
+	@Autowired
+	DataSourceConfig dsc;
 	
 	 /**
      * Get product by id
@@ -42,6 +46,15 @@ public class ModelMapService {
     	}
     	return modelMapNameList;
     }
+
+	public int addModel(String modelName) {
+		// TODO Auto-generated method stub
+		ModelMap model = new ModelMap();
+		model.setModelName(modelName);
+		modelMapDao.insertSelective(model);
+		dsc.updateDynamicDataSource();
+		return model.getId();
+	}
 	
 	
 	

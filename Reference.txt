@@ -1,10 +1,10 @@
-
-×¢½â¶¯Ì¬ÇĞ»»Êı¾İ¿â: http://blog.csdn.net/neosmith/article/details/61202084
-Êı¾İ¿âÂ·ÓÉ¶¯Ì¬ĞÂ½¨Êı¾İ¿â²ÎÊı: https://www.cnblogs.com/wsss/p/5475057.html
-·½·¨²ÎÊı×¢Èë·½Ê½: http://blog.csdn.net/catoop/article/details/50564513 
-´úÂë´´½¨Bean: http://blog.csdn.net/catoop/article/details/50558333
-SpringºÍMybatisÕûºÏµÄÈıÖÖ·½Ê½: https://www.cnblogs.com/ClassNotFoundException/p/6425558.html
-DruidÅäÖÃĞÅÏ¢µÄ¶¨ÖÆ£ºhttp://blog.csdn.net/blueheart20/article/details/52384032
-@ConfigurationProperties£ºhttp://blog.csdn.net/yingxiake/article/details/51263071
-AOPÈÕÖ¾£¬¼ÇÂ¼µ÷ÓÃÀà¡¢·½·¨¡¢·½·¨²ÎÊıÃû³Æ¡¢·½·¨²ÎÊıÖµ£¨°üÀ¨¶ÔÏóºÍ»ù±¾ÀàĞÍ£©
+ï»¿
+æ³¨è§£åŠ¨æ€åˆ‡æ¢æ•°æ®åº“: http://blog.csdn.net/neosmith/article/details/61202084
+æ•°æ®åº“è·¯ç”±åŠ¨æ€æ–°å»ºæ•°æ®åº“å‚æ•°: https://www.cnblogs.com/wsss/p/5475057.html
+æ–¹æ³•å‚æ•°æ³¨å…¥æ–¹å¼: http://blog.csdn.net/catoop/article/details/50564513 
+ä»£ç åˆ›å»ºBean: http://blog.csdn.net/catoop/article/details/50558333
+Springå’ŒMybatisæ•´åˆçš„ä¸‰ç§æ–¹å¼: https://www.cnblogs.com/ClassNotFoundException/p/6425558.html
+Druidé…ç½®ä¿¡æ¯çš„å®šåˆ¶ï¼šhttp://blog.csdn.net/blueheart20/article/details/52384032
+@ConfigurationPropertiesï¼šhttp://blog.csdn.net/yingxiake/article/details/51263071
+AOPæ—¥å¿—ï¼Œè®°å½•è°ƒç”¨ç±»ã€æ–¹æ³•ã€æ–¹æ³•å‚æ•°åç§°ã€æ–¹æ³•å‚æ•°å€¼ï¼ˆåŒ…æ‹¬å¯¹è±¡å’ŒåŸºæœ¬ç±»å‹ï¼‰
 http://blog.csdn.net/paincupid/article/details/51176149
