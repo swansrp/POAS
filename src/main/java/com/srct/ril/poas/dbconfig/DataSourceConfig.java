@@ -32,22 +32,22 @@ public class DataSourceConfig {
     private ModelMapService modelMapService;
 	
 	@Value("${my.db.config.url}")  
-    private static String dbIP;
+    private String dbIP;
 	
 	@Value("${my.db.config.port}")
-	private static String dbPort;
+	private String dbPort;
 	
 	@Value("${my.db.config.property}")
-	private static String dbProp;
+	private String dbProp;
 	     
     @Value("${my.db.config.username}")  
-    private static String username;  
+    private String username;  
       
     @Value("${my.db.config.password}")  
-    private static String password;  
+    private String password;  
       
     @Value("${my.db.config.driver}")  
-    private static String driverClassName;  
+    private String driverClassName;  
 	
     @Bean(name = "configMasterDS")  
     @Primary //主数据库  
