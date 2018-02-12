@@ -1,0 +1,69 @@
+Help on module SpiderMySqlDatabase:
+
+NAME
+    SpiderMySqlDatabase - Created on 2018/2/2
+
+FILE
+    /root/cloneGitProject/Scarabaeus/src/Spider/SpiderMySqlDatabase.py
+
+DESCRIPTION
+    @author : xxfore
+
+CLASSES
+    SpiderMySqlDatabase
+    
+    class SpiderMySqlDatabase
+     |  Methods defined here:
+     |  
+     |  __init__(self, url)
+     |  
+     |  connect(self)
+     |      Connect local MySql server.
+     |      Doesnt specify database here
+     |  
+     |  create_or_select_database(self)
+     |      Select exist database which named by model_name
+     |      if database not exist , create it.
+     |  
+     |  create_table_with_column(self, column)
+     |      If database exist, select it, then create table with specify column
+     |      Param Type:
+     |          column:String
+     |  
+     |  disconnect(self)
+     |  
+     |  get_func_name()
+     |      Seems no use when package to a API.
+     |      But you can use it directly
+     |  
+     |  get_time(self)
+     |      Get last_fetch_time from Configuration.urlmap_ by url
+     |  
+     |  insert_values(self, value)
+     |      Insert values after call #create_table_with_column
+     |      Just use for the table which have PRIMARY KEY(id) AUTO_INCREMENT in first column
+     |      Param Type:
+     |          value:list
+     |  
+     |  load_database_name(self)
+     |      Use DB:Configuration Table:urlmap_
+     |      to get main database which need create or select later
+     |      Attention : This operation will select DB:Configuration first.
+     |      So if want to do any SQL operation on toher DB, please use #create_or_select_database first
+     |  
+     |  load_database_version(self)
+     |      Load current select DB version
+     |  
+     |  load_table_name(self)
+     |      Load source en name to create table.
+     |      Attention : This operation will select DB:Configuration first.
+     |      So if want to do any SQL operation on other DB, please use #create_or_select_database first
+     |  
+     |  test(self, sql)
+     |      just for test
+     |  
+     |  update_time(self, value)
+     |      Update last_fetch_time from Configuration.urlmap_ by url
+
+
+None
