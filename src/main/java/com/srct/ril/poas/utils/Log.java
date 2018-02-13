@@ -3,7 +3,7 @@ package com.srct.ril.poas.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.srct.ril.poas.dbconfig.DynamicDataSource;
+import com.srct.ril.poas.dao.dbconfig.DynamicDataSource;
 
 public class Log {
 	private static Logger log = null;

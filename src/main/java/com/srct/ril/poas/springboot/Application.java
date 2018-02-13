@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.srct.ril.poas.dbconfig.DataSourceConfig;
+import com.srct.ril.poas.dao.dbconfig.DataSourceConfig;
 
 
 @ComponentScan(basePackages = "com.srct.ril.poas")

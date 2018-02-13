@@ -1,4 +1,4 @@
-package com.srct.ril.poas.dbconfig;
+package com.srct.ril.poas.dao.dbconfig;
 
 
 import java.lang.reflect.Field;

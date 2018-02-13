@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.srct.ril.poas.dbconfig.DS;
-import com.srct.ril.poas.dbconfig.DataSourceEnum;
+import com.srct.ril.poas.dao.dbconfig.DS;
+import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 
 @Controller
 public class HelloJspController {

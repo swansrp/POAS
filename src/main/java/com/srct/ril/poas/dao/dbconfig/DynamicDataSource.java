@@ -1,4 +1,4 @@
-package com.srct.ril.poas.dbconfig;
+package com.srct.ril.poas.dao.dbconfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

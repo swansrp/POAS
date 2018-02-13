@@ -1,4 +1,4 @@
-package com.srct.ril.poas.dbconfig;
+package com.srct.ril.poas.dao.dbconfig;
 
 public class DataSourceEnum {
 	public final static String CONFIG = "Configuration";
