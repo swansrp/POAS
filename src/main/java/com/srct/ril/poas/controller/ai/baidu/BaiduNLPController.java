@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.srct.ril.poas.http.CommonResponse;
 import com.srct.ril.poas.http.Response;
 import com.srct.ril.poas.service.ai.baidu.BaiduNLPService;
+import com.srct.ril.poas.utils.JSONUtil;
 import com.srct.ril.poas.utils.ServiceException;
 
 @RestController
@@ -24,8 +25,8 @@ public class BaiduNLPController {
 	}
 	
 	@RequestMapping("/depparser")
-	public CommonResponse depParser(
+	public String depParser(
 			@RequestParam(value="text") String content) throws ServiceException {
-		return Response.generateResponse(service.depParser(content));
+		return JSONUtil.toJSONString(service.depParser(content));
 	}
 }
