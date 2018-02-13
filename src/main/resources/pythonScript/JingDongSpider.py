@@ -16,7 +16,9 @@ import time
 import urllib.request
 #import SpiderDatabase
 import SpiderMySqlDatabase
-
+from JsonResponseToClient import JsonResponseToClient
+from ScarabaeusEnum import ResponseEnum
+import json
 class JingDongSpider():
     
     def __init__(self, url, num = 5 ):
@@ -88,7 +90,6 @@ class JingDongSpider():
     def searchState(self):
         flag = 'False'
         self.lasttime = self.mdatabase.get_time()
-        #print self.lasttime
         if self.lasttime !=0:
             flag = 'True'
         self.updatetime()
@@ -175,7 +176,6 @@ class JingDongSpider():
             return " ERROR "
 
     def getJDComment(self):
-        #print "no time"
         time1 = time.time()
         commenturl =  self.getCommentUrl(self.url)
                
@@ -185,7 +185,6 @@ class JingDongSpider():
                 break
 
             url = commenturl%(self.productId,k)
-            #print url
             headers = {'User-Agent':self.choiceUseragent()}
 #             res = urllib2.Request(url, headers =headers)
 #             response = urllib2.urlopen(res)
@@ -218,11 +217,8 @@ class JingDongSpider():
                     forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
         time4 = time.time()
-        #print (time4-time1)
-        #print ('done')
 
     def getJDviaTime(self):
-        print ('time')
         time1 = time.time()        
         commenturl =  self.getCommentUrl(self.url)   
         timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
@@ -233,7 +229,6 @@ class JingDongSpider():
             if self.state is 'True':
                 break
             url = commenturl%(self.productId,k)
-            #print url
             headers = {'User-Agent':self.choiceUseragent()}
 #             res = urllib2.Request(url, headers =headers)
 #             response = urllib2.urlopen(res)
@@ -273,9 +268,8 @@ class JingDongSpider():
             if skiptime is 'True':
                 break
         time4 = time.time()
-        #print (time4-time1)
-            
-        #print ('done')
+        resp = JsonResponseToClient(ResponseEnum.success.value,"success")
+        JsonResponseToClient.generate_json_response(resp)
 
     def launch(self, proxyIP = "", ProxyPort = "", continueTask='False'):
         self.proxyIP = proxyIP
@@ -289,7 +283,6 @@ class JingDongSpider():
         dbname = self.mdatabase.load_database_name()
         result = self.mdatabase.create_or_select_database()
         if result == 1:
-            #print " create success, need select table"
             tablename = self.mdatabase.load_table_name()
             self.mdatabase.create_table_with_column(createtable)
             if self.searchState() is 'True' and continueTask is 'True':
@@ -297,7 +290,6 @@ class JingDongSpider():
             else:
                 self.getJDComment()
         else:
-            #print " failed"
             self.mdatabase.disconnect()
 
     @staticmethod
@@ -320,6 +312,6 @@ class JingDongSpider():
 
 if __name__ == '__main__':
 
-   url ='https://item.jd.com/3893487.html'
-   galaxy = JingDongSpider(url)
-   galaxy.launch('','','True')
+    url ='https://item.jd.com/3893487.html'
+    galaxy = JingDongSpider(url)
+    galaxy.launch('','','True')

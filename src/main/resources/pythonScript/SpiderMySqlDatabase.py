@@ -9,7 +9,7 @@ Created on 2018/2/2
 import sys
 import os
 import inspect
-
+import json
 #import MySQLdb
 import pymysql as MySQLdb
 MySQLdb.install_as_MySQLdb()
@@ -17,7 +17,6 @@ MySQLdb.install_as_MySQLdb()
 class SpiderMySqlDatabase():
     def __init__(self,url):
         self.url = url
-        #print 'mysql database start'
 
     def connect(self):
         '''
@@ -40,18 +39,15 @@ class SpiderMySqlDatabase():
             for row in results:
                 model_id = row[0]
                 model_name = row[1]
-                #print "query data id : %d, name = %s " % \
-                #      (model_id,model_name)
         except:
-            #print "fetch error"
-            print()
+            bye
     
     def load_database_name(self):
         '''
         Use DB:Configuration Table:urlmap_
         to get main database which need create or select later
         Attention : This operation will select DB:Configuration first.
-        So if want to do any SQL operation on toher DB, please use {@link #create_or_select_database} first
+        So if want to do any SQL operation on other DB, please use {@link #create_or_select_database} first
         '''
         try:
             self.db.select_db('Configuration')
@@ -65,7 +61,6 @@ class SpiderMySqlDatabase():
             cursor.execute(sql)
             result = cursor.fetchone()
             self.dbname = result[0]
-            #print "current select database name : %s " % self.dbname
             return self.dbname
         except MySQLdb.Error as e:
             self.print_sql_error(self.get_func_name(),e)
@@ -77,10 +72,8 @@ class SpiderMySqlDatabase():
         '''
         try:
             self.db.select_db(self.dbname)
-            #print "select db : " + self.dbname + " success"
             return 1
         except:
-            #print 'no db name : ' + self.dbname
             cursor = self.db.cursor()
             cursor.execute("create database if not exists " + self.dbname)
             try:
@@ -104,11 +97,9 @@ class SpiderMySqlDatabase():
                    on sourcemap_.id = urlmap_.source_id \
                    where urlmap_.url = '%s' " % \
                    (self.url)
-            #print sql
             cursor.execute(sql)
             result = cursor.fetchone()
             self.tablename = result[0]
-            #print 'current select table name : ' + self.tablename
             return self.tablename
         except MySQLdb.Error as e:
             self.print_sql_error(self.get_func_name(),e)
@@ -123,7 +114,6 @@ class SpiderMySqlDatabase():
             self.db.select_db(self.dbname)
             cursor = self.db.cursor()
             sql = 'create table if not exists ' + self.tablename + ' (' + column + ') CHARSET=utf8'
-            print ('create table sql : ' + sql)
             cursor.execute(sql)
         except MySQLdb.Error as e:
             self.print_sql_error(self.get_func_name(),e)
@@ -146,7 +136,6 @@ class SpiderMySqlDatabase():
             cursor.execute('SET character_set_connection=utf8;')
             for x in value:
                 sql = 'insert into ' + self.tablename + ' values (null,"' + '","'.join(x) + '")'
-                print ('insert sql :' + sql)
                 cursor.execute(sql)
             self.db.commit()
         except MySQLdb.Error as e:
@@ -166,7 +155,6 @@ class SpiderMySqlDatabase():
             cursor.execute(sql)
             result = cursor.fetchone()
             self.time = result[0]
-            #print 'current url last fetch time is : ' + self.time
             return self.time
         except MySQLdb.Error as e:
             self.print_sql_error(self.get_func_name(),e)
@@ -182,7 +170,6 @@ class SpiderMySqlDatabase():
                    set last_fetch_time = %s \
                    where url = '%s' " % \
                   (value,self.url)
-            #print ' update_time sql = ' + sql
             cursor.execute(sql)
             self.db.commit()
         except MySQLdb.Error as e:
@@ -195,14 +182,13 @@ class SpiderMySqlDatabase():
         cursor = self.db.cursor()
         cursor.execute("SELECT VERSION()")
         data = cursor.fetchone()
-        #print "Database version : %s " % data
 
     def disconnect(self):
         self.db.close()
     
     def print_sql_error(self,func,e):
         sqlError = "\033[31mError \033[35min func:%s is %d:%s\033[0m" % (func,e.args[0],e.args[1])
-        #print sqlError
+        print (sqlError)
 
     def get_func_name(self):
        '''
