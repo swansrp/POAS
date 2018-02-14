@@ -6,6 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
 
+import com.srct.ril.poas.python.callback.PythonJobCallBack;
+import com.srct.ril.poas.python.crontask.ScarCronTask;
+import com.srct.ril.poas.python.model.PythonResponseModel;
+import com.srct.ril.poas.utils.Log;
+
 @Component
 public class DataSourceLifecycle implements SmartLifecycle {
 	
@@ -15,7 +20,7 @@ public class DataSourceLifecycle implements SmartLifecycle {
 	
 	@Autowired
 	DataSourceConfig dsc;
-	
+
 	/**
      * 1. 我们主要在该方法中启动任务或者其他异步服务，比如开启MQ接收消息<br/>
      * 2. 当上下文被刷新（所有对象已被实例化和初始化之后）时，将调用该方法，默认生命周期处理器将检查每个SmartLifecycle对象的isAutoStartup()方法返回的布尔值。

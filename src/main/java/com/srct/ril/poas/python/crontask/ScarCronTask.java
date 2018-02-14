@@ -12,27 +12,26 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.ResourceUtils;
 
 import com.srct.ril.poas.python.callback.PythonJobCallBack;
+import com.srct.ril.poas.python.model.PythonResponseModel;
+import com.srct.ril.poas.utils.JSONUtil;
 import com.srct.ril.poas.utils.Log;
 
 @Configuration
 @EnableScheduling
 public class ScarCronTask {
 
-	@SuppressWarnings("unused")
 	private PythonJobCallBack mPythonJobCallBack = null;
 	private InputStream normalIS = null;
 	private InputStream errorIS = null;
-	@Scheduled(cron = "*/20 * * * * ?")
+	private PythonResponseModel mPythonResponseModel = null;
+	@Scheduled(cron = "0 6 * * * ?")
 	public void executeScarScript() throws IOException, InterruptedException {
-		Log.i(getClass(), " 我来了");
 	    File file = ResourceUtils.getFile("classpath:pythonScript/JingDongSpider.py");
 		Process fetchScarProcess = Runtime.getRuntime().exec("python " + file.toString());
 		normalIS = fetchScarProcess.getInputStream();
 		errorIS = fetchScarProcess.getErrorStream();
 		startCollectScriptNormalResultThread();
 		startCollectScriptErrorResultThread();
-		Log.i(getClass(), " 我走了");
-		//mPythonJobCallBack.loadDataComplete("success");
 	}
 	
 	private void startCollectScriptNormalResultThread() {
@@ -44,9 +43,14 @@ public class ScarCronTask {
 					while ((line = bufferReader.readLine()) != null) {
 						if (line != null ) {
 							Log.i(getClass(), " normal input = " + line);
+							mPythonResponseModel = (PythonResponseModel)JSONUtil.readJson(line, PythonResponseModel.class);
+							mPythonJobCallBack.loadDataComplete(mPythonResponseModel);
 						}
 					}
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} finally {
