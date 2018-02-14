@@ -1,7 +1,12 @@
 package com.srct.ril.poas.ai.baidunlp;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 import com.srct.ril.poas.utils.Log;
 
@@ -43,11 +48,15 @@ public class BaiduNLPDepParser {
 	private final static String YGC = "YGC"; // 当专名或者联绵词等切散后，他们之间本身没有语法关系，应该合起来才是一个词。如：百 度。
 	private final static String WP = "WP"; // 大部分标点依存于其前面句子的核心词上，依存关系WP。
 	
-	private final static String[] ingoreTable = {"CS"};
+	private final static String[] ingoreTable = {CS,IS,IC}; // 该成分不连在一个分句中
+	private final static String[] meaningfulTable = {HED, SBV}; // 若包含该成分则保留该分句
+	private Queue<Integer> queue = new LinkedList<Integer>();
 	
-	public int root = -1;
-	public String simpleText = "";
-	
+	private List<Integer> forestRoot = new ArrayList<Integer>(); // 分句根节点
+	private Map<Integer, List<Integer>> treeMap = new HashMap<Integer, List<Integer>>(); // 分句Item树
+
+	public List<String> simpleText = new ArrayList<String>(); // 取舍关键分句后 保留分句
+
 	public long log_id;
 	public String text; // 原始单条请求文本
 	public Items[] items; // 词汇数组，每个元素对应结果中的一个词
@@ -58,58 +67,93 @@ public class BaiduNLPDepParser {
 		public String postag;  // 词性，请参照API文档中的词性（postag)取值范围
 		public int head; // 词的父节点ID
 		public String  deprel; // 词与父节点的依存关系，请参照API文档的依存关系标识
-		public boolean meaningful = false;
+		public int treeRoot = -1;
 		public List<Integer> child = new ArrayList<Integer>(); 
 	}
 	
-	public String parse() {
+	public List<String> parse() {
 		makeTree();
+		makeTreeMap();
 		makeSimpleText();
 		return simpleText;
 		
 	}
 	
-	private boolean keepDeprel(String deprel) {
+	private boolean meaningfulItem(Items it) {
+		for(String meaningful: meaningfulTable)
+			if(it.deprel.equals(meaningful))
+				return true;
+		return false;
+	}
+	
+	private Boolean meaningGroupItem(Items it) {
 		for(String ignore: ingoreTable)
-			if(deprel.equals(ignore))
+			if(it.deprel.equals(ignore))
 				return false;
 		return true;
 	}
 	
-	private void setMeanful(int root) {
-		if(items[root].child.size() == 0) {
-			items[root].meaningful = true;
+	private void setTreeRoot(int root) {
+		items[root].treeRoot=root;
+		queue.offer(root);
+		while(queue.size()!=0) {
+			int index = queue.poll();
+			for(Integer chi : items[index].child) {
+				items[chi].treeRoot=root;
+				queue.offer(chi);			
+			}
 		}
-		for(Integer i : items[root].child) {
-			if(keepDeprel(items[i-1].deprel))
-				setMeanful(i-1);
-		}
-		items[root].meaningful = true;
 	}
 	
 	private void makeTree() {
 		//make tree
 		for(int i=0;i<items.length;i++) {
-			items[i].id = i+1;
-			if(items[i].head==0) {
-				items[i].meaningful = true;
-				root = i;
+			items[i].id = i;
+			items[i].head--;
+			if(items[i].head==-1) {
+				forestRoot.add(i);
 			} else {
-				items[items[i].head-1].child.add(i+1);
+				if(meaningGroupItem(items[i]))
+					items[items[i].head].child.add(i);
+				else
+					forestRoot.add(i);
 			}
 		}
-		if(root==-1) {
+		if(forestRoot.size()==0) {
 			Log.i(getClass(), "there is no HED");
 		} else {
-			setMeanful(root);
+			for(Integer root : forestRoot) {
+				setTreeRoot(root);
+			}
 		}
 	}
-	
 	private void makeSimpleText() {
-		simpleText = "";
+		
+		for (Map.Entry<Integer, List<Integer>> entry : treeMap.entrySet()) {
+			boolean meaningfulContent = false;
+			String text="";
+			for(Integer i : entry.getValue()) {
+				if(meaningfulItem(items[i])) {
+					meaningfulContent = true;
+				}
+			}
+			if(meaningfulContent) {
+				Collections.sort(entry.getValue());
+				for(Integer i : entry.getValue()) {
+					text+=items[i].word;
+				}
+				simpleText.add(text);
+			}
+		}
+		
+	}
+	
+	private void makeTreeMap() {
+		for(Integer root :forestRoot) {
+			treeMap.put(root, new ArrayList<Integer>());
+		}
 		for(Items it : items) {
-			if(it.meaningful)
-				simpleText+=it.word;
+			treeMap.get(it.treeRoot).add(it.id);
 		}
 	}
 	
