@@ -29,4 +29,10 @@ public class BaiduNLPController {
 			@RequestParam(value="text") String content) throws ServiceException {
 		return JSONUtil.toJSONString(service.depParser(content));
 	}
+	
+	@RequestMapping("/comment")
+	public String commentTag(
+			@RequestParam(value="text") String content) throws ServiceException {
+		return JSONUtil.toJSONString(service.commentTag(content));
+	}
 }

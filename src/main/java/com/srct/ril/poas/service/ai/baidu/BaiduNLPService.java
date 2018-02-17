@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.druid.support.json.JSONUtils;
 import com.baidu.aip.nlp.AipNlp;
+import com.baidu.aip.nlp.ESimnetType;
 import com.srct.ril.poas.ai.BaiduClient;
+import com.srct.ril.poas.ai.baidunlp.BaiduNLPCommentTag;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPDepParser;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPLexer;
 import com.srct.ril.poas.utils.JSONUtil;
@@ -59,5 +61,27 @@ public class BaiduNLPService {
 	
 	public BaiduNLPDepParser depParser(String content) throws ServiceException {
 		return depParser(content, 1);
+	}
+	
+	public BaiduNLPCommentTag commentTag(String content, int mode) throws ServiceException {
+		AipNlp client = baiduClent.getClient();
+		HashMap<String, Object> options = new HashMap<String, Object>();
+		ESimnetType type = BaiduNLPCommentTag.getESimnetType(mode);
+		JSONObject resJson = client.commentTag(content, type, options);
+		Log.i(getClass(), resJson.toString(2));
+		BaiduNLPCommentTag res;
+		try {
+			res = (BaiduNLPCommentTag)JSONUtil.readJson(resJson.toString(), BaiduNLPCommentTag.class);
+			Log.i(getClass(), JSONUtil.toJSONString(res));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new ServiceException("BaiduNLPCommentTag " + content + " cant parse", e);
+		}
+		return res;	
+	}
+	
+	public BaiduNLPCommentTag commentTag(String content) throws ServiceException {
+		return commentTag(content, 13);
 	}
 }
