@@ -1,4 +1,4 @@
-package com.srct.ril.poas.ai;
+package com.srct.ril.poas.ai.baidunlp;
 
 import org.json.JSONObject;
 import org.springframework.boot.context.properties.ConfigurationProperties;

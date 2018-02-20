@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.baidu.aip.nlp.AipNlp;
 import com.baidu.aip.nlp.ESimnetType;
-import com.srct.ril.poas.ai.BaiduClient;
+import com.srct.ril.poas.ai.baidunlp.BaiduClient;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPCommentTag;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPDepParser;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPLexer;
@@ -49,7 +49,7 @@ public class BaiduNLPService {
 		try {
 			res = (BaiduNLPDepParser)JSONUtil.readJson(resJson.toString(), BaiduNLPDepParser.class);
 			res.parse();
-			Log.i(getClass(), JSONUtil.toJSONString(res));
+			//Log.i(getClass(), JSONUtil.toJSONString(res));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,7 +72,7 @@ public class BaiduNLPService {
 		BaiduNLPCommentTag res;
 		try {
 			res = (BaiduNLPCommentTag)JSONUtil.readJson(resJson.toString(), BaiduNLPCommentTag.class);
-			Log.i(getClass(), JSONUtil.toJSONString(res));
+			//Log.i(getClass(), JSONUtil.toJSONString(res));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

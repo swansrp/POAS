@@ -4,6 +4,8 @@ import com.baidu.aip.nlp.ESimnetType;
 
 public class BaiduNLPCommentTag {
 	public long log_id; // 匹配上的属性词请求唯一标识码
+	public String error_msg;
+	public int error_code;
 	public Item[] items;
 	public static class Item {
 		public String prop; // 匹配上的属性词
@@ -11,7 +13,7 @@ public class BaiduNLPCommentTag {
 		public int sentiment; // 该情感搭配的极性（0表示消极，1表示中性，2表示积极）
 		public int begin_pos; // 该情感搭配在句子中的开始位置
 		public int end_pos; // 该情感搭配在句子中的结束位置
-		public String Abstract; // 对应于该情感搭配的短句摘要
+		//public String Abstract; // 对应于该情感搭配的短句摘要
 	}
 	public static ESimnetType getESimnetType(int mode) {
 		switch(mode) {

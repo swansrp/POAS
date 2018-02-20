@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -51,7 +52,7 @@ public class JSONUtil {
     //Map<H,D> map = (Map<H,D>)readJson(jsonString, HashMap.class, String.class, YourBean.class);
     public static <T> T readJson(String jsonStr, Class<?> collectionClass, Class<?>... elementClasses) throws Exception {
            ObjectMapper mapper = new ObjectMapper();
-
+           mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
            JavaType javaType = mapper.getTypeFactory().constructParametricType(collectionClass, elementClasses);
 
            return mapper.readValue(jsonStr, javaType);

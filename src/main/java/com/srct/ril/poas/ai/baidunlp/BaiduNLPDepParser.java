@@ -49,7 +49,7 @@ public class BaiduNLPDepParser {
 	private final static String WP = "WP"; // 大部分标点依存于其前面句子的核心词上，依存关系WP。
 	
 	private final static String[] ingoreTable = {CS,IS,IC}; // 该成分不连在一个分句中
-	private final static String[] meaningfulTable = {HED, SBV}; // 若包含该成分则保留该分句
+	private final static String[] meaningfulTable = {HED, SBV, VOB}; // 若包含该成分则保留该分句
 	private Queue<Integer> queue = new LinkedList<Integer>();
 	
 	private List<Integer> forestRoot = new ArrayList<Integer>(); // 分句根节点
