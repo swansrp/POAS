@@ -13,6 +13,7 @@ import com.srct.ril.poas.ai.baidunlp.BaiduClient;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPCommentTag;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPDepParser;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPLexer;
+import com.srct.ril.poas.ai.baidunlp.BaiduNLPSentiment;
 import com.srct.ril.poas.utils.JSONUtil;
 import com.srct.ril.poas.utils.Log;
 import com.srct.ril.poas.utils.ServiceException;
@@ -44,12 +45,12 @@ public class BaiduNLPService {
 		HashMap<String, Object> options = new HashMap<String, Object>();
 	    options.put("mode", mode);
 		JSONObject resJson = client.depParser(content, options);
-		
+		//Log.i(getClass(), resJson.toString(2));
 		BaiduNLPDepParser res;
 		try {
 			res = (BaiduNLPDepParser)JSONUtil.readJson(resJson.toString(), BaiduNLPDepParser.class);
 			res.parse();
-			//Log.i(getClass(), JSONUtil.toJSONString(res));
+			Log.i(getClass(), JSONUtil.toJSONString(res));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,7 +69,7 @@ public class BaiduNLPService {
 		HashMap<String, Object> options = new HashMap<String, Object>();
 		ESimnetType type = BaiduNLPCommentTag.getESimnetType(mode);
 		JSONObject resJson = client.commentTag(content, type, options);
-		Log.i(getClass(), resJson.toString(2));
+		//Log.i(getClass(), resJson.toString(2));
 		BaiduNLPCommentTag res;
 		try {
 			res = (BaiduNLPCommentTag)JSONUtil.readJson(resJson.toString(), BaiduNLPCommentTag.class);
@@ -83,5 +84,26 @@ public class BaiduNLPService {
 	
 	public BaiduNLPCommentTag commentTag(String content) throws ServiceException {
 		return commentTag(content, 13);
+	}
+	
+	public BaiduNLPSentiment sentimentClassify(String content) throws ServiceException {
+		AipNlp client = baiduClent.getClient();
+		// 传入可选参数调用接口
+	    HashMap<String, Object> options = new HashMap<String, Object>();
+	    
+	    // 情感倾向分析
+	    JSONObject resJson = client.sentimentClassify(content, options);
+	    //System.out.println(resJson.toString(2));
+	    BaiduNLPSentiment res;
+		try {
+			res = (BaiduNLPSentiment)JSONUtil.readJson(resJson.toString(), BaiduNLPSentiment.class);
+			//Log.i(getClass(), JSONUtil.toJSONString(res));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new ServiceException("BaiduNLPSentiment " + content + " cant parse", e);
+		}
+		return res;	
+	    
 	}
 }

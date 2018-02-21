@@ -35,4 +35,10 @@ public class BaiduNLPController {
 			@RequestParam(value="text") String content) throws ServiceException {
 		return JSONUtil.toJSONString(service.commentTag(content));
 	}
+	
+	@RequestMapping("/sentiment")
+	public String sentimentClassify(
+			@RequestParam(value="text") String content) throws ServiceException {
+		return JSONUtil.toJSONString(service.sentimentClassify(content));
+	}
 }

@@ -48,7 +48,7 @@ public class BaiduNLPDepParser {
 	private final static String YGC = "YGC"; // 当专名或者联绵词等切散后，他们之间本身没有语法关系，应该合起来才是一个词。如：百 度。
 	private final static String WP = "WP"; // 大部分标点依存于其前面句子的核心词上，依存关系WP。
 	
-	private final static String[] ingoreTable = {CS,IS,IC}; // 该成分不连在一个分句中
+	private final static String[] ingoreTable = {CS,IS,IC,DC}; // 该成分不连在一个分句中
 	private final static String[] meaningfulTable = {HED, SBV, VOB}; // 若包含该成分则保留该分句
 	private Queue<Integer> queue = new LinkedList<Integer>();
 	
@@ -106,7 +106,8 @@ public class BaiduNLPDepParser {
 	}
 	
 	private void makeTree() {
-		//make tree
+		// make tree
+		// 构建分句间树形结构 HEAD IS IC
 		for(int i=0;i<items.length;i++) {
 			items[i].id = i;
 			items[i].head--;
@@ -115,10 +116,15 @@ public class BaiduNLPDepParser {
 			} else {
 				if(meaningGroupItem(items[i]))
 					items[items[i].head].child.add(i);
-				else
-					forestRoot.add(i);
+				else {
+					if(!items[items[i].head].deprel.equals(HED))
+						items[items[i].head].child.add(i);
+					else
+						forestRoot.add(i);
+				}
 			}
 		}
+
 		if(forestRoot.size()==0) {
 			Log.i(getClass(), "there is no HED");
 		} else {
@@ -126,6 +132,7 @@ public class BaiduNLPDepParser {
 				setTreeRoot(root);
 			}
 		}
+		
 	}
 	private void makeSimpleText() {
 		
@@ -149,9 +156,34 @@ public class BaiduNLPDepParser {
 	}
 	
 	private void makeTreeMap() {
+		Map<Integer, List<Integer>> tempTreeMap = new HashMap<Integer, List<Integer>>(); // 分句Item树
 		for(Integer root :forestRoot) {
 			treeMap.put(root, new ArrayList<Integer>());
+			tempTreeMap.put(root, new ArrayList<Integer>());
 		}
+		
+		for(Items it : items) {
+			tempTreeMap.get(it.treeRoot).add(it.id);
+		}
+		
+//		// 分句若无核心词则关联分句归并
+//		for (Map.Entry<Integer, List<Integer>> entry : tempTreeMap.entrySet()) {
+//			boolean meaningfulContent = false;
+//			for(Integer i : entry.getValue()) {
+//				if(meaningfulItem(items[i])) {
+//					meaningfulContent = true;
+//					break;
+//				}
+//			}
+//			if(meaningfulContent == false) {
+//				Integer index = entry.getKey();
+//				if()
+//				forestRoot.remove(index);
+//				items[items[index].head].child.add(index);
+//				setTreeRoot(items[index].head);
+//			}	
+//		}
+		
 		for(Items it : items) {
 			treeMap.get(it.treeRoot).add(it.id);
 		}
