@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.baidu.aip.nlp.AipNlp;
 import com.baidu.aip.nlp.ESimnetType;
 import com.srct.ril.poas.ai.baidunlp.BaiduClient;
@@ -17,6 +16,7 @@ import com.srct.ril.poas.ai.baidunlp.BaiduNLPSentiment;
 import com.srct.ril.poas.utils.JSONUtil;
 import com.srct.ril.poas.utils.Log;
 import com.srct.ril.poas.utils.ServiceException;
+
 @Service
 public class BaiduNLPService {
 

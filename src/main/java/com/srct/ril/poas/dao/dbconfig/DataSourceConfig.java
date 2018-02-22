@@ -20,7 +20,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
-import com.srct.ril.poas.service.ModelMapService;
+import com.srct.ril.poas.service.config.ModelMapService;
   
   
 @Configuration

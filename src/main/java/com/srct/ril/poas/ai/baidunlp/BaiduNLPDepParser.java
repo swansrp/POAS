@@ -117,9 +117,9 @@ public class BaiduNLPDepParser {
 				if(meaningGroupItem(items[i]))
 					items[items[i].head].child.add(i);
 				else {
-					if(!items[items[i].head].deprel.equals(HED))
-						items[items[i].head].child.add(i);
-					else
+//					if(!items[items[i].head].deprel.equals(HED))
+//						items[items[i].head].child.add(i);
+//					else
 						forestRoot.add(i);
 				}
 			}

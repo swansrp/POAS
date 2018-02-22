@@ -1,4 +1,4 @@
-package com.srct.ril.poas.controller;
+package com.srct.ril.poas.controller.config;
 
 import java.util.List;
 
@@ -14,11 +14,11 @@ import com.srct.ril.poas.dao.dbconfig.DS;
 import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 import com.srct.ril.poas.http.CommonResponse;
 import com.srct.ril.poas.http.Response;
-import com.srct.ril.poas.service.ModelMapService;
+import com.srct.ril.poas.service.config.ModelMapService;
 import com.srct.ril.poas.utils.ServiceException;
 
 @RestController
-@RequestMapping("/config")
+@RequestMapping("/config/model")
 public class ModelMapController {
 
 	@Autowired
@@ -26,7 +26,7 @@ public class ModelMapController {
 	
 	private static final Logger log = LoggerFactory.getLogger(ModelMapController.class);
 	
-	@RequestMapping("model/{id}")
+	@RequestMapping("/{id}")
 	@DS(DataSourceEnum.CONFIG)
 	public CommonResponse getProduct(@PathVariable("id") int modelId) throws ServiceException {
         return Response.generateResponse(modelMapService.select(modelId));
@@ -38,7 +38,7 @@ public class ModelMapController {
         return modelMapService.getNameList();
     }
 	
-	@RequestMapping("/model/add")
+	@RequestMapping("/add")
 	@DS(DataSourceEnum.CONFIG)
 	public CommonResponse addProduct(
 			@RequestParam(value = "modelName", required = false)

@@ -1,4 +1,4 @@
-package com.srct.ril.poas.service;
+package com.srct.ril.poas.service.config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,8 @@ import com.srct.ril.poas.dao.dbconfig.DataSourceConfig;
 import com.srct.ril.poas.dao.mapper.ModelMapMapper;
 import com.srct.ril.poas.dao.pojo.ModelMap;
 import com.srct.ril.poas.dao.pojo.ModelMapExample;
+import com.srct.ril.poas.dao.pojo.ModelMapExample.Criteria;
+import com.srct.ril.poas.utils.Log;
 import com.srct.ril.poas.utils.ServiceException;
 
 @Service
@@ -54,6 +56,18 @@ public class ModelMapService {
 		modelMapDao.insertSelective(model);
 		dsc.updateDynamicDataSource();
 		return model.getId();
+	}
+	
+	public int getId(String modelName) throws ServiceException {
+		ModelMapExample ex = new ModelMapExample();
+    	ex.setDistinct(false);
+    	Criteria criteria = ex.createCriteria();
+    	criteria.andModelNameEqualTo(modelName);
+    	List<ModelMap> modelMapList = modelMapDao.selectByExample(ex);
+    	if (modelMapList == null) {
+            throw new ServiceException(modelName + " in modelmap_ not found");
+        }
+        return modelMapList.get(0).getId();
 	}
 	
 	
