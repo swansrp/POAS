@@ -9,8 +9,8 @@ import com.srct.ril.poas.ai.baidunlp.BaiduNLPDepParser;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPSentiment;
 import com.srct.ril.poas.service.ai.baidu.BaiduNLPService;
 import com.srct.ril.poas.utils.JSONUtil;
-import com.srct.ril.poas.utils.Log;
 import com.srct.ril.poas.utils.ServiceException;
+import com.srct.ril.poas.utils.log.Log;
 
 @Service
 public class NLPAnalysisService {

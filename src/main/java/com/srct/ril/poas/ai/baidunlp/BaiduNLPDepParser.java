@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import com.srct.ril.poas.utils.Log;
+import com.srct.ril.poas.utils.log.Log;
 
 public class BaiduNLPDepParser {
 	

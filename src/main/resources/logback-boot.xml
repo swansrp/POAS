@@ -5,10 +5,13 @@
     <!-- ConsoleAppender：把日志输出到控制台 -->  
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">      
         <encoder>      
-            <pattern>%d{HH:mm:ss} %-5level (%-4line\)%-50logger{15} %m%n</pattern>    
+            <pattern>%d{HH:mm:ss} %-5level %-50logger{15} %m%n</pattern>    
             <!-- 控制台也要使用UTF-8，不要使用GBK，否则会中文乱码 -->  
             <charset>UTF-8</charset>     
-        </encoder>      
+        </encoder> 
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>      
     </appender>      
     <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->  
     <!-- 以下的大概意思是：1.先按日期存日志，日期变了，将前一天的日志文件名重命名为XXX%日期%索引，新的日志仍然是sys.log -->  
@@ -114,7 +117,10 @@
             </pattern>      
             <!-- 记录日志的编码 -->  
             <charset>UTF-8</charset> <!-- 此处设置字符集 -->     
-        </encoder>      
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>TRACE</level>
+		</filter>      
     </appender>    
     <!-- 控制台输出日志级别 -->  
     <root level="info">      
@@ -123,16 +129,16 @@
     <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->  
     <!-- com.appley为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->  
     <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->  
-    <logger name="com.srct.ril.poas.service" level="trace">      
+    <logger name="com.srct.ril.poas.service" level="TRACE">      
         <appender-ref ref="servicelog" />      
     </logger> 
-    <logger name="com.srct.ril.poas.controller" level="trace">      
+    <logger name="com.srct.ril.poas.controller" level="TRACE">      
         <appender-ref ref="controllerlog" />      
     </logger>  
-    <logger name="com.srct.ril.poas.dao" level="trace">      
+    <logger name="com.srct.ril.poas.dao" level="TRACE">      
         <appender-ref ref="daolog" />      
     </logger> 
-    <logger name="com.srct.ril.poas" level="trace">      
+    <logger name="com.srct.ril.poas" level="TRACE">      
         <appender-ref ref="syslog" />      
     </logger>      
 </configuration>    

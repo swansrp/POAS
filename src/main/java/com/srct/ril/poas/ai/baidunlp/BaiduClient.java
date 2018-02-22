@@ -1,14 +1,10 @@
 package com.srct.ril.poas.ai.baidunlp;
 
-import org.json.JSONObject;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.SmartLifecycle;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.alibaba.druid.util.Utils;
 import com.baidu.aip.nlp.AipNlp;
-import com.srct.ril.poas.utils.Log;
+import com.srct.ril.poas.utils.log.Log;
 
 @Configuration
 @ConfigurationProperties(prefix = "baidu")

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.srct.ril.poas.python.callback.PythonJobCallBack;
 import com.srct.ril.poas.python.crontask.ScarCronTask;
 import com.srct.ril.poas.python.model.PythonResponseModel;
-import com.srct.ril.poas.utils.Log;
+import com.srct.ril.poas.utils.log.Log;
 
 @Component
 public class PythonLifecycle implements SmartLifecycle  {

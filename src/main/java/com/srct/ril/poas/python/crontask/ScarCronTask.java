@@ -14,7 +14,7 @@ import org.springframework.util.ResourceUtils;
 import com.srct.ril.poas.python.callback.PythonJobCallBack;
 import com.srct.ril.poas.python.model.PythonResponseModel;
 import com.srct.ril.poas.utils.JSONUtil;
-import com.srct.ril.poas.utils.Log;
+import com.srct.ril.poas.utils.log.Log;
 
 @Configuration
 @EnableScheduling

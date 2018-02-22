@@ -6,11 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
 
-import com.srct.ril.poas.python.callback.PythonJobCallBack;
-import com.srct.ril.poas.python.crontask.ScarCronTask;
-import com.srct.ril.poas.python.model.PythonResponseModel;
-import com.srct.ril.poas.utils.Log;
-
 @Component
 public class DataSourceLifecycle implements SmartLifecycle {
 	

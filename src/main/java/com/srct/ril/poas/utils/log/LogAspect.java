@@ -1,4 +1,4 @@
-package com.srct.ril.poas.utils;
+package com.srct.ril.poas.utils.log;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,12 +14,15 @@ import org.springframework.stereotype.Component;
 @Component //Spring 中立logic 注释
 public class LogAspect {
 	
-	Class<?> clazz;
-	String methodName;
-	
 	@Pointcut("execution(public * com.srct.ril.poas.controller..*.*(..))"
 			+ " || "
-			+ "execution(public * com.srct.ril.poas.service..*.*(..))")
+			+ "execution(public * com.srct.ril.poas.service..*.*(..))"
+			+ " || "
+			//注解类
+			+ "@within(com.srct.ril.poas.utils.log.MySlf4j)"
+			+ " || "
+			//注解方法
+			+ "@annotation(com.srct.ril.poas.utils.log.MySlf4j)")
     public void recordLog() {}
 	
     @Before("recordLog()")
@@ -30,12 +33,13 @@ public class LogAspect {
     public Object around(ProceedingJoinPoint pjp) throws Throwable{
     	Object res;
     	//获得当前访问的class
-        this.clazz = pjp.getTarget().getClass();
+    	Class clazz = pjp.getTarget().getClass();
     	//获得访问的方法名
         String methodName = pjp.getSignature().getName();
-    	this.printLog("Enter " + methodName);
+    	this.printLog(clazz, "Enter " + methodName);
         res = pjp.proceed();
-        this.printLog("Exit " + methodName);
+        //获得当前访问的class
+        this.printLog(clazz, "Exit " + methodName);
         return res;
     }
 
@@ -44,13 +48,16 @@ public class LogAspect {
     }
     
     @AfterThrowing("recordLog()")
-    public void afterThorw() {
-    	this.printLog("Exception is occured on "+ methodName);
+    public void afterThorw(JoinPoint point) {
+    	Class clazz = point.getTarget().getClass();
+    	String methodName = point.getSignature().getName();
+    	this.printLog(clazz, "Exception is occured on "+ methodName);
     }
     
-    private void printLog(String str){
-        if(this.clazz==null) return;
-    	Log.i(this.clazz, str);
+    private void printLog(Class<?> clazz, String str){
+        if(clazz==null) 
+        	clazz=this.getClass();
+    	Log.d(clazz, str);
     }
 	
 }

@@ -11,8 +11,8 @@ import com.srct.ril.poas.dao.mapper.ModelMapMapper;
 import com.srct.ril.poas.dao.pojo.ModelMap;
 import com.srct.ril.poas.dao.pojo.ModelMapExample;
 import com.srct.ril.poas.dao.pojo.ModelMapExample.Criteria;
-import com.srct.ril.poas.utils.Log;
 import com.srct.ril.poas.utils.ServiceException;
+import com.srct.ril.poas.utils.log.Log;
 
 @Service
 public class ModelMapService {
