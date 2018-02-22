@@ -1,34 +1,36 @@
 # -*- coding:utf-8 -*-
 '''
-Created on 2017/11/14
+Created on 2018/1/5
 
 @author: zhouyanghua
 '''
-
+import json
 import random
 import re
 import requests
-import importlib
 import sys
 import time
 #import urllib2
-import urllib.request
+
 #import SpiderDatabase
 import SpiderMySqlDatabase
 from utils.JsonResponseToClient import JsonResponseToClient
 from utils.ScarabaeusEnum import ResponseEnum
 from utils.ScarabaeusEnum import SourceEnum
 
-class JingDongSpider():
-    
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
+
+class TaoBaoSpider():
+
     def __init__(self, url, num = 5 ):
         self.url = url
         self.proxyIP = ""
         self.ProxyPort = ""
         self.state = "False"
-        self.productId = ''
+        self.productId = ""
         self.pagenum = num
-    
+
     def choiceUseragent(self):
         user_agent_list = [\
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 "
@@ -71,7 +73,7 @@ class JingDongSpider():
 
         ua = random.choice(user_agent_list)
         return ua
-    
+
     def setProxy(self):
         enable_proxy=True
 
@@ -83,10 +85,10 @@ class JingDongSpider():
             opener = urllib2.build_opener(nullproxy)
 
         urllib2.install_opener(opener)
-    
+
     def setState(self,value):
         self.state = value
-    
+
     def searchState(self):
         flag = 'False'
         self.lasttime = self.mdatabase.get_time()
@@ -94,15 +96,16 @@ class JingDongSpider():
             flag = 'True'
         self.updatetime()
         return flag
-    
+
     def updatetime(self):
         todays = time.strftime('%Y%m%d%H%M%S',time.localtime())
         self.mdatabase.update_time(str(todays))
+
     def getProductId(self,url):
-        
+
         temp=[];
         temp.append(url)
-        
+
         if url.find('taobao') != -1  or url.find('tmall') != -1:
             for s in range(0,len(temp)):
                 if '?id' in temp[s]:
@@ -113,16 +116,16 @@ class JingDongSpider():
                     id=temp[s].split('itemId=')[-1].split('&')[0]
                 else:
                     id=temp[s].split('?')[0].split('/')[-1].split('.')[0][1:]
-                
+
                 userid = ''
                 if 'user_id=' in temp[s]:
                     userid = temp[s].split('user_id=')[-1].split('&')[0]
-            
+
             return id
         elif url.find('jd') != -1:
             websites = url.split('/')
             return websites[-1].split('.')[0]
-    
+
     def getSellerId(self,url):
         try:
             headers = {'User-Agent':self.choiceUseragent()}
@@ -175,102 +178,142 @@ class JingDongSpider():
         except:
             return " ERROR "
 
-    def getJDComment(self):
+    def getTaobaoComment(self):
         time1 = time.time()
-        commenturl =  self.getCommentUrl(self.url)
-               
-        for k in range(1,self.pagenum):
+        commenturl = self.getCommentUrl(self.url)
+        sellerid = self.getSellerId(self.url)
+    
+        for k in range(1, self.pagenum):
             forinsert = []
             if self.state is 'True':
                 break
+            time3 = time.time()
 
-            url = commenturl%(self.productId,k)
-            headers = {'User-Agent':self.choiceUseragent()}
-#             res = urllib2.Request(url, headers =headers)
-#             response = urllib2.urlopen(res)
-#             content = response.read()
-#
-            responsed = self.get_htmlviaCom(url,headers)
+            url = commenturl % (self.productId, sellerid, k)
+            headers = {'User-Agent': self.choiceUseragent()}
+            #             res = urllib2.Request(url, headers =headers)
+            #             response = urllib2.urlopen(res)
+            #             content = response.read()
+            #             response = self.get_html(url,headers)
 
-            #将中文编码格式转成utf-8
-#             content=unicode(content,"gbk").encode("utf-8")
             try:
-                content ='['+responsed+']'
-                content = json.loads(content)
+                response = self.get_htmlviaCom(url, headers)
+                #tbjson = response.decode('utf-8', 'ignore').strip().replace('(', '').replace(')', '')
+                tbjson = response.strip().replace('(', '').replace(')', '')
+                #tbjson = json.loads(tbjson, "utf-8")
+                tbjson = json.loads(tbjson)
+                tbcomment = tbjson['comments']
             except:
                 continue
 
-            for tc in content:
-                comment = tc['comments']
+                #             print content
+                #
+                #             #构建标准Json数据
+                #             tbjson = content.decode('gbk','ignore').strip().replace('(','').replace(')','')
+                #
+                #             try:
+                #                 tbjson = json.loads(tbjson,"utf-8")
+                #             except:
+                #                 continue
 
-                for hot in comment:
-                    username=hot['nickname']
-                    goldUser = hot['userLevelName']
-                    comment1=hot['content']
-                    date1=hot['creationTime']
-                    score = hot['score']
-                    referenceName=hot['referenceName']
-                    productColor = hot['productColor']
-                    productSize = hot['productSize']
-                    userClientShow = hot['userClientShow']
-                    row = (username,goldUser,comment1,str(score),date1,userClientShow,productColor,productSize,referenceName)
-                    forinsert.append(row)
+            for hot in tbcomment:
+                username = hot['user']
+                name = username['nick']
+                comment1 = hot['content']
+                date1 = hot['date']
+                product = hot['auction']
+                productinfo = product['sku']
+                appendc = hot['appendList']
+                if appendc:
+                    comment2 = appendc[0]['content']  # 追评内容
+                    date2 = appendc[0]['dayAfterConfirm']  # 几天后追评
+                else:
+                    comment2 = ''
+                    date2 = ''
+                replay = hot['reply']
+                if replay:
+                    replay = replay['content']
+                else:
+                    replay = ''
+                row = (name,comment1,date1,comment2,str(date2),replay,productinfo)
+                forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
-        time4 = time.time()
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.JingdDong, "success")
-        JsonResponseToClient.generate_json_response(resp)
 
-    def getJDviaTime(self):
-        time1 = time.time()        
-        commenturl =  self.getCommentUrl(self.url)   
-        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
-            
-        for k in range(1,self.pagenum):
+        time4 = time.time()
+        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.TaoBao.value, "success")
+        JsonResponseToClient.generate_json_response(resp)
+    
+    def getTaobaoViaTime(self):
+        time1 = time.time()
+        commenturl = self.getCommentUrl(self.url)
+        sellerid = self.getSellerId(self.url)
+        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))       
+        
+        for k in range(1, self.pagenum):
             skiptime = "False"
             forinsert = []
             if self.state is 'True':
                 break
-            url = commenturl%(self.productId,k)
-            headers = {'User-Agent':self.choiceUseragent()}
-#             res = urllib2.Request(url, headers =headers)
-#             response = urllib2.urlopen(res)
-#             content = response.read()
-#
-            responsed = self.get_htmlviaCom(url,headers)
+            time3 = time.time()
+            url = commenturl % (self.productId, sellerid, k)
+            headers = {'User-Agent': self.choiceUseragent()}
+            #             res = urllib2.Request(url, headers =headers)
+            #             response = urllib2.urlopen(res)
+            #             content = response.read()
+            #             response = self.get_html(url,headers)
 
-            #将中文编码格式转成utf-8
-#             content=unicode(content,"gbk").encode("utf-8")
             try:
-                content ='['+responsed+']'
-                content = json.loads(content)
+                response = self.get_htmlviaCom(url, headers)
+                #tbjson = response.decode('utf-8', 'ignore').strip().replace('(', '').replace(')', '')
+                tbjson = response.strip().replace('(', '').replace(')', '')
+                #tbjson = json.loads(tbjson, "utf-8")
+                tbjson = json.loads(tbjson)
+                tbcomment = tbjson['comments']
             except:
+                print("sww")
                 continue
 
-            for tc in content:
-                comment = tc['comments']
-                for hot in comment:
-                    username=hot['nickname']
-                    goldUser = hot['userLevelName']
-                    comment1=hot['content']
-                    date1=hot['creationTime']
-                    time1 = time.mktime(time.strptime(date1,'%Y-%m-%d %H:%M:%S'))
-                    if time1 < float(timestamp):
-                        skiptime ="True"
-                        break
-                    score = hot['score']
-                    referenceName=hot['referenceName']
-                    productColor = hot['productColor']
-                    productSize = hot['productSize']
-                    userClientShow = hot['userClientShow']
-                    row = (username,goldUser,comment1,str(score),date1,userClientShow,productColor,productSize,referenceName)
-                    forinsert.append(row)
-                if skiptime is 'True':
+                #             print content
+                #
+                #             #构建标准Json数据
+                #             tbjson = content.decode('gbk','ignore').strip().replace('(','').replace(')','')
+                #
+                #             try:
+                #                 tbjson = json.loads(tbjson,"utf-8")
+                #             except:
+                #                 continue
+
+            for hot in tbcomment:
+                username = hot['user']
+                name = username['nick']
+                comment1 = hot['content']
+                date1 = hot['date']
+                time1 = time.mktime(time.strptime(date1,u'%Y年%m月%d日 %H:%M'))
+                if time1 < float(timestamp):
+                    skiptime ="True"
                     break
+                product = hot['auction']
+                productinfo = product['sku']
+                appendc = hot['appendList']
+                if appendc:
+                    comment2 = appendc[0]['content']  # 追评内容
+                    date2 = appendc[0]['dayAfterConfirm']  # 几天后追评
+                else:
+                    comment2 = ''
+                    date2 = ''
+                    
+                replay = hot['reply']
+                if replay:
+                    replay = replay['content']
+                else:
+                    replay = ''
+                row = (name,comment1,date1,comment2,str(date2),replay,productinfo)
+                forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
             if skiptime is 'True':
                 break
         time4 = time.time()
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.JingDong.value, "success")
+        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.TaoBao.value, "success")
         JsonResponseToClient.generate_json_response(resp)
 
     def launch(self, proxyIP = "", ProxyPort = "", continueTask='False'):
@@ -279,7 +322,8 @@ class JingDongSpider():
 
         self.productId = self.getProductId(self.url)
         
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT, username VARCHAR(100),userlevel VARCHAR(20), firstcomment VARCHAR(20000),star VARCHAR(5),date VARCHAR(20),client VARCHAR(20), color VARCHAR(10),size VARCHAR(10),referenceName VARCHAR(200), PRIMARY KEY(id)'
+        #createtable = 'username text, firstcomment text,date char,appendComment text, appenddate char,reply text,referenceName text'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,username VARCHAR(200),firstcomment TEXT(10000),date VARCHAR(20),appendComment TEXT(10000), appenddate VARCHAR(20),reply TEXT(10000),referenceName VARCHAR(200), PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
@@ -288,32 +332,48 @@ class JingDongSpider():
             tablename = self.mdatabase.load_table_name()
             self.mdatabase.create_table_with_column(createtable)
             if self.searchState() is 'True' and continueTask is 'True':
-                self.getJDviaTime()
+                self.getTaobaoViaTime()
             else:
-                self.getJDComment()
+                self.getTaobaoComment()
         else:
             self.mdatabase.disconnect()
 
     @staticmethod
     def getPreSearchTime(productID):   
-         return self.mdatabase.get_time()
+        return self.mdatabase.get_time()
 
     @staticmethod
     def getGoodsId(url):
 
-        if url.find('jd') != -1:
-            websites = url.split('/')
-            return websites[-1].split('.')[0]
+        temp=[];
+        temp.append(url)
+
+        if url.find('taobao') != -1  or url.find('tmall') != -1:
+            for s in range(0,len(temp)):
+                if '?id' in temp[s]:
+                    id=temp[s].split('?id=')[-1].split('&')[0]
+                elif '&id' in temp[s]:
+                    id=temp[s].split('&id=')[-1].split('&')[0]
+                elif 'itemId=' in temp[s]:
+                    id=temp[s].split('itemId=')[-1].split('&')[0]
+                else:
+                    id=temp[s].split('?')[0].split('/')[-1].split('.')[0][1:]
+
+                userid = ''
+                if 'user_id=' in temp[s]:
+                    userid = temp[s].split('user_id=')[-1].split('&')[0]
+
+            return id
 
     @staticmethod
     def getSpider(url):
-        Instance = JingDongSpider(url)
+        Instance = TaoBaoSpider(url)
         return Instance
-
-
 
 if __name__ == '__main__':
 
-    url ='https://item.jd.com/3893487.html'
-    galaxy = JingDongSpider(url)
-    galaxy.launch('','','True')
+   url='https://item.taobao.com/item.htm?spm=a1z10.1-c-s.w5001-16708334067.11.391e123aRER0d9&id=558107391422&scene=taobao_shop'
+   galaxy = TaoBaoSpider(url)
+   galaxy.launch('','','True')
+
+
