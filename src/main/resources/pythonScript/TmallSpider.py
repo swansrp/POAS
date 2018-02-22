@@ -1,34 +1,39 @@
 # -*- coding:utf-8 -*-
 '''
-Created on 2017/11/14
+Created on 2018/1/5
 
 @author: zhouyanghua
 '''
 
+import json
 import random
 import re
 import requests
-import importlib
 import sys
 import time
 #import urllib2
-import urllib.request
+
 #import SpiderDatabase
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import SpiderMySqlDatabase
 from utils.JsonResponseToClient import JsonResponseToClient
 from utils.ScarabaeusEnum import ResponseEnum
 from utils.ScarabaeusEnum import SourceEnum
 
-class JingDongSpider():
-    
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
+
+class TmallSpider():
+
     def __init__(self, url, num = 5 ):
         self.url = url
         self.proxyIP = ""
         self.ProxyPort = ""
         self.state = "False"
-        self.productId = ''
+        self.productId = ""
         self.pagenum = num
-    
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
     def choiceUseragent(self):
         user_agent_list = [\
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 "
@@ -71,7 +76,8 @@ class JingDongSpider():
 
         ua = random.choice(user_agent_list)
         return ua
-    
+
+    # 设置网关代理
     def setProxy(self):
         enable_proxy=True
 
@@ -83,10 +89,12 @@ class JingDongSpider():
             opener = urllib2.build_opener(nullproxy)
 
         urllib2.install_opener(opener)
-    
+
+    # 设置断点状态
     def setState(self,value):
         self.state = value
-    
+
+    # 设置***商品是否被搜索过
     def searchState(self):
         flag = 'False'
         self.lasttime = self.mdatabase.get_time()
@@ -94,15 +102,16 @@ class JingDongSpider():
             flag = 'True'
         self.updatetime()
         return flag
-    
+
     def updatetime(self):
         todays = time.strftime('%Y%m%d%H%M%S',time.localtime())
         self.mdatabase.update_time(str(todays))
+    
     def getProductId(self,url):
-        
+
         temp=[];
         temp.append(url)
-        
+
         if url.find('taobao') != -1  or url.find('tmall') != -1:
             for s in range(0,len(temp)):
                 if '?id' in temp[s]:
@@ -113,16 +122,16 @@ class JingDongSpider():
                     id=temp[s].split('itemId=')[-1].split('&')[0]
                 else:
                     id=temp[s].split('?')[0].split('/')[-1].split('.')[0][1:]
-                
+
                 userid = ''
                 if 'user_id=' in temp[s]:
                     userid = temp[s].split('user_id=')[-1].split('&')[0]
-            
+
             return id
         elif url.find('jd') != -1:
             websites = url.split('/')
             return websites[-1].split('.')[0]
-    
+
     def getSellerId(self,url):
         try:
             headers = {'User-Agent':self.choiceUseragent()}
@@ -157,7 +166,6 @@ class JingDongSpider():
 
     def get_htmlviaCom(self,url,hearder):
         try:
-
             http_proxy = str("http://")+ str(self.proxyIP)+":"+str(self.ProxyPort)
             https_proxy = str("https://")+ str(self.proxyIP)+":"+str(self.ProxyPort)
             proxyDict = {
@@ -175,54 +183,63 @@ class JingDongSpider():
         except:
             return " ERROR "
 
-    def getJDComment(self):
+    def getTmallComment(self):
         time1 = time.time()
-        commenturl =  self.getCommentUrl(self.url)
-               
+        commenturl = self.getCommentUrl(self.url)
+        sellerid = self.getSellerId(self.url)
+
         for k in range(1,self.pagenum):
             forinsert = []
             if self.state is 'True':
                 break
 
-            url = commenturl%(self.productId,k)
+            time2 = time.time()
+            url = commenturl%(self.productId,sellerid,k)
             headers = {'User-Agent':self.choiceUseragent()}
-#             res = urllib2.Request(url, headers =headers)
-#             response = urllib2.urlopen(res)
-#             content = response.read()
-#
-            responsed = self.get_htmlviaCom(url,headers)
-
-            #将中文编码格式转成utf-8
-#             content=unicode(content,"gbk").encode("utf-8")
+#            res = urllib2.Request(url, headers =headers)
+#            response = requests.get(url, headers=headers).text
             try:
-                content ='['+responsed+']'
-                content = json.loads(content)
+                response = self.get_htmlviaCom(url,headers)
+                #tmjson = '{'+response.decode('utf-8','ignore').strip()+'}'
+                #tmjson = json.loads(tmjson,"utf-8")
+                tmjson = '{'+response.strip()+'}'
+                tmjson = json.loads(tmjson)
             except:
                 continue
 
-            for tc in content:
-                comment = tc['comments']
+            time4 = time.time()
 
-                for hot in comment:
-                    username=hot['nickname']
-                    goldUser = hot['userLevelName']
-                    comment1=hot['content']
-                    date1=hot['creationTime']
-                    score = hot['score']
-                    referenceName=hot['referenceName']
-                    productColor = hot['productColor']
-                    productSize = hot['productSize']
-                    userClientShow = hot['userClientShow']
-                    row = (username,goldUser,comment1,str(score),date1,userClientShow,productColor,productSize,referenceName)
-                    forinsert.append(row)
+            tmallCom=tmjson['rateDetail']['rateList']
+
+            if tmallCom:
+                pass
+            else:
+                continue
+
+            for tc in tmallCom:
+                username=tc['displayUserNick']
+                comment1=tc['rateContent']
+                date1=tc['rateDate']
+                tappendc=tc['appendComment']
+                if tappendc:
+                    comment2=tappendc['content']
+                    date2=tappendc['days']
+                else:
+                    comment2=''
+                    date2=''                   
+                tmsku = tc['auctionSku']
+                reply=tc['reply']
+                row = (username,comment1,date1,comment2,str(date2),reply,tmsku)              
+                forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
-        time4 = time.time()
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.JingdDong, "success")
+        time6 = time.time()
+        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.Tmall.value, "success")
         JsonResponseToClient.generate_json_response(resp)
-
-    def getJDviaTime(self):
-        time1 = time.time()        
-        commenturl =  self.getCommentUrl(self.url)   
+        
+    def getTmallComViaTime(self):
+        time1 = time.time()
+        commenturl = self.getCommentUrl(self.url)
+        sellerid = self.getSellerId(self.url)
         timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
             
         for k in range(1,self.pagenum):
@@ -230,56 +247,63 @@ class JingDongSpider():
             forinsert = []
             if self.state is 'True':
                 break
-            url = commenturl%(self.productId,k)
+            time2 = time.time()
+            url = commenturl%(self.productId,sellerid,k)
             headers = {'User-Agent':self.choiceUseragent()}
-#             res = urllib2.Request(url, headers =headers)
-#             response = urllib2.urlopen(res)
-#             content = response.read()
-#
-            responsed = self.get_htmlviaCom(url,headers)
-
-            #将中文编码格式转成utf-8
-#             content=unicode(content,"gbk").encode("utf-8")
+#            res = urllib2.Request(url, headers =headers)
+#            response = requests.get(url, headers=headers).text
             try:
-                content ='['+responsed+']'
-                content = json.loads(content)
+                response = self.get_htmlviaCom(url,headers)
+                #tmjson = '{'+response.decode('utf-8','ignore').strip()+'}'
+                #tmjson = json.loads(tmjson,"utf-8")
+                tmjson = '{'+response.strip()+'}'
+                tmjson = json.loads(tmjson)
             except:
                 continue
+            time4 = time.time()
+            tmallCom=tmjson['rateDetail']['rateList']
+            if tmallCom:
+                pass
+            else:
+                continue
 
-            for tc in content:
-                comment = tc['comments']
-                for hot in comment:
-                    username=hot['nickname']
-                    goldUser = hot['userLevelName']
-                    comment1=hot['content']
-                    date1=hot['creationTime']
-                    time1 = time.mktime(time.strptime(date1,'%Y-%m-%d %H:%M:%S'))
-                    if time1 < float(timestamp):
-                        skiptime ="True"
-                        break
-                    score = hot['score']
-                    referenceName=hot['referenceName']
-                    productColor = hot['productColor']
-                    productSize = hot['productSize']
-                    userClientShow = hot['userClientShow']
-                    row = (username,goldUser,comment1,str(score),date1,userClientShow,productColor,productSize,referenceName)
-                    forinsert.append(row)
-                if skiptime is 'True':
+            for tc in tmallCom:
+                username=tc['displayUserNick']
+                comment1=tc['rateContent']
+                date1=tc['rateDate']
+                time1 = time.mktime(time.strptime(date1,'%Y-%m-%d %H:%M:%S'))
+                if time1 < float(timestamp):
+                    skiptime ="True"
                     break
-            self.mdatabase.insert_values(forinsert)
+                tappendc=tc['appendComment']
+                if tappendc:
+                    comment2=tappendc['content']
+                    date2=tappendc['days']
+                else:
+                    comment2=''
+                    date2=''                   
+                tmsku = tc['auctionSku']
+                reply=tc['reply']
+                
+                row = (username,comment1,date1,comment2,str(date2),reply,tmsku)
+                forinsert.append(row)
+         
+            self.mdatabase.insert(forinsert)
             if skiptime is 'True':
                 break
-        time4 = time.time()
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.JingDong.value, "success")
-        JsonResponseToClient.generate_json_response(resp)
 
+        time6 = time.time()
+        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.Tmall.value, "success")
+        JsonResponseToClient.generate_json_response(resp)
+        
     def launch(self, proxyIP = "", ProxyPort = "", continueTask='False'):
         self.proxyIP = proxyIP
         self.ProxyPort = ProxyPort
 
         self.productId = self.getProductId(self.url)
         
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT, username VARCHAR(100),userlevel VARCHAR(20), firstcomment VARCHAR(20000),star VARCHAR(5),date VARCHAR(20),client VARCHAR(20), color VARCHAR(10),size VARCHAR(10),referenceName VARCHAR(200), PRIMARY KEY(id)'
+        #createtable = 'username text, firstcomment text,date char,appendComment text, appenddate char,reply text,referenceName text'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,username VARCHAR(200),firstcomment TEXT(10000),date VARCHAR(20),appendComment TEXT(10000), appenddate VARCHAR(20),reply TEXT(10000),referenceName VARCHAR(200), PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
@@ -288,9 +312,9 @@ class JingDongSpider():
             tablename = self.mdatabase.load_table_name()
             self.mdatabase.create_table_with_column(createtable)
             if self.searchState() is 'True' and continueTask is 'True':
-                self.getJDviaTime()
+                self.getTmallComViaTime()
             else:
-                self.getJDComment()
+                self.getTmallComment()
         else:
             self.mdatabase.disconnect()
 
@@ -301,19 +325,29 @@ class JingDongSpider():
     @staticmethod
     def getGoodsId(url):
 
-        if url.find('jd') != -1:
-            websites = url.split('/')
-            return websites[-1].split('.')[0]
+        temp=[];
+        temp.append(url)
+
+        if url.find('taobao') != -1  or url.find('tmall') != -1:
+            for s in range(0,len(temp)):
+                if '?id' in temp[s]:
+                    id=temp[s].split('?id=')[-1].split('&')[0]
+                elif '&id' in temp[s]:
+                    id=temp[s].split('&id=')[-1].split('&')[0]
+                elif 'itemId=' in temp[s]:
+                    id=temp[s].split('itemId=')[-1].split('&')[0]
+                else:
+                    id=temp[s].split('?')[0].split('/')[-1].split('.')[0][1:]
+
+            return id
 
     @staticmethod
     def getSpider(url):
-        Instance = JingDongSpider(url)
+        Instance = TmallSpider(url)
         return Instance
-
-
 
 if __name__ == '__main__':
 
-    url ='https://item.jd.com/3893487.html'
-    galaxy = JingDongSpider(url)
-    galaxy.launch('','','True')
+   url ='https://detail.tmall.com/item.htm?id=558531970190'
+   galaxy = TmallSpider(url)
+   galaxy.launch('','','True')
