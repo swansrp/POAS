@@ -11,6 +11,7 @@ import SpiderMySqlDatabase
 from utils.JsonResponseToClient import JsonResponseToClient
 from utils.ScarabaeusEnum import ResponseEnum
 from utils.ScarabaeusEnum import SourceEnum
+from utils.Utils import TimeUtils
 
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
@@ -131,7 +132,9 @@ class JifengSpider():
                     title = re.search(title_rule,result)
                     href = re.search('<tbody id="normalthread_(.*?)">',result)
                     link = baseurl + str(href.group(1)) + '-1-1.html'
-                    subject = title.group(1).strip()       
+                    subject = title.group(1).strip()
+                    time1 = time.mktime(time.strptime(posttime,'%Y-%m-%d %H:%M'))
+                    posttime = TimeUtils.convert_timestamp_to_date(time1)       
                     row = (subject,posttime,link)
                     forinsert.append(row)                              
                 except:
@@ -190,6 +193,7 @@ class JifengSpider():
                     link = baseurl + str(href.group(1)) + '-1-1.html'
                     subject = title.group(1).strip()   
                     time1 = time.mktime(time.strptime(posttime,'%Y-%m-%d %H:%M'))
+                    posttime = TimeUtils.convert_timestamp_to_date(time1)
                     if time1 < float(timestamp):
                         skiptime ="True"
                         break
@@ -243,7 +247,8 @@ class JifengSpider():
         return Instance
 
 if __name__ == '__main__':
-
-   url ='http://bbs.gfan.com/forum-1696-1.html'
+   url ='http://bbs.gfan.com/forum-1691-1.html'
+   if len(sys.argv) > 1:
+       url = sys.argv[1]
    galaxy = JifengSpider(url)
    galaxy.launch('','','True')
