@@ -11,6 +11,7 @@ encoding//src/main/resources/pythonScript/TaoBaoSpider.py=utf-8
 encoding//src/main/resources/pythonScript/TmallSpider.py=utf-8
 encoding//src/main/resources/pythonScript/utils/JsonResponseToClient.py=utf-8
 encoding//src/main/resources/pythonScript/utils/ScarabaeusEnum.py=utf-8
+encoding//src/main/resources/pythonScript/utils/Utils.py=utf-8
 encoding//src/test/java=UTF-8
 encoding//src/test/resources=UTF-8
 encoding/<project>=UTF-8

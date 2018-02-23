@@ -17,6 +17,7 @@ import SpiderMySqlDatabase
 from utils.JsonResponseToClient import JsonResponseToClient
 from utils.ScarabaeusEnum import ResponseEnum
 from utils.ScarabaeusEnum import SourceEnum
+from utils.Utils import TimeUtils
 
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
@@ -224,6 +225,8 @@ class TaoBaoSpider():
                 product = hot['auction']
                 productinfo = product['sku']
                 appendc = hot['appendList']
+                time1 = time.mktime(time.strptime(date1,u'%Y年%m月%d日 %H:%M'))
+                date1 = TimeUtils.convert_timestamp_to_date(time1)
                 if appendc:
                     comment2 = appendc[0]['content']  # 追评内容
                     date2 = appendc[0]['dayAfterConfirm']  # 几天后追评
@@ -235,7 +238,7 @@ class TaoBaoSpider():
                     replay = replay['content']
                 else:
                     replay = ''
-                row = (name,comment1,date1,comment2,str(date2),replay,productinfo)
+                row = (name,comment1,date1,comment2,str(date2),replay,productinfo,self.url)
                 forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
 
@@ -289,6 +292,8 @@ class TaoBaoSpider():
                 comment1 = hot['content']
                 date1 = hot['date']
                 time1 = time.mktime(time.strptime(date1,u'%Y年%m月%d日 %H:%M'))
+                date1 = TimeUtils.convert_timestamp_to_date(time1)
+                print(date1)
                 if time1 < float(timestamp):
                     skiptime ="True"
                     break
@@ -307,7 +312,7 @@ class TaoBaoSpider():
                     replay = replay['content']
                 else:
                     replay = ''
-                row = (name,comment1,date1,comment2,str(date2),replay,productinfo)
+                row = (name,comment1,date1,comment2,str(date2),replay,productinfo,self.url)
                 forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
             if skiptime is 'True':
@@ -323,7 +328,7 @@ class TaoBaoSpider():
         self.productId = self.getProductId(self.url)
         
         #createtable = 'username text, firstcomment text,date char,appendComment text, appenddate char,reply text,referenceName text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,username VARCHAR(200),firstcomment TEXT(10000),date VARCHAR(20),appendComment TEXT(10000), appenddate VARCHAR(20),reply TEXT(10000),referenceName VARCHAR(200), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,username VARCHAR(200),firstcomment TEXT(10000),date VARCHAR(20),appendComment TEXT(10000), appenddate VARCHAR(20),reply TEXT(10000),referenceName VARCHAR(200),link VARCHAR(200), PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
@@ -371,8 +376,9 @@ class TaoBaoSpider():
         return Instance
 
 if __name__ == '__main__':
-
-   url='https://item.taobao.com/item.htm?spm=a1z10.1-c-s.w5001-16708334067.11.391e123aRER0d9&id=558107391422&scene=taobao_shop'
+   url='https://item.taobao.com/item.htm?spm=a230r.1.14.20.3ec658behZCwEk&id=551783548295&ns=1&abbucket=9'
+   if len(sys.argv) > 1:
+       url = sys.argv[1]
    galaxy = TaoBaoSpider(url)
    galaxy.launch('','','True')
 
