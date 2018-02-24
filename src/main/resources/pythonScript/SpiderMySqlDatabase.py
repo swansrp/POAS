@@ -125,6 +125,7 @@ class SpiderMySqlDatabase():
         Param Type:
             value:list
         '''
+        sql = ''
         try:
             if len(value) == 0:
                 return
@@ -139,6 +140,7 @@ class SpiderMySqlDatabase():
                 cursor.execute(sql)
             self.db.commit()
         except MySQLdb.Error as e:
+            print(sql)
             self.print_sql_error(self.get_func_name(),e)
 
     def get_time(self):

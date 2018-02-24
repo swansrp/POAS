@@ -229,7 +229,7 @@ class TmallSpider():
                     date2=''                   
                 tmsku = tc['auctionSku']
                 reply=tc['reply']
-                row = (username,comment1,date1,comment2,str(date2),reply,tmsku)              
+                row = (username,comment1,date1,comment2,str(date2),reply,tmsku,self.url)              
                 forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
         time6 = time.time()
@@ -285,7 +285,7 @@ class TmallSpider():
                 tmsku = tc['auctionSku']
                 reply=tc['reply']
                 
-                row = (username,comment1,date1,comment2,str(date2),reply,tmsku)
+                row = (username,comment1,date1,comment2,str(date2),reply,tmsku,self.url)
                 forinsert.append(row)
          
             self.mdatabase.insert(forinsert)
@@ -303,7 +303,7 @@ class TmallSpider():
         self.productId = self.getProductId(self.url)
         
         #createtable = 'username text, firstcomment text,date char,appendComment text, appenddate char,reply text,referenceName text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,username VARCHAR(200),firstcomment TEXT(10000),date VARCHAR(20),appendComment TEXT(10000), appenddate VARCHAR(20),reply TEXT(10000),referenceName VARCHAR(200), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,username VARCHAR(200),firstcomment TEXT(10000),date VARCHAR(20),appendComment TEXT(10000), appenddate VARCHAR(20),reply TEXT(10000),referenceName VARCHAR(200),link VARCHAR(200), PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
@@ -347,7 +347,8 @@ class TmallSpider():
         return Instance
 
 if __name__ == '__main__':
-
-   url ='https://detail.tmall.com/item.htm?id=558531970190'
+   url ='https://detail.tmall.com/item.htm?spm=a1z10.5-b-s.w4011-14649061345.71.60d36353D4Kh9W&id=559760213763&rn=fbb818045e753b6e2859d556e13f93b1&abbucket=9&sku_properties=5919063:6536025;12304035:3222911;122216431:27772'
+   if len(sys.argv) > 1:
+       url = sys.argv[1]
    galaxy = TmallSpider(url)
    galaxy.launch('','','True')

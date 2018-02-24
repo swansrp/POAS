@@ -5,6 +5,7 @@ Created on 2017/11/14
 @author: zhouyanghua
 '''
 
+import json
 import random
 import re
 import requests
@@ -213,11 +214,11 @@ class JingDongSpider():
                     productColor = hot['productColor']
                     productSize = hot['productSize']
                     userClientShow = hot['userClientShow']
-                    row = (username,goldUser,comment1,str(score),date1,userClientShow,productColor,productSize,referenceName)
+                    row = (username,goldUser,comment1,str(score),date1,userClientShow,productColor,productSize,referenceName,self.url)
                     forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
         time4 = time.time()
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.JingdDong, "success")
+        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.JingDong.value, "success")
         JsonResponseToClient.generate_json_response(resp)
 
     def getJDviaTime(self):
@@ -262,7 +263,7 @@ class JingDongSpider():
                     productColor = hot['productColor']
                     productSize = hot['productSize']
                     userClientShow = hot['userClientShow']
-                    row = (username,goldUser,comment1,str(score),date1,userClientShow,productColor,productSize,referenceName)
+                    row = (username,goldUser,comment1,str(score),date1,userClientShow,productColor,productSize,referenceName,self.url)
                     forinsert.append(row)
                 if skiptime is 'True':
                     break
@@ -279,7 +280,7 @@ class JingDongSpider():
 
         self.productId = self.getProductId(self.url)
         
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT, username VARCHAR(100),userlevel VARCHAR(20), firstcomment VARCHAR(20000),star VARCHAR(5),date VARCHAR(20),client VARCHAR(20), color VARCHAR(10),size VARCHAR(10),referenceName VARCHAR(200), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT, username VARCHAR(100),userlevel VARCHAR(20), firstcomment VARCHAR(20000),star VARCHAR(5),date VARCHAR(20),client VARCHAR(20), color VARCHAR(10),size VARCHAR(10),referenceName VARCHAR(200),link VARCHAR(200), PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
@@ -313,7 +314,8 @@ class JingDongSpider():
 
 
 if __name__ == '__main__':
-
-    url ='https://item.jd.com/3893487.html'
+    url = 'https://item.jd.com/4689633.html'
+    if len(sys.argv) > 1:
+       url = sys.argv[1]
     galaxy = JingDongSpider(url)
     galaxy.launch('','','True')
