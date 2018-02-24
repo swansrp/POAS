@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import com.srct.ril.poas.dao.pojo.Keyword;
 import com.srct.ril.poas.utils.log.Log;
 
+import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
+
 @Component
 public class Category {
 	
@@ -18,8 +20,15 @@ public class Category {
 	private Map<String, String> cat2aliasMap = new HashMap<>();
 	private Map<String, List<String>> alias2catMap = new HashMap<>();
 	private Map<String, List<String>> keywordMap = new HashMap<>();
+	private List<String> unknownKeywordList = new ArrayList<String>();
 
-	
+	public void addUnknownKeywordList (String keyword) {
+		if(!unknownKeywordList.contains(keyword))
+			unknownKeywordList.add(keyword);
+	}
+	public List<String> getUnknownKeywordList (String keyword) {
+		return unknownKeywordList;
+	}
 	public void addCategory(Keyword key) {
 		if(categoryList.contains(key.getCategory())) {
 			return;

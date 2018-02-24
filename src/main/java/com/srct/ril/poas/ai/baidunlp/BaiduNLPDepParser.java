@@ -74,7 +74,8 @@ public class BaiduNLPDepParser {
 	}
 	
 	public List<String> parse() {
-		Log.e(getClass(), "msg: {}, code: {}", error_msg, error_code);
+		if(error_code != 0) 
+			Log.w(getClass(), "msg: {}, code: {}", error_msg, error_code);
 		if(items!=null) {
 			makeTree();
 			makeTreeMap();
