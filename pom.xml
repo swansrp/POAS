@@ -109,6 +109,13 @@
 		    <version>4.1.1</version>
 		</dependency>
 		
+		<!-- excel文件操作  -->
+		<dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.17</version>
+        </dependency>
+        
     </dependencies>
 
     <properties>
