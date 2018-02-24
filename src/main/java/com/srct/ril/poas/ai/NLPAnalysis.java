@@ -3,6 +3,8 @@ package com.srct.ril.poas.ai;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.srct.ril.poas.ai.category.Category;
+
 public class NLPAnalysis {
 	private String content;
 	public String getContent() {
@@ -16,7 +18,7 @@ public class NLPAnalysis {
 			return items;
 		List<Item> res = new ArrayList<>();
 		for(Item it :items) {
-			if(it.getSentiment()==mode) {
+			if(it.getSentiment()==mode || it.getSentiment()==-1) {
 				res.add(it);
 			}
 		}
@@ -33,7 +35,8 @@ public class NLPAnalysis {
 		private String prop; // 匹配上的属性词
 		private String adj; // 匹配上的描述词
 		private int sentiment; // 该情感搭配的极性（0表示消极，1表示中性，2表示积极）
-		private Keyword key; // 按要求分类
+		private String category; // 按要求分类
+		private String unKnownKeyWords;
 		public int getId() {
 			return id;
 		}
@@ -64,11 +67,23 @@ public class NLPAnalysis {
 		public void setSentiment(int sentiment) {
 			this.sentiment = sentiment;
 		}
-		public Keyword getKey() {
-			return key;
+		public String getCategory() {
+			return category;
 		}
-		public void setKey(Keyword key) {
-			this.key = key;
+		public void setCategory(String category) {
+			this.category = category;
+		}
+		/**
+		 * @return the unKnownKey
+		 */
+		public String getUnKnownKeyWords() {
+			return unKnownKeyWords;
+		}
+		/**
+		 * @param unKnownKey the unKnownKey to set
+		 */
+		public void setUnKnownKeyWords(String unKnownKeyWords) {
+			this.unKnownKeyWords = unKnownKeyWords;
 		}
 	}
 	public NLPAnalysis(int mode) {
@@ -81,5 +96,14 @@ public class NLPAnalysis {
 	}
 	public Item getItem(int id) {
 		return items.get(id);
+	}
+	
+	public String getCategory() {
+		for(Item it : items) {
+			if(it.getCategory()!=null) {
+				return it.getCategory();
+			}
+		}
+		return null;
 	}
 }

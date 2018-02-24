@@ -105,9 +105,8 @@ public class DataSourceConfig {
     
     public void updateDynamicDataSource() {
 
-		DataSourceContextHolder.setDB(DataSourceEnum.CONFIG);
+		//DataSourceContextHolder.setDB(DataSourceEnum.CONFIG);
     	List<String> modelDBNameList = modelMapService.getNameList();
-		log.info("========={}===========", modelDBNameList);
 
 		DynamicDataSource dds = (DynamicDataSource)dynamicDataSource();
 		

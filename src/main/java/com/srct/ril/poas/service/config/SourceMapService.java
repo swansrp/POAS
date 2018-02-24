@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.srct.ril.poas.dao.dbconfig.DS;
+import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 import com.srct.ril.poas.dao.mapper.SourceMapMapper;
 import com.srct.ril.poas.dao.pojo.SourceMap;
 import com.srct.ril.poas.dao.pojo.SourceMapExample;
@@ -13,6 +15,7 @@ import com.srct.ril.poas.dao.pojo.SourceMapExample.Criteria;
 import com.srct.ril.poas.utils.ServiceException;
 
 @Service
+@DS(DataSourceEnum.CONFIG)
 public class SourceMapService {
 	@Autowired
 	private SourceMapMapper sourceMapDao;

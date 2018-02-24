@@ -280,7 +280,7 @@ class JingDongSpider():
 
         self.productId = self.getProductId(self.url)
         
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT, username VARCHAR(100),userlevel VARCHAR(20), firstcomment VARCHAR(20000),star VARCHAR(5),date VARCHAR(20),client VARCHAR(20), color VARCHAR(10),size VARCHAR(10),referenceName VARCHAR(200),link VARCHAR(200), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT, username VARCHAR(200),userlevel VARCHAR(20), firstcomment VARCHAR(5000),star VARCHAR(20),date VARCHAR(20),client VARCHAR(20), color VARCHAR(20),size VARCHAR(20),referenceName VARCHAR(200),link VARCHAR(500), PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()

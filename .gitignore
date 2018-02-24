@@ -1,3 +1,5 @@
 /target/
 *.pyc
 /log/
+*lastUpdated.properties
+*.xls

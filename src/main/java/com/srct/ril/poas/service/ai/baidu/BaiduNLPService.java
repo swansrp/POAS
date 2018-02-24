@@ -45,12 +45,12 @@ public class BaiduNLPService {
 		HashMap<String, Object> options = new HashMap<String, Object>();
 	    options.put("mode", mode);
 		JSONObject resJson = client.depParser(content, options);
-		//Log.i(getClass(), resJson.toString(2));
+		//Log.d(getClass(), resJson.toString(2));
 		BaiduNLPDepParser res;
 		try {
 			res = (BaiduNLPDepParser)JSONUtil.readJson(resJson.toString(), BaiduNLPDepParser.class);
 			res.parse();
-			Log.i(getClass(), JSONUtil.toJSONString(res));
+			Log.d(getClass(), JSONUtil.toJSONString(res));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

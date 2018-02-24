@@ -14,3 +14,9 @@ class TimeUtils(object):
         time_local = time.localtime(timestamp)
         dt = time.strftime("%Y-%m-%d %H:%M:%S",time_local)
         return dt
+    
+class StringUtils(object):
+    @staticmethod
+    def remove_emoji_from_string(text):
+        co = re.compile(u'[\U00010000-\U0010ffff]')
+        return co.sub(u'',text)

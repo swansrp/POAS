@@ -30,7 +30,7 @@ public class DynamicDataSourceAspect {
 	
 	private static final Logger log = LoggerFactory.getLogger(DynamicDataSourceAspect.class); 
 
-    @Before("@annotation(DS)")
+    @Before("@annotation(DS)||@within(DS)")
     public void beforeSwitchDS(JoinPoint point){
     	
         //获得当前访问的class
@@ -57,6 +57,10 @@ public class DynamicDataSourceAspect {
                 // 取出注解中的数据源名
                 dataSource = annotation.value();
                 log.info("注解中的数据源 is {}", dataSource);
+            } else if (clazz.isAnnotationPresent(DS.class)) {
+            	DS annotation = clazz.getAnnotation(DS.class);
+                // 取出注解中的数据源名
+                dataSource = annotation.value();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,7 +94,7 @@ public class DynamicDataSourceAspect {
     }
 
 
-    @After("@annotation(DS)")
+    @After("@annotation(DS)||@within(DS)")
     public void afterSwitchDS(JoinPoint point){
 
         DataSourceContextHolder.clearDB();

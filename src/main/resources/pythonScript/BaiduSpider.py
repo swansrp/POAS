@@ -16,6 +16,7 @@ from utils.JsonResponseToClient import JsonResponseToClient
 from utils.ScarabaeusEnum import ResponseEnum
 from utils.ScarabaeusEnum import SourceEnum
 from utils.Utils import TimeUtils
+from utils.Utils import StringUtils
 
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
@@ -140,6 +141,7 @@ class BaiduSpider():
                     createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer).group(1)
                     time1 = time.mktime(time.strptime(createtime,'%Y-%m-%d %H:%M'))
                     createtime = TimeUtils.convert_timestamp_to_date(time1)
+                    context = StringUtils.remove_emoji_from_string(context)
                     row = (subject,context,replynum,createtime,link)
                     forinsert.append(row)
                 except:
@@ -196,6 +198,7 @@ class BaiduSpider():
                     context = re.sub("\r", "",context)
                     context = re.sub(" ", "",context)
                     context = re.sub("<.*?>", "",context)
+                    context = StringUtils.remove_emoji_from_string(context)
                     row = (subject,context,replynum,createtime,link)
                     forinsert.append(row)
                 except:
@@ -213,7 +216,7 @@ class BaiduSpider():
             return
         
         #createtable = 'title text, firstcomment text,replynum char,date char,link text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(20000),replynum VARCHAR(50),date VARCHAR(20),link VARCHAR(200), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(5000),replynum VARCHAR(50),date VARCHAR(20),link VARCHAR(500), PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
