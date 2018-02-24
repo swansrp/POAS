@@ -50,7 +50,7 @@ public class BaiduNLPService {
 		try {
 			res = (BaiduNLPDepParser)JSONUtil.readJson(resJson.toString(), BaiduNLPDepParser.class);
 			res.parse();
-			Log.i(getClass(), JSONUtil.toJSONString(res));
+			Log.d(getClass(), JSONUtil.toJSONString(res));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

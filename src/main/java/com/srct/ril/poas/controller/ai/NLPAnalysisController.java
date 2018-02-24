@@ -17,7 +17,7 @@ public class NLPAnalysisController {
 	
 	@RequestMapping("/nlp")
 	public CommonResponse nlp(
-			@RequestParam(value="text") String content) throws ServiceException {
-		return Response.generateResponse(service.nlp(content));
+			@RequestParam(value="text", required = true) String content) throws ServiceException {
+		return Response.generateResponse(service.nlp(content).getCategory());
 	}
 }

@@ -2,6 +2,7 @@ package com.srct.ril.poas.controller.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,7 @@ import com.srct.ril.poas.utils.ServiceException;
 @RequestMapping("/config/source")
 public class SourceMapController {
 	
+	@Autowired
 	SourceMapService sourceMapService;
 	
 	@RequestMapping("/name")

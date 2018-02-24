@@ -25,11 +25,10 @@ public class StoreJDController {
 	
 	//http://127.0.0.1:8004/JD/modelinfo?modelname=N9500&start=2018-02-09%2000:00:09&end=2018-02-09%2009:44:00
 	@RequestMapping("/modelinfo")
-	@DS(DataSourceEnum.MODEL)
 	public CommonResponse getProduct(
-			@RequestParam(value="modelname") String modelName,
-			@RequestParam(value="start") String startTime,
-			@RequestParam(value="end") String endTime) throws ServiceException {
+			@RequestParam(value="modelname", required = true) String modelName,
+			@RequestParam(value="start", required = true) String startTime,
+			@RequestParam(value="end", required = true) String endTime) throws ServiceException {
 		log.info("======StoreJDController=========");
         return Response.generateResponse(storeJDService.select(modelName,startTime,endTime));
     }

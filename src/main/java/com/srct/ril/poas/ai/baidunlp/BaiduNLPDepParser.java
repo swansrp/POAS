@@ -48,7 +48,7 @@ public class BaiduNLPDepParser {
 	private final static String YGC = "YGC"; // 当专名或者联绵词等切散后，他们之间本身没有语法关系，应该合起来才是一个词。如：百 度。
 	private final static String WP = "WP"; // 大部分标点依存于其前面句子的核心词上，依存关系WP。
 	
-	private final static String[] ingoreTable = {CS,IS,IC,DC}; // 该成分不连在一个分句中
+	private final static String[] ingoreTable = {CS,IC,DC}; // 该成分不连在一个分句中
 	private final static String[] meaningfulTable = {HED, SBV, VOB}; // 若包含该成分则保留该分句
 	private Queue<Integer> queue = new LinkedList<Integer>();
 	
@@ -56,7 +56,7 @@ public class BaiduNLPDepParser {
 	private Map<Integer, List<Integer>> treeMap = new HashMap<Integer, List<Integer>>(); // 分句Item树
 
 	public List<String> simpleText = new ArrayList<String>(); // 取舍关键分句后 保留分句
-
+	public Map<String, List<String>> keyWordsMap = new HashMap<String, List<String>>(); // 分句总的关键词
 	public long log_id;
 	public String text; // 原始单条请求文本
 	public Items[] items; // 词汇数组，每个元素对应结果中的一个词
@@ -117,10 +117,7 @@ public class BaiduNLPDepParser {
 				if(meaningGroupItem(items[i]))
 					items[items[i].head].child.add(i);
 				else {
-//					if(!items[items[i].head].deprel.equals(HED))
-//						items[items[i].head].child.add(i);
-//					else
-						forestRoot.add(i);
+					forestRoot.add(i);
 				}
 			}
 		}
@@ -134,37 +131,17 @@ public class BaiduNLPDepParser {
 		}
 		
 	}
-	private void makeSimpleText() {
-		
-		for (Map.Entry<Integer, List<Integer>> entry : treeMap.entrySet()) {
-			boolean meaningfulContent = false;
-			String text="";
-			for(Integer i : entry.getValue()) {
-				if(meaningfulItem(items[i])) {
-					meaningfulContent = true;
-				}
-			}
-			if(meaningfulContent) {
-				Collections.sort(entry.getValue());
-				for(Integer i : entry.getValue()) {
-					text+=items[i].word;
-				}
-				simpleText.add(text);
-			}
-		}
-		
-	}
-	
+
 	private void makeTreeMap() {
-		Map<Integer, List<Integer>> tempTreeMap = new HashMap<Integer, List<Integer>>(); // 分句Item树
+//		Map<Integer, List<Integer>> tempTreeMap = new HashMap<Integer, List<Integer>>(); // 分句Item树
 		for(Integer root :forestRoot) {
 			treeMap.put(root, new ArrayList<Integer>());
-			tempTreeMap.put(root, new ArrayList<Integer>());
+//			tempTreeMap.put(root, new ArrayList<Integer>());
 		}
 		
-		for(Items it : items) {
-			tempTreeMap.get(it.treeRoot).add(it.id);
-		}
+//		for(Items it : items) {
+//			tempTreeMap.get(it.treeRoot).add(it.id);
+//		}
 		
 //		// 分句若无核心词则关联分句归并
 //		for (Map.Entry<Integer, List<Integer>> entry : tempTreeMap.entrySet()) {
@@ -187,6 +164,34 @@ public class BaiduNLPDepParser {
 		for(Items it : items) {
 			treeMap.get(it.treeRoot).add(it.id);
 		}
+	}
+	
+	private void makeSimpleText() {
+		
+		for (Map.Entry<Integer, List<Integer>> entry : treeMap.entrySet()) {
+			boolean meaningfulContent = false;
+			String text="";
+			for(Integer i : entry.getValue()) {
+				if(meaningfulItem(items[i])) {
+					meaningfulContent = true;
+				}
+			}
+			if(meaningfulContent) {
+				Collections.sort(entry.getValue());
+				List<String> keyWordsList = new ArrayList<>();
+				for(Integer i : entry.getValue()) {
+					text+=items[i].word;
+					keyWordsList.add(items[i].word);
+				}
+				simpleText.add(text);
+				keyWordsMap.put(text, keyWordsList);
+			}
+		}		
+	}
+	public List<String> getKeyWords(String subContent) {
+		List<String> keyWords = keyWordsMap.get(subContent);
+		Log.d(getClass(), "getKeyWords: {}->{}",subContent, keyWords);
+		return keyWords;
 	}
 	
 }

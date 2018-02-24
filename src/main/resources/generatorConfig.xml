@@ -65,10 +65,19 @@
             <property name="my.isgen.usekeys" value="true"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
+        <table tableName="keyword_" domainObjectName="Keyword" 
+	        enableCountByExample="true" 
+	        enableUpdateByExample="true" 
+	        enableDeleteByExample="true" 
+	        enableSelectByExample="true" 
+	        selectByExampleQueryId="true">
+            <property name="my.isgen.usekeys" value="true"/>
+            <generatedKey column="id" sqlStatement="JDBC"/>       
+        </table>
 <!--         <table tableName="product_" domainObjectName="Product" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> -->
     </context>
     
-    <context id="N95002Tables"    targetRuntime="MyBatis3">
+    <context id="Model2Tables"    targetRuntime="MyBatis3">
         <commentGenerator>
             <property name="suppressDate" value="true"/>
             <property name="suppressAllComments" value="false"/>
@@ -99,6 +108,51 @@
         </javaClientGenerator>
         <!--生成对应表及类名-->
         <table tableName="JD" domainObjectName="StoreJD" 
+        	enableCountByExample="true" 
+        	enableUpdateByExample="true" 
+        	enableDeleteByExample="true" 
+        	enableSelectByExample="true" 
+        	selectByExampleQueryId="true">
+            <property name="my.isgen.usekeys" value="true"/>
+            <generatedKey column="id" sqlStatement="JDBC"/>       
+        </table>
+        <table tableName="AMZ" domainObjectName="StoreAMZ" 
+        	enableCountByExample="true" 
+        	enableUpdateByExample="true" 
+        	enableDeleteByExample="true" 
+        	enableSelectByExample="true" 
+        	selectByExampleQueryId="true">
+            <property name="my.isgen.usekeys" value="true"/>
+            <generatedKey column="id" sqlStatement="JDBC"/>       
+        </table>
+        <table tableName="BD" domainObjectName="BbsBD" 
+        	enableCountByExample="true" 
+        	enableUpdateByExample="true" 
+        	enableDeleteByExample="true" 
+        	enableSelectByExample="true" 
+        	selectByExampleQueryId="true">
+            <property name="my.isgen.usekeys" value="true"/>
+            <generatedKey column="id" sqlStatement="JDBC"/>       
+        </table>
+        <table tableName="JF" domainObjectName="BbsJF" 
+        	enableCountByExample="true" 
+        	enableUpdateByExample="true" 
+        	enableDeleteByExample="true" 
+        	enableSelectByExample="true" 
+        	selectByExampleQueryId="true">
+            <property name="my.isgen.usekeys" value="true"/>
+            <generatedKey column="id" sqlStatement="JDBC"/>       
+        </table>
+        <table tableName="TB" domainObjectName="StoreTB" 
+        	enableCountByExample="true" 
+        	enableUpdateByExample="true" 
+        	enableDeleteByExample="true" 
+        	enableSelectByExample="true" 
+        	selectByExampleQueryId="true">
+            <property name="my.isgen.usekeys" value="true"/>
+            <generatedKey column="id" sqlStatement="JDBC"/>       
+        </table>
+        <table tableName="TM" domainObjectName="StoreTM" 
         	enableCountByExample="true" 
         	enableUpdateByExample="true" 
         	enableDeleteByExample="true" 

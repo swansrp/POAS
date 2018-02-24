@@ -1,10 +1,9 @@
 package com.srct.ril.poas.dao.mapper;
 
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
-
 import com.srct.ril.poas.dao.pojo.UrlMap;
 import com.srct.ril.poas.dao.pojo.UrlMapExample;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface UrlMapMapper {
     /**

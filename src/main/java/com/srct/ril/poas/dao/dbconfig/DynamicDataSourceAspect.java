@@ -30,7 +30,7 @@ public class DynamicDataSourceAspect {
 	
 	private static final Logger log = LoggerFactory.getLogger(DynamicDataSourceAspect.class); 
 
-    @Before("@annotation(DS)")
+    @Before("@annotation(DS)||@within(DS)")
     public void beforeSwitchDS(JoinPoint point){
     	
         //获得当前访问的class
@@ -90,7 +90,7 @@ public class DynamicDataSourceAspect {
     }
 
 
-    @After("@annotation(DS)")
+    @After("@annotation(DS)||@within(DS)")
     public void afterSwitchDS(JoinPoint point){
 
         DataSourceContextHolder.clearDB();
