@@ -12,7 +12,7 @@ from utils.JsonResponseToClient import JsonResponseToClient
 from utils.ScarabaeusEnum import ResponseEnum
 from utils.ScarabaeusEnum import SourceEnum
 from utils.Utils import TimeUtils
-
+from utils.Utils import StringUtils
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
 
@@ -142,6 +142,7 @@ class GalaxyClubSpider():
                         content_content = re.sub("&nbsp;", "",content_content)
                         content_content = re.sub("&quot;", "\"",content_content)
                         content_content = re.sub("&#39;", "",content_content)
+                    content_content = StringUtils.remove_emoji_from_string(content_content)
                     row = (theme_content,content_content,time_content,link)
                     forinsert.append(row)
                 except:
@@ -217,6 +218,7 @@ class GalaxyClubSpider():
                         content_content = re.sub("&nbsp;", "",content_content)
                         content_content = re.sub("&quot;", "\"",content_content)
                         content_content = re.sub("&#39;", "",content_content)
+                    content_content = StringUtils.remove_emoji_from_string(content_content)
                     row = (theme_content,content_content,time_content,link)
                     forinsert.append(row)                
                 except:
@@ -234,7 +236,7 @@ class GalaxyClubSpider():
         self.productId = self.getProductId(self.url)
         
         #createtable = 'title text, firstcomment text,date char,link text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(20000),date VARCHAR(20),link VARCHAR(200), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(5000),date VARCHAR(20),link VARCHAR(500), PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
