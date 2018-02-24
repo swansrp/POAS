@@ -9,4 +9,20 @@ public class IndexController {
 	public String index() {
         return "MainPage";
     }
+	
+	@RequestMapping("/add")
+	public String addpage() {
+        return "addpage";
+        
+    }
+	@RequestMapping("/main")
+	public String mainpage() {
+        return "main";
+        
+    }
+	@RequestMapping("/test")
+	public String testpage() {
+        return "testpage";
+        
+    }
 }
