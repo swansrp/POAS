@@ -17,11 +17,8 @@ import com.srct.ril.poas.ai.NLPAnalysis.Item;
 
 
 
-public class Utils {
+public class ExcelUtils {
 
-	
-	
-	
 	public static void NLP_WriteToExcel(Object object){
 		
 		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
@@ -68,22 +65,22 @@ public class Utils {
 				}
 				
 				HSSFCell cell1 = row.createCell(1);
-				cell1.setCellValue(itemlist.get(j).getSubContent().toString());
+				cell1.setCellValue(itemlist.get(j).getSubContent());
 				cell1.setCellStyle(cellStyle);
 				
 				HSSFCell cell2 = row.createCell(2);
-				cell2.setCellValue(itemlist.get(j).getProp().toString());
+				cell2.setCellValue(itemlist.get(j).getProp());
 				cell2.setCellStyle(cellStyle);
 				
 				HSSFCell cell3 = row.createCell(3);
-				cell3.setCellValue(itemlist.get(j).getKey().toString());
+				cell3.setCellValue(itemlist.get(j).getCategory());
 				cell3.setCellStyle(cellStyle);
 				
 //				line.add( itemlist.get(j).getSubContent().toString() );
 //				line.add( itemlist.get(j).getProp().toString());
 //				line.add( itemlist.get(j).getKey().toString());
 				
-				 j++;
+				j++;
 				
 			}//while(itemit.hasNext()便利item
 			

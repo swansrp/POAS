@@ -45,7 +45,7 @@ public class BaiduNLPService {
 		HashMap<String, Object> options = new HashMap<String, Object>();
 	    options.put("mode", mode);
 		JSONObject resJson = client.depParser(content, options);
-		//Log.i(getClass(), resJson.toString(2));
+		//Log.d(getClass(), resJson.toString(2));
 		BaiduNLPDepParser res;
 		try {
 			res = (BaiduNLPDepParser)JSONUtil.readJson(resJson.toString(), BaiduNLPDepParser.class);

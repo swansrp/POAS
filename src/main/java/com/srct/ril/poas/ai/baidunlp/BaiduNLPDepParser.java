@@ -12,6 +12,8 @@ import com.srct.ril.poas.utils.log.Log;
 
 public class BaiduNLPDepParser {
 	
+	public String error_msg;
+	public int error_code;
 	
 	private final static String ATT = "ATT"; // 定中关系就是定语和中心词之间的关系，定语对中心词起修饰或限制作用。
 	private final static String QUN = "QUN"; // 数量关系是指量词或名词同前面的数词之间的关系，该关系中，数词作修饰成分，依存于量词或名词。
@@ -72,9 +74,12 @@ public class BaiduNLPDepParser {
 	}
 	
 	public List<String> parse() {
-		makeTree();
-		makeTreeMap();
-		makeSimpleText();
+		Log.e(getClass(), "msg: {}, code: {}", error_msg, error_code);
+		if(items!=null) {
+			makeTree();
+			makeTreeMap();
+			makeSimpleText();
+		}
 		return simpleText;
 		
 	}
@@ -123,7 +128,7 @@ public class BaiduNLPDepParser {
 		}
 
 		if(forestRoot.size()==0) {
-			Log.i(getClass(), "there is no HED");
+			Log.e(getClass(), "there is no HED");
 		} else {
 			for(Integer root : forestRoot) {
 				setTreeRoot(root);

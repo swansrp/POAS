@@ -1,5 +1,8 @@
 package com.srct.ril.poas.service.ai;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +12,7 @@ import com.srct.ril.poas.ai.baidunlp.BaiduNLPDepParser;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPSentiment;
 import com.srct.ril.poas.ai.category.Category;
 import com.srct.ril.poas.service.ai.baidu.BaiduNLPService;
+import com.srct.ril.poas.utils.ExcelUtils;
 import com.srct.ril.poas.utils.JSONUtil;
 import com.srct.ril.poas.utils.ServiceException;
 import com.srct.ril.poas.utils.log.Log;
@@ -21,11 +25,15 @@ public class NLPAnalysisService {
 	@Autowired
 	private Category cat;
 	
+	private final static double confidence = 0.7;
+	private final static double prob = 0.7;
+	
 	//0表示消极，1表示中性，2表示积极
 	public NLPAnalysis nlp(String content, int mode, double confidence, double prob) throws ServiceException {
 		NLPAnalysis res = new NLPAnalysis(mode);
 		res.setContent(content);
 		//Step 1. 分句
+		Log.i(getClass(), "\n======{}======",content);
 		BaiduNLPDepParser dp = baiduService.depParser(content);
 		for(String str :dp.simpleText) {
 			Log.i(getClass(), "\n >>>>{}<<<<",str);
@@ -102,6 +110,19 @@ public class NLPAnalysisService {
 	}
 	
 	public NLPAnalysis nlp(String content) throws ServiceException {
-		return nlp(content, 0, 0.6, 0.7);
+		List<NLPAnalysis> NLPAnalysisList = new ArrayList<>();
+		NLPAnalysis nlpAnalysis = nlp(content, 0, confidence, prob);
+		NLPAnalysisList.add(nlpAnalysis);
+		ExcelUtils.NLP_WriteToExcel(NLPAnalysisList);
+		return nlpAnalysis;
+	}
+	
+	public List<NLPAnalysis> nlpList(List<String> contentList) throws ServiceException {
+		List<NLPAnalysis> res = new ArrayList<>();
+		for(String content : contentList) {
+			res.add(nlp(content));
+		}
+		ExcelUtils.NLP_WriteToExcel(res);
+		return res;
 	}
 }
