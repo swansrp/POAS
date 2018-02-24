@@ -12,6 +12,7 @@ from utils.JsonResponseToClient import JsonResponseToClient
 from utils.ScarabaeusEnum import ResponseEnum
 from utils.ScarabaeusEnum import SourceEnum
 from utils.Utils import TimeUtils
+from utils.Utils import StringUtils
 
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
@@ -135,6 +136,7 @@ class JifengSpider():
                     subject = title.group(1).strip()
                     time1 = time.mktime(time.strptime(posttime,'%Y-%m-%d %H:%M'))
                     posttime = TimeUtils.convert_timestamp_to_date(time1)       
+                    subject = StringUtils.remove_emoji_from_string(subject)
                     row = (subject,posttime,link)
                     forinsert.append(row)                              
                 except:
@@ -197,7 +199,7 @@ class JifengSpider():
                     if time1 < float(timestamp):
                         skiptime ="True"
                         break
-                    
+                    subject = StringUtils.remove_emoji_from_string(subject)
                     row = (subject,posttime,link)
                     forinsert.append(row)                               
                 except:
@@ -215,7 +217,7 @@ class JifengSpider():
         self.productId = self.getProductId(self.url)
         
         #createtable = 'firstcomment text,date char,link text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,firstcomment VARCHAR(20000),date VARCHAR(20),link VARCHAR(200), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,firstcomment VARCHAR(5000),date VARCHAR(20),link VARCHAR(500), PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()

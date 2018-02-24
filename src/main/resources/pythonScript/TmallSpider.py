@@ -303,7 +303,7 @@ class TmallSpider():
         self.productId = self.getProductId(self.url)
         
         #createtable = 'username text, firstcomment text,date char,appendComment text, appenddate char,reply text,referenceName text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,username VARCHAR(200),firstcomment TEXT(10000),date VARCHAR(20),appendComment TEXT(10000), appenddate VARCHAR(20),reply TEXT(10000),referenceName VARCHAR(200),link VARCHAR(200), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,username VARCHAR(200),firstcomment TEXT(5000),date VARCHAR(20),appendComment TEXT(5000), appenddate VARCHAR(20),reply TEXT(5000),referenceName VARCHAR(200),link VARCHAR(500), PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
