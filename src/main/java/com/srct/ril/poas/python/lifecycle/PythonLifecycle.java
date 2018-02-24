@@ -14,6 +14,7 @@ public class PythonLifecycle implements SmartLifecycle  {
 	
 	@Autowired
 	ScarCronTask mScarCronTask;
+	private boolean isRunning = false;
 	private PythonJobCallBack mPythonJobCallBack = new PythonJobCallBack() {
 		
 		@Override
@@ -25,32 +26,35 @@ public class PythonLifecycle implements SmartLifecycle  {
 	@Override
 	public boolean isRunning() {
 		// TODO Auto-generated method stub
-		return false;
+		return isRunning;
 	}
 	@Override
 	public void start() {
 		// TODO Auto-generated method stub
+		isRunning = true;
 		mScarCronTask.setCallBack(mPythonJobCallBack);
 	}
 	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
-		
+		isRunning = false;
 	}
 	@Override
 	public int getPhase() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 1223;
 	}
 	@Override
 	public boolean isAutoStartup() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	@Override
-	public void stop(Runnable arg0) {
+	public void stop(Runnable callback) {
 		// TODO Auto-generated method stub
-		
+		callback.run();
+
+        isRunning = false;
 	}
 	
 }

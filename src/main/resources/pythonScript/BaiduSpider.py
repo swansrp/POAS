@@ -15,6 +15,7 @@ import SpiderMySqlDatabase
 from utils.JsonResponseToClient import JsonResponseToClient
 from utils.ScarabaeusEnum import ResponseEnum
 from utils.ScarabaeusEnum import SourceEnum
+from utils.Utils import TimeUtils
 
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
@@ -137,6 +138,8 @@ class BaiduSpider():
                     context = re.sub(" ", "",context)
                     context = re.sub("<.*?>", "",context)
                     createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer).group(1)
+                    time1 = time.mktime(time.strptime(createtime,'%Y-%m-%d %H:%M'))
+                    createtime = TimeUtils.convert_timestamp_to_date(time1)
                     row = (subject,context,replynum,createtime,link)
                     forinsert.append(row)
                 except:
@@ -183,6 +186,7 @@ class BaiduSpider():
                     answer = self.get_htmlviaCom(link)
                     createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer).group(1)
                     time1 = time.mktime(time.strptime(createtime,'%Y-%m-%d %H:%M'))
+                    createtime = TimeUtils.convert_timestamp_to_date(time1)
                     if time1 < float(timestamp):
                         continue
                     context = re.search(r'<cc>(.*?)</cc>',answer).group(1)
@@ -239,7 +243,8 @@ class BaiduSpider():
 
 
 if __name__ == '__main__':
-
-   url ='http://tieba.baidu.com/f?kw=%E4%B8%89%E6%98%9Fnote8&ie=utf-8'
+   url ='http://tieba.baidu.com/f?kw=%E4%B8%89%E6%98%9Fs8&ie=utf-8'
+   if len(sys.argv) > 1:
+       url = sys.argv[1]
    galaxy = BaiduSpider(url)
    galaxy.launch('','','True')

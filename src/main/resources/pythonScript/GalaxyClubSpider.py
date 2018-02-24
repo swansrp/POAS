@@ -11,6 +11,7 @@ import SpiderMySqlDatabase
 from utils.JsonResponseToClient import JsonResponseToClient
 from utils.ScarabaeusEnum import ResponseEnum
 from utils.ScarabaeusEnum import SourceEnum
+from utils.Utils import TimeUtils
 
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
@@ -124,6 +125,8 @@ class GalaxyClubSpider():
                     else:
                         time_content = time_content.group(1)
 
+                    time1 = time.mktime(time.strptime(time_content,'%Y-%m-%d %H:%M'))
+                    time_content = TimeUtils.convert_timestamp_to_date(time1)
                     content_format = re.compile('<div class=\"board-cont\">.*?</div>',re.S)
                     c_content = re.search(content_format,answer)
                     if c_content == None:
@@ -194,6 +197,7 @@ class GalaxyClubSpider():
                         time_content = time_content.group(1)
                     
                     time1 = time.mktime(time.strptime(time_content,'%Y-%m-%d %H:%M'))
+                    time_content = TimeUtils.convert_timestamp_to_date(time1)
                     if time1 < float(timestamp):
                         skiptime ="True"
                         break
@@ -263,7 +267,8 @@ class GalaxyClubSpider():
         return Instance
 
 if __name__ == '__main__':
-
    url ='http://www.galaxyclub.cn/bbs/galaxys_s8.html'
+   if len(sys.argv) > 1:
+       url = sys.argv[1]
    galaxy = GalaxyClubSpider(url)
    galaxy.launch('','','True')
