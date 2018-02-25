@@ -140,7 +140,7 @@ public class NLPAnalysisService {
 		NLPAnalysis res = new NLPAnalysis(mode);
 		res.setContent(content);
 		//Step 1. 分句
-		Log.i(getClass(), "\n======{}======",content);
+		Log.i("\n======{}======",content);
 		BaiduNLPDepParser dp = defParser(content);
 		boolean getCategorySubcontent = false;
 		if(dp != null) {
