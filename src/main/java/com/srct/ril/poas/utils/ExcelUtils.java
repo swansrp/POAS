@@ -40,7 +40,6 @@ public class ExcelUtils {
 		} 
 	}
 	
-	
 	public static void NLP_WriteToExcel(Object object){
 		
 		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
