@@ -117,7 +117,7 @@
                         <div class="panel-heading">
                            SINGUP FORM
                         </div>
-                        <div id="returnData" class="panel-body">
+                        <div  class="panel-body" >
                             
                         </div>
                 </div>
@@ -125,7 +125,7 @@
             <!--  end right -->
 			 <div class="row">
                     <div class="col-md-12">
-                        <div class="alert alert-info">
+                        <div id="returnData" class="alert alert-info" >
                            
                         </div>
                     </div>
@@ -161,6 +161,7 @@
     $(function(){
  
         $("#search").click(function(){
+        	     $( "#returnData" ).html("");
     		    var text=$('#text').val();
             	var url=$('#url').val();
             	var json={"text":text};
@@ -172,7 +173,7 @@
             		dataType: "json",
             		success:function(msg){
             			/* alert(JSON.stringify(msg));  */
-            			$( "#returnData" ).html($("#returnData").html() + "<br>" + JSON.stringify(msg) + "<br/>");;
+            			$( "#returnData" ).html($("#returnData").html() + "<br>" + JSON.stringify(msg) + "<br/>");
                     },
                     error: function (msg) {
                         alert("err");
