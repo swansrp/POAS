@@ -69,12 +69,13 @@ public class NLPAnalysisService {
 				}
 			}
 			NLPAnalysis.Item it = new NLPAnalysis.Item();
+			it.setSubContent(str);
 			// 若分句有强烈情感色彩 做观点提取
 			if(sentimental) {
 				Log.i(getClass(), "==明确情感分析({})开始获取观点==",mode);
 				BaiduNLPCommentTag ct = baiduService.commentTag(str);
 				Log.d(getClass(), JSONUtil.toJSONString(ct));
-				it.setSubContent(str);
+				
 				it.setSentiment(mode);
 				if(ct.items!=null) {
 					it.setAdj(ct.items[0].adj);
