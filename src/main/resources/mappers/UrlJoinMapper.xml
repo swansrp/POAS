@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.srct.ril.poas.dao.mapper.UrlJoinMapper">
+  <resultMap type="com.srct.ril.poas.dao.pojo.UrlJoinMap" id="urlBean">
+      <id column="uid" property="id" />
+      <result column="url" property="url" />
+      <association property="modelMap" javaType="com.srct.ril.poas.dao.pojo.ModelMap">
+         <id column="mid" property="id"/>
+         <result column="model_name" property="modelName"/>
+      </association>
+      <association property="sourceMap" javaType="com.srct.ril.poas.dao.pojo.SourceMap">
+         <id column="sid" property="id"/>
+         <result column="source_en" property="sourceEn"/>
+      </association>
+  </resultMap>
+  
+  <select id="selectByJoin" resultMap="urlBean">
+    SELECT
+      url.id 'uid',
+      url.url,
+      src.id 'sid',
+      src.source_en,
+      model.id 'mid',
+      model.model_name
+    from 
+      urlmap_ url 
+    join 
+      sourcemap_ src 
+    join 
+      modelmap_ model
+    on 
+      url.model_id = model.id 
+    and 
+      url.source_id = src.id
+  </select>
+</mapper>
