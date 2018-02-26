@@ -14,7 +14,7 @@ public class NLPAnalysis {
 		this.content = content;
 	}
 	public List<Item> getItems() {
-		if(this.mode == 1) 
+		if(this.mode != 0 && this.mode != 2) 
 			return items;
 		List<Item> res = new ArrayList<>();
 		for(Item it :items) {

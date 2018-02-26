@@ -1,11 +1,15 @@
 package com.srct.ril.poas.ai.baidunlp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BaiduNLPLexer extends BaiduNLPBase {
 	public long log_id;
 	public String text; // 原始单条请求文本
-	public Items[] items; // 词汇数组，每个元素对应结果中的一个词
+	public Item[] items; // 词汇数组，每个元素对应结果中的一个词
+	private List<String> keyWordsList = new ArrayList<>(); // 分句总的关键词
 	
-	public static class Items {
+	public static class Item {
 		public String item; // 词汇的字符串
 		public String ne;   // 命名实体类型，命名实体识别算法使用。词性标注算法中，此项为空串
 		public String pos;  // 词性，词性标注算法使用。命名实体识别算法中，此项为空串
@@ -22,7 +26,17 @@ public class BaiduNLPLexer extends BaiduNLPBase {
 		}
 	}
 	
+	public void parse() {
+		for(Item it:items) {
+			keyWordsList.add(it.item);
+		}
+	}
+	
 	public String toString() {
 		return "Text:" +  text;
+	}
+	
+	public List<String> getKeywords() {
+		return keyWordsList;
 	}
 }
