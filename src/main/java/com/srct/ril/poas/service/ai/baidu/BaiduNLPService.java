@@ -28,10 +28,11 @@ public class BaiduNLPService {
 	    HashMap<String, Object> options = new HashMap<String, Object>();
 		AipNlp client = baiduClent.getClient();
 		JSONObject resJson = client.lexer(content, options);
-		Log.i(this.getClass(), resJson.toString(2));
+		Log.d(resJson.toString(2));
 		BaiduNLPLexer res;
 		try {
 			res = (BaiduNLPLexer)JSONUtil.readJson(resJson.toString(), BaiduNLPLexer.class);
+			res.parse();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

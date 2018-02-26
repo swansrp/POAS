@@ -59,19 +59,19 @@ public class Log {
 		LoggerFactory.getLogger(getCallerClass()).trace(loc()+msg, strings);
 	}
 	public static void ii(Object o) {
-		LoggerFactory.getLogger(sInstance.getClass()).info(loc()+JSONUtil.toJSONString(o));
+		LoggerFactory.getLogger(getCallerClass()).info(loc()+JSONUtil.toJSONString(o));
 	}
 	public static void ee(Object o) {
-		LoggerFactory.getLogger(sInstance.getClass()).error(loc()+JSONUtil.toJSONString(o));
+		LoggerFactory.getLogger(getCallerClass()).error(loc()+JSONUtil.toJSONString(o));
 	}
 	public static void ww(Object o) {
-		LoggerFactory.getLogger(sInstance.getClass()).warn(loc()+JSONUtil.toJSONString(o));
+		LoggerFactory.getLogger(getCallerClass()).warn(loc()+JSONUtil.toJSONString(o));
 	}
 	public static void dd(Object o) {
-		LoggerFactory.getLogger(sInstance.getClass()).debug(loc()+JSONUtil.toJSONString(o));
+		LoggerFactory.getLogger(getCallerClass()).debug(loc()+JSONUtil.toJSONString(o));
 	}
 	public static void vv(Object o) {
-		LoggerFactory.getLogger(sInstance.getClass()).trace(loc()+JSONUtil.toJSONString(o));
+		LoggerFactory.getLogger(getCallerClass()).trace(loc()+JSONUtil.toJSONString(o));
 	}
 		
 	public static void i(Class<?> clazz,String msg, Object...strings) {

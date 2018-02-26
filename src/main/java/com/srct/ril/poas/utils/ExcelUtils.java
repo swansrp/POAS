@@ -40,12 +40,15 @@ public class ExcelUtils {
 		} 
 	}
 	
+
+	
 	public static void NLP_WriteToExcel(Object object){
 		
 		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
 		HSSFSheet sheet = wb.createSheet("NLP_Analysis");
 		sheet.setColumnWidth(0, 25 * 512);//第一列宽度
 		sheet.setColumnWidth(1, 15 * 512);//第二列宽度
+		sheet.setColumnWidth(3,10 * 512);//第四列宽度
 		HSSFCellStyle cellStyle=wb.createCellStyle(); 
 		cellStyle.setShrinkToFit(true);
 		cellStyle.setWrapText(true);
@@ -120,6 +123,7 @@ public class ExcelUtils {
 				default:
 					cell4.setCellValue("没啥说的");
 				}
+				cell4.setCellStyle(cellStyle);
 //				line.add( itemlist.get(j).getSubContent().toString() );
 //				line.add( itemlist.get(j).getProp().toString());
 //				line.add( itemlist.get(j).getKey().toString());
