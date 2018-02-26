@@ -61,7 +61,7 @@
                         <a  href="index.html"><i class="fa fa-dashboard "></i>Dashboard</a>
                     </li>
 					<li>
-						<a class="active-menu" href="mainpage.html"><i class="fa fa-square-o "></i>MainPage</a>
+						<a class="active-menu" href="/main"><i class="fa fa-square-o "></i>MainPage</a>
                     </li>
 					<li>
 						<a href="/add"><i class="fa fa-plus "></i>AddPage</a>
@@ -104,8 +104,7 @@
 							<div class="form-group">
                                             <label>Select Website</label>
                                             <select id="WebName" class="form-control">
-
-                                                
+                                            <option>全部</option>
                                             </select>
                                         </div>
                             <div class="form-group">
@@ -118,7 +117,10 @@
                                             <input id="etime"  class="form-control" type="text" placeholder="">
                                      
                             </div>
-							 <button type="submit" class="btn btn-danger">确定 </button>
+							 <button id="submit" type="submit" class="btn btn-danger">确定 </button>
+                            </div>
+                            </div>
+							 <button id="download" type="submit" class="btn btn-danger">点击下载 </button>
                             </div>
                         </div>
             </div>
@@ -127,6 +129,31 @@
                         <div class="alert alert-info">
                            
                         </div>
+                        <div class="panel panel-default">
+                        <div class="panel-heading">
+                            COMMENTS
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table id="cTable" class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Comments</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>每条评论</td>
+                                        </tr>
+                                        
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
 
@@ -152,7 +179,6 @@
         <script src="../datepicker/jquery-ui.js"></script>
     <script type="text/javascript">
     function show_model_sselect() { 
-    	jQuery.support.cors = true;
     	$.ajax({
     		type:"post",
     		url:"/config/model/name",
@@ -205,19 +231,30 @@
     	        $( "#stime" ).datepicker( "option", "maxDate", selectedDate );
     	      }
     	    });
-        $("#").click(function(){
-    		    var weburl=$('#weburl').val();
+    	
+        $("#submit").click(function(){
+    		    var modelname=$('#ModelName').val();
             	var webname=$('#WebName').val();
-            	var modelname=$('#ModelName').val();
-            	var json={"weburl":weburl,"webname":webname,"modelname":modelname};
+            	var start=$('#stime').val();
+            	var end=$('#etime').val();
+            	var url;
+            	var json={"modelname":modelname,"start":start,"end":end};
+            	 if(webname=="京东"){
+            		url="/JD/modelinfo";
+            	}  
             	$.ajax({
             		type:"post",
             		async:true,
-            		url:"/config/url/add",
+            		url:url,
             		data:json,
             		dataType: "json",
             		success:function(msg){
-            			alert("数据提交成功"); 
+            			var item;
+            			$.each(msg,function(i,result){
+            				/* item="<tr><td>"+result['name']+"</td><td>"+result['age']+"</td></tr>"; 
+            				$('#cTable').append(item);  */
+            				}); 
+            			alert(JSON.stringify(msg));
                     },
                     error: function (msg) {
                         alert("err");

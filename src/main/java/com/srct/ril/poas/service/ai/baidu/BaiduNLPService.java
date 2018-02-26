@@ -44,8 +44,9 @@ public class BaiduNLPService {
 		AipNlp client = baiduClent.getClient();
 		HashMap<String, Object> options = new HashMap<String, Object>();
 	    options.put("mode", mode);
+	    Log.d(getClass(), "<BaiduNLP>:拆分句子");
 		JSONObject resJson = client.depParser(content, options);
-		//Log.i(getClass(), resJson.toString(2));
+		//Log.d(getClass(), resJson.toString(2));
 		BaiduNLPDepParser res;
 		try {
 			res = (BaiduNLPDepParser)JSONUtil.readJson(resJson.toString(), BaiduNLPDepParser.class);
@@ -68,6 +69,7 @@ public class BaiduNLPService {
 		AipNlp client = baiduClent.getClient();
 		HashMap<String, Object> options = new HashMap<String, Object>();
 		ESimnetType type = BaiduNLPCommentTag.getESimnetType(mode);
+		Log.d(getClass(), "<BaiduNLP>:评论提取");
 		JSONObject resJson = client.commentTag(content, type, options);
 		//Log.i(getClass(), resJson.toString(2));
 		BaiduNLPCommentTag res;
@@ -90,7 +92,7 @@ public class BaiduNLPService {
 		AipNlp client = baiduClent.getClient();
 		// 传入可选参数调用接口
 	    HashMap<String, Object> options = new HashMap<String, Object>();
-	    
+	    Log.d(getClass(), "<BaiduNLP>:情感分析");
 	    // 情感倾向分析
 	    JSONObject resJson = client.sentimentClassify(content, options);
 	    //System.out.println(resJson.toString(2));

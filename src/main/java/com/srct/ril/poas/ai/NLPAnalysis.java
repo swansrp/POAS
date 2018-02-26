@@ -36,7 +36,6 @@ public class NLPAnalysis {
 		private String adj; // 匹配上的描述词
 		private int sentiment; // 该情感搭配的极性（0表示消极，1表示中性，2表示积极）
 		private String category; // 按要求分类
-		private String unKnownKeyWords;
 		public int getId() {
 			return id;
 		}
@@ -72,18 +71,6 @@ public class NLPAnalysis {
 		}
 		public void setCategory(String category) {
 			this.category = category;
-		}
-		/**
-		 * @return the unKnownKey
-		 */
-		public String getUnKnownKeyWords() {
-			return unKnownKeyWords;
-		}
-		/**
-		 * @param unKnownKey the unKnownKey to set
-		 */
-		public void setUnKnownKeyWords(String unKnownKeyWords) {
-			this.unKnownKeyWords = unKnownKeyWords;
 		}
 	}
 	public NLPAnalysis(int mode) {

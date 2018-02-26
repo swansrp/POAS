@@ -57,6 +57,10 @@ public class DynamicDataSourceAspect {
                 // 取出注解中的数据源名
                 dataSource = annotation.value();
                 log.info("注解中的数据源 is {}", dataSource);
+            } else if (clazz.isAnnotationPresent(DS.class)) {
+            	DS annotation = clazz.getAnnotation(DS.class);
+                // 取出注解中的数据源名
+                dataSource = annotation.value();
             }
         } catch (Exception e) {
             e.printStackTrace();

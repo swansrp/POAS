@@ -6,27 +6,55 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.BorderStyle;
 
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
 
 
 
-public class Utils {
+public class ExcelUtils {
+
+	private static void wf(HSSFWorkbook wb)
+	{
+		FileOutputStream fileOut;
+		try {
+			fileOut = new FileOutputStream("workbook1.xls");
+			wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
+			fileOut.close(); 
+			System.out.println("write to excel done !");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.out.println("请先关闭excel文件!，然后运行");
+			//e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
 	
 	public static void NLP_WriteToExcel(Object object){
 		
 		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
 		HSSFSheet sheet = wb.createSheet("NLP_Analysis");
+		sheet.setColumnWidth(0, 25 * 512);//第一列宽度
+		sheet.setColumnWidth(1, 15 * 512);//第二列宽度
 		HSSFCellStyle cellStyle=wb.createCellStyle(); 
 		cellStyle.setShrinkToFit(true);
 		cellStyle.setWrapText(true);
+		cellStyle.setBorderBottom(BorderStyle.THIN);//下边框        
+		cellStyle.setBorderLeft(BorderStyle.THIN);//左边框        
+		cellStyle.setBorderRight(BorderStyle.THIN);//右边框        
+		cellStyle.setBorderTop(BorderStyle.THIN);//上边框 
 		
+		@SuppressWarnings("unchecked")
 		ArrayList<NLPAnalysis> listNLP = (ArrayList<NLPAnalysis>) object;
 		Iterator<NLPAnalysis> it = listNLP.iterator();
 		
@@ -43,6 +71,8 @@ public class Utils {
 			//ArrayList<String> line = new ArrayList<String> ();//一行
 			List<Item> itemlist = listNLP.get(NLPIndex).getItems();//获取这个NLPAnalysis的item的list
 			Iterator<Item> itemit = itemlist.iterator();
+			
+	        //setStyle(cell[10][1], "TAN", HSSFColor.TAN.index); 
 			
 			
 			int j=0;
@@ -65,22 +95,36 @@ public class Utils {
 				}
 				
 				HSSFCell cell1 = row.createCell(1);
-				cell1.setCellValue(itemlist.get(j).getSubContent().toString());
+				cell1.setCellValue(itemlist.get(j).getSubContent());
 				cell1.setCellStyle(cellStyle);
 				
 				HSSFCell cell2 = row.createCell(2);
-				cell2.setCellValue(itemlist.get(j).getProp().toString());
+				cell2.setCellValue(itemlist.get(j).getProp());
 				cell2.setCellStyle(cellStyle);
 				
 				HSSFCell cell3 = row.createCell(3);
-				cell3.setCellValue(itemlist.get(j).getCategory().toString());
+				cell3.setCellValue(itemlist.get(j).getCategory());
 				cell3.setCellStyle(cellStyle);
 				
+				HSSFCell cell4 = row.createCell(4);
+				switch(itemlist.get(j).getSentiment()){
+				case 0:
+					cell4.setCellValue("消极");
+					break;
+				case 1:
+					cell4.setCellValue("中性");
+					break;
+				case 2:
+					cell4.setCellValue("积极");
+					break;
+				default:
+					cell4.setCellValue("没啥说的");
+				}
 //				line.add( itemlist.get(j).getSubContent().toString() );
 //				line.add( itemlist.get(j).getProp().toString());
 //				line.add( itemlist.get(j).getKey().toString());
-				
-				 j++;
+				excelIndex++;
+				j++;
 				
 			}//while(itemit.hasNext()便利item
 			
@@ -88,29 +132,14 @@ public class Utils {
 			NLPIndex++;
 		}//while(it.hasNext()便利NLP
 		
-
-		FileOutputStream fileOut;
-		try {
-			fileOut = new FileOutputStream("workbook1.xls");
-			wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
-			fileOut.close(); 
-			System.out.println("OK!");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
- 
-		
+		wf(wb);
 
 	}
 	
 	
 	
 	
-	public static void WriteToExcel(Object object) throws IOException{
+	public static void WriteToExcel(Object object) {
 		
 		@SuppressWarnings("unchecked")
 		ArrayList<String> listarray = (ArrayList<String>) object;
@@ -130,18 +159,13 @@ public class Utils {
 		while(it.hasNext()&&Index<listarray.size()) {
 			HSSFRow row = sheet.createRow(Index);
 			HSSFCell cell=row.createCell(0);
-			//cell.setCellStyle(cellStyle);
 			cell.setCellValue(listarray.get(Index).toString());
 			cell.setCellStyle(cellStyle);
 			System.out.println(listarray.get(Index).toString());
 			Index++;
 		}
 		
-		FileOutputStream fileOut = new FileOutputStream("workbook1.xls");  
-		wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
-		fileOut.close();  
-		
-		System.out.println("OK!");
+		wf(wb);
 		
 	}
 	
