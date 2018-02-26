@@ -18,9 +18,6 @@ import com.srct.ril.poas.ai.NLPAnalysis.Item;
 
 
 public class Utils {
-
-	
-	
 	
 	public static void NLP_WriteToExcel(Object object){
 		
@@ -76,7 +73,7 @@ public class Utils {
 				cell2.setCellStyle(cellStyle);
 				
 				HSSFCell cell3 = row.createCell(3);
-				cell3.setCellValue(itemlist.get(j).getKey().toString());
+				cell3.setCellValue(itemlist.get(j).getCategory().toString());
 				cell3.setCellStyle(cellStyle);
 				
 //				line.add( itemlist.get(j).getSubContent().toString() );

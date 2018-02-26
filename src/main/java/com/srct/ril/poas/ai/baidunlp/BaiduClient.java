@@ -24,6 +24,7 @@ public class BaiduClient {
 		if(client == null) {
 			Log.i(this.getClass(), "getClient");
 			client = new AipNlp(app_id, api_key, secret_key);
+			Log.i(this.getClass(), "this？");
 		    client.setConnectionTimeoutInMillis(2000);
 		    client.setSocketTimeoutInMillis(60000);
 		}
