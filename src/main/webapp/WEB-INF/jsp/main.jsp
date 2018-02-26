@@ -274,7 +274,7 @@
                     url="/SN/modelinfo";
                 } else if(webname=="全部") {
                     url="/all/modelinfo";
-  
+                }
             	 
             	$.ajax({
             		type:"post",

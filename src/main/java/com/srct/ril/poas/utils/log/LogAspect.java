@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.LoggerFactory;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.springframework.stereotype.Component;
 
@@ -57,7 +58,7 @@ public class LogAspect {
     private void printLog(Class<?> clazz, String str){
         if(clazz==null) 
         	clazz=this.getClass();
-    	Log.d(clazz, str);
+        LoggerFactory.getLogger(clazz).debug(str);
     }
 	
 }
