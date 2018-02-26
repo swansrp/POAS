@@ -7,7 +7,8 @@ Created on 2018/2/13
 
 '''
 from enum import Enum, unique
-
+import sys
+sys.dont_write_bytecode = True
 @unique
 class ResponseEnum(Enum):
     success = 0

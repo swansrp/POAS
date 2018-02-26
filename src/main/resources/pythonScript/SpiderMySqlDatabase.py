@@ -15,6 +15,7 @@ import json
 import pymysql as MySQLdb
 MySQLdb.install_as_MySQLdb()
 
+sys.dont_write_bytecode = True
 class SpiderMySqlDatabase():
     def __init__(self,url):
         self.url = url

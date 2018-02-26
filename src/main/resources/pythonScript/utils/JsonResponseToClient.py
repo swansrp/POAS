@@ -9,6 +9,8 @@ Created on 2018/2/13
 from utils.ScarabaeusEnum import ResponseEnum
 from utils.ScarabaeusEnum import SourceEnum
 import json
+import sys
+sys.dont_write_bytecode = True
 class JsonResponseToClient(object):
     def __init__(self, result = ResponseEnum.fail.value, type = SourceEnum.Other.value,  message = "no data"):
       self.result = result
