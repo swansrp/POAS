@@ -12,6 +12,33 @@ import com.srct.ril.poas.utils.log.Log;
 
 @Component
 public class Category {
+	
+	public static enum Sentiment{
+		UNKNOWN(-1),
+		POSITIVE(2),
+		NEGATIVE(0),
+		NEUTRAL(1),
+		ALL(3);
+		
+		private int value;
+		private Sentiment(int v) {
+			this.value = v;
+		}
+		public int getValue() {
+			return this.value;
+		}
+		public static Sentiment getSetiment(int value) {
+			switch (value) {
+			case -1: return UNKNOWN;
+			case 0:  return NEGATIVE;		
+			case 1:  return NEUTRAL;	
+			case 2:	 return POSITIVE;
+			case 3:  return ALL;
+			default: return UNKNOWN;
+			}
+		}
+	}
+	
 	private List<String> categoryList = new ArrayList<String>();
 	private Map<String, Integer> cat2IdMap = new HashMap<>();
 	private Map<String, String> cat2aliasMap = new HashMap<>();
@@ -90,6 +117,7 @@ public class Category {
 			for(String key : keywordMap.get(cat)) {
 				for(String word : words) {
 					if(key.equals(word)) {
+						Log.i("key:{}, word:{}", key, word);
 						return cat;
 					}
 				}
@@ -101,7 +129,7 @@ public class Category {
 		return categoryList;
 	}
 	public void setCategoryList(List<String> categoryList) {
-		categoryList = categoryList;
+		this.categoryList = categoryList;
 	}
 	public Map<String, Integer> getCat2IdMap() {
 		return cat2IdMap;
