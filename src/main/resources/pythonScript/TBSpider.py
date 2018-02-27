@@ -273,7 +273,6 @@ class TaoBaoSpider():
                 tbjson = json.loads(tbjson)
                 tbcomment = tbjson['comments']
             except:
-                print("sww")
                 continue
 
                 #             print content
@@ -293,7 +292,6 @@ class TaoBaoSpider():
                 date1 = hot['date']
                 time1 = time.mktime(time.strptime(date1,u'%Y年%m月%d日 %H:%M'))
                 date1 = TimeUtils.convert_timestamp_to_date(time1)
-                print(date1)
                 if time1 < float(timestamp):
                     skiptime ="True"
                     break

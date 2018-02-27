@@ -288,7 +288,7 @@ class TmallSpider():
                 row = (username,comment1,date1,comment2,str(date2),reply,tmsku,self.url)
                 forinsert.append(row)
          
-            self.mdatabase.insert(forinsert)
+            self.mdatabase.insert_values(forinsert)
             if skiptime is 'True':
                 break
 

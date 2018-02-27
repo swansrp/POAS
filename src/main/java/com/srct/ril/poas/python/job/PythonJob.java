@@ -30,7 +30,7 @@ import com.srct.ril.poas.utils.log.Log;
 @Configuration
 public class PythonJob implements Job{
 
-	private PythonJobCallBack mFetchJobCallBack = null;
+	private static PythonJobCallBack mFetchJobCallBack = null;
 	private InputStream normalIS = null;
 	private InputStream errorIS = null;
 	private PythonResponseModel mPythonResponseModel = null;
@@ -45,9 +45,13 @@ public class PythonJob implements Job{
 		public void loadDataComplete(PythonResponseModel pythonResponseModel) {
 			// TODO Auto-generated method stub
 			mSourceAlreadyFetchIndex++;
-			if (mSourceAlreadyFetchIndex == mSourceCount) {
+			Log.i("current index = " + mSourceAlreadyFetchIndex);
+			if (mSourceAlreadyFetchIndex == 1) {
 				PythonResponseModel result = new PythonResponseModel();
 				result.message = "finish";
+				if (mFetchJobCallBack == null) {
+					Log.i("mFetchJobCallBack is null");
+				}
 				mFetchJobCallBack.loadDataComplete(result);
 			} else {
 				fetchByCurrentIndex();
@@ -63,10 +67,9 @@ public class PythonJob implements Job{
         	mSourceAlreadyFetchIndex = 0;
     		mSourceCount = 0;
     		try {
-    			//mSourceCount = urlMapService.getAllUrl().size();
-    			Log.i("count = " + urlMapService.getUrlJoinList().size());
-    			fetchByCurrentIndex();
+    			mSourceCount = urlMapService.getUrlJoinList().size();
     			Log.i("current Source count is " + mSourceCount);
+    			fetchByCurrentIndex();
     		} catch (ServiceException e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
@@ -106,8 +109,13 @@ public class PythonJob implements Job{
 					while ((line = bufferReader.readLine()) != null) {
 						if (line != null ) {
 							Log.i(getClass(), " normal input = " + line);
-							mPythonResponseModel = (PythonResponseModel)JSONUtil.readJson(line, PythonResponseModel.class);
-							mInternalPythonJobCallBack.loadDataComplete(mPythonResponseModel);
+							if (JSONUtil.isJSONValid(line)) {
+								mPythonResponseModel = (PythonResponseModel)JSONUtil.readJson(line, PythonResponseModel.class);
+								mInternalPythonJobCallBack.loadDataComplete(mPythonResponseModel);
+							} else {
+							    //Log.i("normal input is not json result");
+								Log.i(getClass(), "normal input is not json result");
+							}
 						}
 					}
 				} catch (IOException e) {
@@ -117,12 +125,12 @@ public class PythonJob implements Job{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} finally {
-					try {
-						normalIS.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//					try {
+//						normalIS.close();
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 				}
 			};
 		}.start();
@@ -143,18 +151,23 @@ public class PythonJob implements Job{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} finally {
-					try {
-						errorIS.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//					try {
+//						errorIS.close();
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 				}
 			};
 		}.start();
 	}
 	
 	public void setCallBack(PythonJobCallBack pythonJobCallBack) {
+		if (pythonJobCallBack != null) {
+			Log.i(pythonJobCallBack + " not null");
+		} else {
+			Log.i(pythonJobCallBack + " is null");
+		}
 		mFetchJobCallBack = pythonJobCallBack;
 	}
 

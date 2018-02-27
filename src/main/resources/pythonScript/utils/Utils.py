@@ -8,6 +8,7 @@ Created on 2018/2/23
 '''
 import time
 import sys
+import re
 sys.dont_write_bytecode = True
 class TimeUtils(object):
     @staticmethod
