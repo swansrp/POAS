@@ -85,7 +85,7 @@
         <!--数据库链接地址账号密码-->
         <jdbcConnection 
         	driverClass="com.mysql.jdbc.Driver" 
-        	connectionURL="jdbc:mysql://106.14.115.34:3306/N9500" 
+        	connectionURL="jdbc:mysql://106.14.115.34:3306/G9500" 
         	userId="root" 
         	password="admin">
         </jdbcConnection>
@@ -135,6 +135,15 @@
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
         <table tableName="JF" domainObjectName="BbsJF" 
+        	enableCountByExample="true" 
+        	enableUpdateByExample="true" 
+        	enableDeleteByExample="true" 
+        	enableSelectByExample="true" 
+        	selectByExampleQueryId="true">
+            <property name="my.isgen.usekeys" value="true"/>
+            <generatedKey column="id" sqlStatement="JDBC"/>       
+        </table>
+        <table tableName="GC" domainObjectName="BbsGC" 
         	enableCountByExample="true" 
         	enableUpdateByExample="true" 
         	enableDeleteByExample="true" 

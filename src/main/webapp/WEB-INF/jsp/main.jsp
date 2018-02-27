@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Responsive Bootstrap Advance Admin Template</title>
 
     <!-- BOOTSTRAP STYLES-->
@@ -32,9 +33,9 @@
 
             <div class="header-right">
 
-              <a href="message-task.html" class="btn btn-info" title="New Message"><b>30 </b><i class="fa fa-envelope-o fa-2x"></i></a>
-                <a href="message-task.html" class="btn btn-primary" title="New Task"><b>40 </b><i class="fa fa-bars fa-2x"></i></a>
-                <a href="login.html" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
+
+                <a href="#" class="btn btn-primary" title="New Task"><b> </b><i class="fa fa-bars fa-2x"></i></a>
+                <a href="#" class="btn btn-danger" title="Logout"><i class="fa fa-exclamation-circle fa-2x"></i></a>
 
 
             </div>
@@ -88,40 +89,43 @@
                 </div>
                 <!-- /. ROW  -->
                
-			<div class="col-md-6 col-sm-6 col-xs-12">
+			<div class="col-md-12 col-sm-6 col-xs-12">
                <div class="panel panel-danger">
                         <div class="panel-heading">
                            SINGUP FORM
                         </div>
                         <div class="panel-body">
-                             <div class="form-group">
+                             <div class="form-group col-md-2">
                                             <label>Select Modle</label>
                                             <select id="ModelName" class="form-control">
 
                                                 
                                             </select>
                                         </div>
-							<div class="form-group">
+							<div class="form-group col-md-2">
                                             <label>Select Website</label>
                                             <select id="WebName" class="form-control">
                                             <option>全部</option>
                                             </select>
                                         </div>
-                            <div class="form-group">
+                            <div class="form-group col-md-2">
                                             <label>Input start time</label>
-                                            <input id="stime"  class="form-control" type="text" placeholder="">
+                                            <input id="stime"  class="form-control" type="text" placeholder="" >
                                      
                             </div>
-                            <div class="form-group">
+                            <div class="form-group col-md-2">
                                             <label>Input end time</label>
-                                            <input id="etime"  class="form-control" type="text" placeholder="">
+                                            <input id="etime"  class="form-control" type="text" placeholder="" >
                                      
                             </div>
-							 <button id="submit" type="submit" class="btn btn-danger">确定 </button>
+                            <div class="form-group col-md-6">
+						   	         <button id="submit" type="submit" class="btn btn-danger">确定 </button>
+							         <button id="download" type="submit" class="btn btn-danger">点击下载 </button>
+                                     
                             </div>
+							
                             </div>
-							 <button id="download" type="submit" class="btn btn-danger">点击下载 </button>
-                            </div>
+                            
                         </div>
             </div>
 			 <div class="row">
@@ -144,13 +148,19 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>1</td>
-                                            <td>每条评论</td>
                                         </tr>
-                                        
-                                        
                                     </tbody>
+                                          
                                 </table>
+                                <ul class="Pagination">
+                                              <!--  <li><a href="#">&laquo;</a></li>
+                                               <li><a href="#">1</a></li>
+                                               <li><a href="#">2</a></li>
+                                                <li><a href="#">3</a></li>
+                                               <li><a href="#">4</a></li>
+                                               <li><a href="#">5</a></li>
+                                               <li><a href="#">&raquo;</a></li> -->
+                                               </ul>
                             </div>
                         </div>
                     </div>
@@ -219,6 +229,7 @@
     	      defaultDate: "+1w",
     	      changeMonth: true,
     	      numberOfMonths: 3,
+    	      dateFormat: 'yy-mm-dd 00:00:00',
     	      onClose: function( selectedDate ) {
     	        $( "#etime" ).datepicker( "option", "minDate", selectedDate );
     	      }
@@ -227,21 +238,44 @@
     	      defaultDate: "+1w",
     	      changeMonth: true,
     	      numberOfMonths: 3,
+    	      dateFormat: 'yy-mm-dd 00:00:00',
     	      onClose: function( selectedDate ) {
     	        $( "#stime" ).datepicker( "option", "maxDate", selectedDate );
     	      }
     	    });
     	
+    	
+    	
         $("#submit").click(function(){
+        	    $('#cTable').html("");
     		    var modelname=$('#ModelName').val();
             	var webname=$('#WebName').val();
             	var start=$('#stime').val();
             	var end=$('#etime').val();
             	var url;
             	var json={"modelname":modelname,"start":start,"end":end};
-            	 if(webname=="京东"){
-            		url="/JD/modelinfo";
-            	}  
+            	if(webname=="京东") {
+                    url="/JD/modelinfo";
+                } else if(webname=="淘宝") {
+                     url="/TB/modelinfo";
+                } else if(webname=="天猫") {
+                     url="/TM/modelinfo";
+                } else if(webname=="亚马逊") {
+                    url="/AMZ/modelinfo";
+                } else if(webname=="百度贴吧") {
+                    url="/BD/modelinfo";
+                } else if(webname=="盖乐世社区") {
+                    url="/GC/modelinfo";
+                } else if(webname=="机锋") {
+                    url="/JF/modelinfo";
+                } else if(webname=="国美") {
+                    url="/GM/modelinfo";
+                } else if(webname=="苏宁易购") {
+                    url="/SN/modelinfo";
+                } else if(webname=="全部") {
+                    url="/all/modelinfo";
+                }
+            	 
             	$.ajax({
             		type:"post",
             		async:true,
@@ -249,12 +283,22 @@
             		data:json,
             		dataType: "json",
             		success:function(msg){
+            			var json = eval(JSON.stringify(msg.data));
             			var item;
-            			$.each(msg,function(i,result){
-            				/* item="<tr><td>"+result['name']+"</td><td>"+result['age']+"</td></tr>"; 
-            				$('#cTable').append(item);  */
+            			var num=msg.code;
+            			$.each(json,function(i,result){
+            				var id=json[i].id;
+            				var comment=json[i].firstcomment;
+            				item="<tr><td>"+id+"</td><td>"+comment+"</td></tr>"; 
+            				$('#cTable').append(item);  
             				}); 
-            			alert(JSON.stringify(msg));
+            			 /* alert(JSON.stringify(msg.data));  */ 
+            			$("#Pagination").pagination(id, {
+            	    	    num_edge_entries: 2,
+            	    	    num_display_entries: 4,
+            	    	    callback: pageselectCallback,
+            	    	    items_per_page:1
+            	    	});
                     },
                     error: function (msg) {
                         alert("err");
@@ -262,6 +306,9 @@
             	
             	});
         });  /* end search */ 
+        
+     
+        
     });
     </script>
 

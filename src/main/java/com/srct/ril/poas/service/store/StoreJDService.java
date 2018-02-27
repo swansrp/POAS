@@ -1,4 +1,4 @@
-package com.srct.ril.poas.service;
+package com.srct.ril.poas.service.store;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import com.srct.ril.poas.utils.ServiceException;
 @DS(DataSourceEnum.MODEL)
 public class StoreJDService {
 	@Autowired
-	private StoreJDMapper StoreJDDao;
+	private StoreJDMapper storeJDDao;
 	
 	 /**
      * Get product by id
@@ -33,11 +33,14 @@ public class StoreJDService {
     	StoreJDExample ex = new StoreJDExample();
     	ex.setDistinct(false);
     	Criteria criteria = ex.createCriteria();
-    	criteria.andDateGreaterThan(startTime);
-    	criteria.andDateLessThan(endTime);
+    	if(startTime.equals("") || endTime.equals("")) {
+    		
+    	} else {
+	    	criteria.andDateGreaterThan(startTime);
+	    	criteria.andDateLessThan(endTime);
+    	}
     	
-    	
-    	List<StoreJD> storeJD = StoreJDDao.selectByExample(ex);
+    	List<StoreJD> storeJD = storeJDDao.selectByExample(ex);
         if (storeJD == null) {
             throw new ServiceException("["+modelName+"] store JD from " + startTime + "to" + endTime + " not found" );
         }

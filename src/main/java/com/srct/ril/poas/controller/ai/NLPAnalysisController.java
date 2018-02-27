@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.srct.ril.poas.dao.pojo.StoreJD;
 import com.srct.ril.poas.http.CommonResponse;
 import com.srct.ril.poas.http.Response;
-import com.srct.ril.poas.service.StoreJDService;
 import com.srct.ril.poas.service.ai.NLPAnalysisService;
+import com.srct.ril.poas.service.store.StoreJDService;
 import com.srct.ril.poas.utils.ServiceException;
 
 @RestController
