@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -21,23 +22,48 @@ import com.srct.ril.poas.ai.NLPAnalysis.Item;
 
 
 public class ExcelUtils {
+	
+//	public static void main(String[] args) {
+//		ArrayList<String> arrayList = new ArrayList<String>();
+//		arrayList.add("lalalla");
+//		arrayList.add("lbbb");
+//		arrayList.add("lacccla");
+//		arrayList.add("ldd");
+//		WriteToExcel(arrayList);
+//		
+//	}
+	
+	public static void DelayWriteFile(HSSFWorkbook o,int time){
+		 try {
+			Thread.sleep(time);
+			wf(o);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	private static void wf(HSSFWorkbook wb)
 	{
 		FileOutputStream fileOut;
-		try {
-			fileOut = new FileOutputStream("workbook1.xls");
-			wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
-			fileOut.close(); 
-			System.out.println("write to excel done !");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.out.println("请先关闭excel文件!，然后运行");
-			//e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+		
+			try {
+				fileOut = new FileOutputStream("src/main/webapp/workbook.xls");
+				wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
+				fileOut.close(); 
+				System.out.println("write to excel done !");
+				
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				System.out.println("请先关闭excel文件，然后稍等!");
+				DelayWriteFile(wb,5000);
+				//e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+			} 
+		
 	}
 	
 
