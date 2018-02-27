@@ -12,6 +12,7 @@ import com.srct.ril.poas.dao.pojo.ModelMapExample;
 import com.srct.ril.poas.dao.pojo.StoreJD;
 import com.srct.ril.poas.dao.pojo.StoreJDExample;
 import com.srct.ril.poas.dao.pojo.StoreJDExample.Criteria;
+import com.srct.ril.poas.service.ai.NLPAnalysisService;
 import com.srct.ril.poas.utils.ServiceException;
 
 @Service
@@ -19,6 +20,9 @@ import com.srct.ril.poas.utils.ServiceException;
 public class StoreJDService {
 	@Autowired
 	private StoreJDMapper storeJDDao;
+	
+	@Autowired
+	private NLPAnalysisService nlpAnalysisService;
 	
 	 /**
      * Get product by id
@@ -44,6 +48,7 @@ public class StoreJDService {
         if (storeJD == null) {
             throw new ServiceException("["+modelName+"] store JD from " + startTime + "to" + endTime + " not found" );
         }
+        nlpAnalysisService.saveExcel(modelName, "JD", storeJD);
         return storeJD;
     }
 }

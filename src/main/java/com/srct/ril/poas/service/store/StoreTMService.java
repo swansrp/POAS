@@ -11,6 +11,7 @@ import com.srct.ril.poas.dao.mapper.StoreTMMapper;
 import com.srct.ril.poas.dao.pojo.StoreTM;
 import com.srct.ril.poas.dao.pojo.StoreTMExample;
 import com.srct.ril.poas.dao.pojo.StoreTMExample.Criteria;
+import com.srct.ril.poas.service.ai.NLPAnalysisService;
 import com.srct.ril.poas.utils.ServiceException;
 
 @Service
@@ -19,6 +20,9 @@ public class StoreTMService {
 
 	@Autowired
 	private StoreTMMapper storeTMDao;
+	
+	@Autowired
+	private NLPAnalysisService nlpAnalysisService;
 	
 	public List<StoreTM> select(String modelName, String startTime, String endTime) throws ServiceException {
     	
@@ -36,6 +40,7 @@ public class StoreTMService {
         if (StoreTM == null) {
             throw new ServiceException("["+modelName+"] store TM from " + startTime + "to" + endTime + " not found" );
         }
+        nlpAnalysisService.saveExcel(modelName, "TM", StoreTM);
         return StoreTM;
     }
 }

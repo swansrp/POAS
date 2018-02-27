@@ -11,6 +11,7 @@ import com.srct.ril.poas.dao.mapper.StoreTBMapper;
 import com.srct.ril.poas.dao.pojo.StoreTB;
 import com.srct.ril.poas.dao.pojo.StoreTBExample;
 import com.srct.ril.poas.dao.pojo.StoreTBExample.Criteria;
+import com.srct.ril.poas.service.ai.NLPAnalysisService;
 import com.srct.ril.poas.utils.ServiceException;
 
 @Service
@@ -19,6 +20,9 @@ public class StoreTBService {
 
 	@Autowired
 	private StoreTBMapper storeTBDao;
+	
+	@Autowired
+	private NLPAnalysisService nlpAnalysisService;
 	
 	public List<StoreTB> select(String modelName, String startTime, String endTime) throws ServiceException {
     	
@@ -36,6 +40,7 @@ public class StoreTBService {
         if (StoreTB == null) {
             throw new ServiceException("["+modelName+"] store TB from " + startTime + "to" + endTime + " not found" );
         }
+        nlpAnalysisService.saveExcel(modelName, "TB", StoreTB);
         return StoreTB;
     }
 }

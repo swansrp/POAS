@@ -11,6 +11,7 @@ import com.srct.ril.poas.dao.mapper.BbsGCMapper;
 import com.srct.ril.poas.dao.pojo.BbsGC;
 import com.srct.ril.poas.dao.pojo.BbsGCExample;
 import com.srct.ril.poas.dao.pojo.BbsGCExample.Criteria;
+import com.srct.ril.poas.service.ai.NLPAnalysisService;
 import com.srct.ril.poas.utils.ServiceException;
 
 @Service
@@ -19,6 +20,9 @@ public class BbsGCService {
 
 	@Autowired
 	private BbsGCMapper bbsGCDao;
+	
+	@Autowired
+	private NLPAnalysisService nlpAnalysisService;
 	
 	public List<BbsGC> select(String modelName, String startTime, String endTime) throws ServiceException {
     	
@@ -36,6 +40,7 @@ public class BbsGCService {
         if (BbsGC == null) {
             throw new ServiceException("["+modelName+"] BBS GC from " + startTime + "to" + endTime + " not found" );
         }
+        nlpAnalysisService.saveExcel(modelName, "GC", BbsGC);
         return BbsGC;
     }
 }
