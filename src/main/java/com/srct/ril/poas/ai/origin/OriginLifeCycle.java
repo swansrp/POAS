@@ -1,57 +1,59 @@
-package com.srct.ril.poas.ai.category;
+package com.srct.ril.poas.ai.origin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
 
 import com.srct.ril.poas.dao.dbconfig.DataSourceConfig;
-import com.srct.ril.poas.service.config.KeywordsService;
+import com.srct.ril.poas.service.config.SourceMapService;
 
 @Component
-public class CategoryLifecycle implements SmartLifecycle {
-	
-	private boolean isRunning = false;
+public class OriginLifeCycle implements SmartLifecycle {
+
+private boolean isRunning = false;
 	
 	//必须先注入dsc促使Mybatis sessionfactoryBean先被建立
 	@Autowired
 	DataSourceConfig dsc;
 	@Autowired
-	private KeywordsService keywordService;
-	
+	private SourceMapService sourceMapService;
 	
 	@Override
 	public void start() {
 		// TODO Auto-generated method stub
-		keywordService.initKeywords();
+		sourceMapService.initOrigin();
 		isRunning = true;
 	}
+
 	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
 	public boolean isRunning() {
 		// TODO Auto-generated method stub
 		return isRunning;
 	}
+
 	@Override
 	public int getPhase() {
 		// TODO Auto-generated method stub
-		return 1;
+		return 2;
 	}
+
 	@Override
 	public boolean isAutoStartup() {
 		// TODO Auto-generated method stub
 		return true;
 	}
+
 	@Override
 	public void stop(Runnable callback) {
 		// TODO Auto-generated method stub
-        callback.run();
-
-        isRunning = false;
-		
+		callback.run();
+		isRunning = false;
 	}
 
 }

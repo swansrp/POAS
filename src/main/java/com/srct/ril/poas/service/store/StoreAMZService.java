@@ -11,6 +11,7 @@ import com.srct.ril.poas.dao.mapper.StoreAMZMapper;
 import com.srct.ril.poas.dao.pojo.StoreAMZ;
 import com.srct.ril.poas.dao.pojo.StoreAMZExample;
 import com.srct.ril.poas.dao.pojo.StoreAMZExample.Criteria;
+import com.srct.ril.poas.service.ai.NLPAnalysisService;
 import com.srct.ril.poas.utils.ServiceException;
 import com.srct.ril.poas.utils.log.Log;
 
@@ -19,6 +20,9 @@ import com.srct.ril.poas.utils.log.Log;
 public class StoreAMZService {
 	@Autowired
 	private StoreAMZMapper storeAMZDao;
+	
+	@Autowired
+	private NLPAnalysisService nlpAnalysisService;
 	
 	public List<StoreAMZ> select(String modelName, String startTime, String endTime) throws ServiceException {
     	
@@ -36,6 +40,8 @@ public class StoreAMZService {
         if (StoreAMZ == null) {
             throw new ServiceException("["+modelName+"] store AMZ from " + startTime + "to" + endTime + " not found" );
         }
+        
+        nlpAnalysisService.saveExcel(modelName, "AMZ", StoreAMZ);
         return StoreAMZ;
     }
 }

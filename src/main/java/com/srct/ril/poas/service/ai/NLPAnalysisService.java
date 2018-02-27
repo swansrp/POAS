@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.srct.ril.poas.ai.NLPAnalysis;
+import com.srct.ril.poas.ai.NLPItem;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPCommentTag;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPDepParser;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPLexer;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPSentiment;
 import com.srct.ril.poas.ai.category.Category;
+import com.srct.ril.poas.ai.origin.Origin;
+import com.srct.ril.poas.dao.pojo.StoreJD;
 import com.srct.ril.poas.service.ai.baidu.BaiduNLPService;
 import com.srct.ril.poas.utils.ExcelUtils;
 import com.srct.ril.poas.utils.ServiceException;
@@ -24,6 +27,8 @@ public class NLPAnalysisService {
 	
 	@Autowired
 	private Category cat;
+	@Autowired
+	private Origin ori;
 	
 	private static enum Setiment{
 		UNKNOWN(-1),
@@ -234,4 +239,14 @@ public class NLPAnalysisService {
 		ExcelUtils.NLP_WriteToExcel(res);
 		return res;
 	}
+	
+	public void saveExcel(String modelName, String origin, Object dataList) {
+		List<NLPItem> res = new ArrayList<>();
+		Class<?> clazz = ori.getClassFromSource(origin);
+		for(Object obj : (List<Object>)dataList) {
+			res.add(new NLPItem(clazz, obj, origin, modelName));
+		}
+	}
+	
+	
 }
