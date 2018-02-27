@@ -1,5 +1,6 @@
 package com.srct.ril.poas.utils;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import org.slf4j.Logger;
@@ -58,5 +59,15 @@ public class JSONUtil {
 
            return mapper.readValue(jsonStr, javaType);
 
+    }
+    
+    public static boolean isJSONValid(String jsonInString ) {
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.readTree(jsonInString);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }

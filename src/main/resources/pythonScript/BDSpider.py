@@ -145,7 +145,6 @@ class BaiduSpider():
                     row = (subject,context,replynum,createtime,link)
                     forinsert.append(row)
                 except:
-                    print("err")
                     continue
             self.mdatabase.insert_values(forinsert)
         resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.Baidu.value, "success")

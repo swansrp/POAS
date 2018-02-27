@@ -26,10 +26,16 @@ public class PythonLifecycle implements SmartLifecycle  {
 	
 	@Autowired
 	ScarCronTask mScarCronTask;
-	private boolean isRunning = false;
+	
 	@Autowired
-    private  Scheduler scheduler;
-	private PythonJobCallBack mPythonJobCallBack = new PythonJobCallBack() {
+    private Scheduler scheduler;
+	
+	@Autowired
+	private PythonJob mPythonJob;
+	
+	private boolean isRunning = false;
+	
+	private static PythonJobCallBack mPythonJobCallBack = new PythonJobCallBack() {
 		
 		@Override
 		public void loadDataComplete(PythonResponseModel pythonResponseModel) {
@@ -45,21 +51,21 @@ public class PythonLifecycle implements SmartLifecycle  {
 	@Override
 	public void start() {
 		// TODO Auto-generated method stub
-		JobDetail job = JobBuilder.newJob(PythonJob.class).withIdentity(PythonJob.class.getSimpleName(), "Python").usingJobData("job", "fetch") .build();
-        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("*/20 * * * * ?");
-        //CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(PythonJob.class.getSimpleName(),"Python") .withSchedule(scheduleBuilder).build();
-        SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(40)
-                .withRepeatCount(2);
-        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(PythonJob.class.getSimpleName(), "Python").startNow()
-                .withSchedule(builder).build();
-//        try {
-//			scheduler.scheduleJob(job, trigger);
-//		} catch (SchedulerException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		isRunning = true;
-		mScarCronTask.setCallBack(mPythonJobCallBack);
+		mPythonJob.setCallBack(mPythonJobCallBack);
+		JobDetail job = JobBuilder.newJob(PythonJob.class).withIdentity(PythonJob.class.getSimpleName(), "Python").usingJobData("job", "fetch") .build();
+        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0 6 * * ?");
+        CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(PythonJob.class.getSimpleName(),"Python") .withSchedule(scheduleBuilder).build();
+//        SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(2)
+//                .withRepeatCount(0);
+//        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(PythonJob.class.getSimpleName(), "Python").startNow()
+//                .withSchedule(builder).build();
+        try {
+        	scheduler.scheduleJob(job, trigger);
+		} catch (SchedulerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	@Override
 	public void stop() {

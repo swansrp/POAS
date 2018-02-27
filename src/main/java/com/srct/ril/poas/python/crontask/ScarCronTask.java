@@ -26,12 +26,12 @@ public class ScarCronTask {
 	private PythonResponseModel mPythonResponseModel = null;
 	@Scheduled(cron = "0 6 * * * ?")
 	public void executeScarScript() throws IOException, InterruptedException {
-	    File file = ResourceUtils.getFile("classpath:pythonScript/JingDongSpider.py");
-		Process fetchScarProcess = Runtime.getRuntime().exec("python " + file.toString());
-		normalIS = fetchScarProcess.getInputStream();
-		errorIS = fetchScarProcess.getErrorStream();
-		startCollectScriptNormalResultThread();
-		startCollectScriptErrorResultThread();
+//	    File file = ResourceUtils.getFile("classpath:pythonScript/JingDongSpider.py");
+//		Process fetchScarProcess = Runtime.getRuntime().exec("python " + file.toString());
+//		normalIS = fetchScarProcess.getInputStream();
+//		errorIS = fetchScarProcess.getErrorStream();
+//		startCollectScriptNormalResultThread();
+//		startCollectScriptErrorResultThread();
 	}
 	
 	private void startCollectScriptNormalResultThread() {
