@@ -48,7 +48,7 @@ public class ExcelUtils {
 		FileOutputStream fileOut;
 		
 			try {
-				fileOut = new FileOutputStream("src/main/webapp/workbook.xls");
+				fileOut = new FileOutputStream("src/main/webapp/workbook1.xls");
 				wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
 				fileOut.close(); 
 				System.out.println("write to excel done !");
