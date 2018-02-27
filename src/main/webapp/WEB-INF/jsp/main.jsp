@@ -120,7 +120,8 @@
                             </div>
                             <div class="form-group col-md-6">
 						   	         <button id="submit" type="submit" class="btn btn-danger">确定 </button>
-							         <button id="download" type="submit" class="btn btn-danger">点击下载 </button>
+							         <!-- <button id="download" type="submit" class="btn btn-danger">点击下载 </button> -->
+							         <a href="../workbook1.xls" class="btn btn-success ">点击下载</a>
                                      
                             </div>
 							
@@ -129,6 +130,8 @@
                         </div>
             </div>
 			 <div class="row">
+			 
+		 
                     <div class="col-md-12">
                         <div class="alert alert-info">
                            
@@ -221,10 +224,35 @@
     	
     }/* end show_model_sselect() */
     
-    
+    function test() { 
+    	var strFullPath=window.document.location.href;  
+        var strPath=window.document.location.pathname;  
+        var pos=strFullPath.indexOf(strPath);  
+        var prePath=strFullPath.substring(0,pos);  
+        var postPath=strPath.substring(0,strPath.substr(1).indexOf('/')+1);  
+        var basePath = prePath;  
+        basePath = prePath + postPath;    
+        $("#path").text(basePath);  
+        //以上内容为获取项目根路径的完整代码  
+          
+        //以下内容为测试内容  
+        var port  = window.location.port;  
+        var protocol  = window.location.protocol;  
+        var hash  = window.location.hash;  
+        var host  = window.location.host;  
+        var search  = window.location.search;  
+        $("#href").text(strFullPath);  
+        $("#pathname").text(strPath);  
+        $("#protocol").text(protocol);  
+        $("#hash").text(hash);  
+        $("#host").text(host);  
+        $("#port").text(port);  
+        $("#search").text(search);  
+    }
     
     $(function(){
     	show_model_sselect();
+    	test();
     	$( "#stime" ).datepicker({
     	      defaultDate: "+1w",
     	      changeMonth: true,
@@ -243,7 +271,6 @@
     	        $( "#stime" ).datepicker( "option", "maxDate", selectedDate );
     	      }
     	    });
-    	
     	
     	
         $("#submit").click(function(){
@@ -289,10 +316,12 @@
             			$.each(json,function(i,result){
             				var id=json[i].id;
             				var comment=json[i].firstcomment;
-            				item="<tr><td>"+id+"</td><td>"+comment+"</td></tr>"; 
+            				var link;
+            				if (url="/BD/modelinfo"){link=json[i].link;}
+            				item="<tr><td>"+id+"</td><td>"+comment+"</td><td><a href=' "+link+" 'target= '_Blank'> "+link+"</a></td></tr>"; 
             				$('#cTable').append(item);  
             				}); 
-            			 /* alert(JSON.stringify(msg.data));  */ 
+            			/*  alert(JSON.stringify(msg.data)); */
             			$("#Pagination").pagination(id, {
             	    	    num_edge_entries: 2,
             	    	    num_display_entries: 4,
