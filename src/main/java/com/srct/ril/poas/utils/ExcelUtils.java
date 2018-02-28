@@ -334,112 +334,41 @@ public class ExcelUtils {
 	}
 	
 	
-	public static void NLP_WriteToExcel(Object object){
-		
-		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
-		HSSFSheet sheet = wb.createSheet("NLP_Analysis");
-		sheet.setColumnWidth(0, 25 * 512);//第一列宽度
-		sheet.setColumnWidth(1, 15 * 512);//第二列宽度
-		sheet.setColumnWidth(3,10 * 512);//第四列宽度
-		HSSFCellStyle cellStyle=wb.createCellStyle(); 
-		cellStyle.setShrinkToFit(true);
-		cellStyle.setWrapText(true);
-		cellStyle.setBorderBottom(BorderStyle.THIN);//下边框        
-		cellStyle.setBorderLeft(BorderStyle.THIN);//左边框        
-		cellStyle.setBorderRight(BorderStyle.THIN);//右边框        
-		cellStyle.setBorderTop(BorderStyle.THIN);//上边框 
-		
-		@SuppressWarnings("unchecked")
-		ArrayList<NLPAnalysis> listNLP = (ArrayList<NLPAnalysis>) object;
-		Iterator<NLPAnalysis> it = listNLP.iterator();
-		
-		
-		//ArrayList<ArrayList<String>> excel_lines = new ArrayList<ArrayList<String>>();
-		int excelIndex=0;
-		
-		int NLPIndex = 0;
-		//利用迭代器读取 list中的每个NLPAnalysis
-		while(it.hasNext()&&NLPIndex<listNLP.size()) {
-			
-			
-			boolean flag = false;
-			//ArrayList<String> line = new ArrayList<String> ();//一行
-			List<Item> itemlist = listNLP.get(NLPIndex).getItems();//获取这个NLPAnalysis的item的list
-			Iterator<Item> itemit = itemlist.iterator();
-			
-	        //setStyle(cell[10][1], "TAN", HSSFColor.TAN.index); 
-			
-			
-			int j=0;
-			//循环NLPAnalysis中的items这个list
-			while(itemit.hasNext()&&j<itemlist.size() ){
-				
 
-				HSSFRow row = sheet.createRow(excelIndex);
-				HSSFCell cell0=row.createCell(0);
-				cell0.setCellStyle(cellStyle);
-				if(!flag)
-				{
-					//line.add(listNLP.get(rowIndex).getContent().toString()); 
-					cell0.setCellValue(listNLP.get(NLPIndex).getContent().toString());
-					flag =true;
-				}
-				else
-				{
-					cell0.setCellValue(" ");
-				}
-				
-				HSSFCell cell1 = row.createCell(1);
-				cell1.setCellValue(itemlist.get(j).getSubContent());
-				cell1.setCellStyle(cellStyle);
-				
-				HSSFCell cell2 = row.createCell(2);
-				cell2.setCellValue(itemlist.get(j).getProp());
-				cell2.setCellStyle(cellStyle);
-				
-				HSSFCell cell3 = row.createCell(3);
-				cell3.setCellValue(itemlist.get(j).getCategory());
-				cell3.setCellStyle(cellStyle);
-				
-				HSSFCell cell4 = row.createCell(4);
-				switch(itemlist.get(j).getSentiment()){
-				case NEGATIVE:
-					cell4.setCellValue("消极");
-					break;
-				case NEUTRAL:
-					cell4.setCellValue("中性");
-					break;
-				case POSITIVE:
-					cell4.setCellValue("积极");
-					break;
-				default:
-					cell4.setCellValue("没啥说的");
-				}
-				cell4.setCellStyle(cellStyle);
-//				line.add( itemlist.get(j).getSubContent().toString() );
-//				line.add( itemlist.get(j).getProp().toString());
-//				line.add( itemlist.get(j).getKey().toString());
-				excelIndex++;
-				j++;
-				
-			}//while(itemit.hasNext()便利item
-			
-			//excel_lines.add(line);
-			NLPIndex++;
-		}//while(it.hasNext()便利NLP
-		
-		wf(wb);
-
-	}
-	
 	/*
 	 * flag is false , items will be ignored
 	 * flag is true , items will be printed to excel file
 	*/
-	public static void NLP_WriteToExcel(Object object, boolean f){
+	public static void NLP_WriteToExcel(Object object, boolean f,String filename){
 		
-		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
-		HSSFSheet sheet = wb.createSheet("NLP_Analysis");
+		
+		String puth = baseDir +filename+".xls";
+		int excelIndex = 0;
+		HSSFWorkbook wb = null;
+		HSSFSheet sheet = null;
+		
+		FileInputStream fs;
+		try {
+			fs = new FileInputStream(puth);
+			POIFSFileSystem ps=new POIFSFileSystem(fs);  //使用POI提供的方法得到excel的信息  
+	        wb=new HSSFWorkbook(ps);    
+	        sheet=wb.getSheetAt(0);  //获取到工作表，因为一个excel可能有多个工作表  
+	        excelIndex = sheet.getLastRowNum()+1;//从这行开始写 新的数据
+	        System.out.println("continue output at excel index : "+excelIndex);
+		
+		} catch (FileNotFoundException e) {
+			wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
+			sheet = wb.createSheet("NLP_Item");
+			System.out.println("建立新表");
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}   
+          
+		
+		
+		
 		sheet.setColumnWidth(0, 25 * 512);//第一列宽度
 		sheet.setColumnWidth(1, 15 * 512);//第二列宽度
 		sheet.setColumnWidth(3,10 * 512);//第四列宽度
@@ -457,7 +386,7 @@ public class ExcelUtils {
 		
 		
 		//ArrayList<ArrayList<String>> excel_lines = new ArrayList<ArrayList<String>>();
-		int excelIndex=0;
+		
 		
 		int NLPIndex = 0;
 		//利用迭代器读取 list中的每个NLPAnalysis
@@ -517,9 +446,7 @@ public class ExcelUtils {
 						cell4.setCellValue("Unknown");
 					}
 					cell4.setCellStyle(cellStyle);
-	//				line.add( itemlist.get(j).getSubContent().toString() );
-	//				line.add( itemlist.get(j).getProp().toString());
-	//				line.add( itemlist.get(j).getKey().toString());
+
 					excelIndex++;
 					j++;
 					
@@ -530,7 +457,7 @@ public class ExcelUtils {
 			NLPIndex++;
 		}//while(it.hasNext()便利NLP
 		
-		wf(wb);
+		wf(wb,filename);
 
 	}
 	
