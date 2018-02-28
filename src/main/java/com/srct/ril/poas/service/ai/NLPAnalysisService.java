@@ -1,6 +1,10 @@
 package com.srct.ril.poas.service.ai;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,7 @@ import com.srct.ril.poas.ai.category.Category;
 import com.srct.ril.poas.ai.category.Category.Sentiment;
 import com.srct.ril.poas.ai.origin.Origin;
 import com.srct.ril.poas.service.ai.baidu.BaiduNLPService;
+import com.srct.ril.poas.utils.BeanUtil;
 import com.srct.ril.poas.utils.ExcelUtils;
 import com.srct.ril.poas.utils.ServiceException;
 import com.srct.ril.poas.utils.log.Log;
@@ -34,7 +39,9 @@ public class NLPAnalysisService {
 	private double confidence = 0.7;
 	private double prob = 0.65;
 	private Sentiment sentiment = Sentiment.ALL;
-	private boolean needAnalysis = false;
+	private boolean debugMode = true;
+	private boolean needAnalysis = true;
+	private String fileName = "DEMO";
 	
 	private BaiduNLPDepParser defParser(String content) throws ServiceException {
 		BaiduNLPDepParser dp = null;
@@ -220,7 +227,7 @@ public class NLPAnalysisService {
 		List<NLPAnalysis> NLPAnalysisList = new ArrayList<>();
 		NLPAnalysis nlpAnalysis = _nlp(content);
 		NLPAnalysisList.add(nlpAnalysis);
-		ExcelUtils.NLP_WriteToExcel(NLPAnalysisList);
+		ExcelUtils.NLP_WriteToExcel(NLPAnalysisList,debugMode,fileName);
 		return nlpAnalysis;
 	}
 	
@@ -229,30 +236,63 @@ public class NLPAnalysisService {
 		for(String content : contentList) {
 			res.add(_nlp(content));
 		}
-		ExcelUtils.NLP_WriteToExcel(res);
+		ExcelUtils.NLP_WriteToExcel(res,debugMode,fileName);
 		return res;
 	}
 	
 	public NLPItem NLPitemFactory(String modelName, String origin, Object obj) throws ServiceException {
-		Class<?> clazz = ori.getClassFromSource(origin);
+		Class<?> clazz = ori.getPojoClassFromSource(origin);
 		NLPItem nlpIt = new NLPItem(modelName, origin, obj, clazz);
-		String title = nlpIt.getTitle();
-		String comment = nlpIt.getComment();
-		if(nlpIt.needAnalysis() && needAnalysis) {
-			NLPAnalysis titleAnalysis = null;
-			NLPAnalysis commentAnalysis = null;
-			if(title!=null) titleAnalysis = _nlp(nlpIt.getTitle());
-			if(comment!=null) commentAnalysis = _nlp(nlpIt.getComment());
-			nlpIt.setAnalysis(titleAnalysis, commentAnalysis);
+		if(needAnalysis) {
+			updateNLPItemAnalysis(nlpIt);
+			syncNLPItem2DB(nlpIt);
 		}
 		return nlpIt;
 	}
 	
+	public void updateNLPItemAnalysis(NLPItem it) throws ServiceException {
+		String title = it.getTitle();
+		String comment = it.getComment();
+		if(it.needAnalysis()) {
+			NLPAnalysis titleAnalysis = null;
+			NLPAnalysis commentAnalysis = null;
+			if(title!=null) titleAnalysis = _nlp(it.getTitle());
+			if(comment!=null) commentAnalysis = _nlp(it.getComment());
+			it.setAnalysis(titleAnalysis, commentAnalysis);
+		}
+	}
+	
+	public void syncNLPItem2DB(NLPItem it) {
+		Class<?> serviceDaoClass = ori.getServiceClassFromSource(it.getOrigin());
+		Object serviceDao = ori.getServiceFromSource(it.getOrigin());
+		Method method;
+		
+		try {
+			method = serviceDaoClass.getMethod("updateSentiment", new Class[] {String.class, Object.class, Integer.class});
+			method.invoke(serviceDao,it.getModelName(), it.getDaoPojoObject(), it.getSentiment().getValue());
+			method = serviceDaoClass.getMethod("updateCategory", new Class[] {String.class, Object.class, Integer.class});
+			Log.i("ID {}->{}", it.getCategory(), cat.getId(it.getCategory()));
+			method.invoke(serviceDao,it.getModelName(),it.getDaoPojoObject(),cat.getId(it.getCategory()));
+		} catch (NoSuchMethodException | 
+				SecurityException | 
+				IllegalAccessException | 
+				IllegalArgumentException | 
+				InvocationTargetException e) {
+			Log.w("exception occur: ", e);
+		}
+	}
+	
 	public void saveExcel(String modelName, String origin, Object dataList) throws ServiceException {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");//设置日期格式
+		String date = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
 		List<NLPItem> res = new ArrayList<>();
 		for(Object obj : (List<Object>)dataList) {
 			NLPItem nlpIt = NLPitemFactory(modelName, origin,obj);
 			res.add(nlpIt);
+			List<NLPAnalysis>NLPAnalysisList = new ArrayList<>();
+			NLPAnalysisList.add(nlpIt.getTitleAnalysis());
+			NLPAnalysisList.add(nlpIt.getCommentAnalysis());
+			ExcelUtils.NLP_WriteToExcel(NLPAnalysisList,debugMode,fileName+date);
 		}
 		ExcelUtils.NLPItem_WriteToExcel(res);
 	}

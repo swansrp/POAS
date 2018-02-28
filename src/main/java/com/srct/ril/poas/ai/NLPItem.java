@@ -3,14 +3,13 @@ package com.srct.ril.poas.ai;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.srct.ril.poas.ai.category.Category;
 import com.srct.ril.poas.ai.category.Category.Sentiment;
-import com.srct.ril.poas.service.ai.NLPAnalysisService;
 import com.srct.ril.poas.utils.log.Log;
 
 public class NLPItem {
+	
+	private Object daoPojoObject;
 	
 	private Integer id;
 	private String modelName;
@@ -27,6 +26,7 @@ public class NLPItem {
 	private String category;	
 	public NLPItem(String modelName, String origin, Object obj, Class<?> clazz) {
 		//Log.i("NLPItem:  origin {} modelName {}", origin,modelName);
+		this.daoPojoObject = obj;
 		this.origin = origin;
 		this.modelName = modelName;
 		Method method;
@@ -75,6 +75,31 @@ public class NLPItem {
 				IllegalArgumentException | 
 				InvocationTargetException e) {
 		}
+		try {
+			method = clazz.getMethod("getCategory");
+			int categoryId = (Integer)method.invoke(obj);
+			categoryId = 1;
+			category = Category.getCategorybyId(categoryId);
+			Log.i("category {}", category);
+		} catch (NoSuchMethodException | 
+				SecurityException | 
+				IllegalAccessException | 
+				IllegalArgumentException | 
+				InvocationTargetException |
+				NullPointerException e) {
+			category = Category.getCategorybyId(1);
+		}
+		try {
+			method = clazz.getMethod("getSentiment");
+			int sentimentValue = (Integer)method.invoke(obj);
+			Log.i("sentimentValue{}",sentimentValue);
+			sentiment = Category.Sentiment.getSetiment(sentimentValue);
+		} catch (NoSuchMethodException | 
+				SecurityException | 
+				IllegalAccessException | 
+				IllegalArgumentException | 
+				InvocationTargetException e) {
+		}
 	}
 	
 	public void setAnalysis(NLPAnalysis titleAnalysis, NLPAnalysis commentAnalysis) {
@@ -83,6 +108,10 @@ public class NLPItem {
 		if(titleAnalysis!=null) {
 			if(titleAnalysis.getCategory()!=null) {
 				setCategory(titleAnalysis.getCategory());
+			}
+		} else if(commentAnalysis!=null) {
+			if(commentAnalysis.getCategory()!=null) {
+				setCategory(commentAnalysis.getCategory());
 			}
 		}
 	}
@@ -94,6 +123,14 @@ public class NLPItem {
 				&& 
 				(category!=null)
 			   );
+	}
+
+	public Object getDaoPojoObject() {
+		return daoPojoObject;
+	}
+
+	public void setDaoPojoObject(Object daoPojoObject) {
+		this.daoPojoObject = daoPojoObject;
 	}
 
 	public Integer getId() {
@@ -172,7 +209,7 @@ public class NLPItem {
 		return sentiment;
 	}
 
-	public void setSetiment(Sentiment setiment) {
+	public void setSentiment(Sentiment sentiment) {
 		this.sentiment = sentiment;
 	}
 
@@ -183,5 +220,6 @@ public class NLPItem {
 	public void setCategory(String category) {
 		this.category = category;
 	}
+
 
 }

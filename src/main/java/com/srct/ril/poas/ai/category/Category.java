@@ -41,6 +41,7 @@ public class Category {
 	
 	private List<String> categoryList = new ArrayList<String>();
 	private Map<String, Integer> cat2IdMap = new HashMap<>();
+	private static Map<Integer, String> id2CatMap = new HashMap<>();
 	private Map<String, String> cat2aliasMap = new HashMap<>();
 	private Map<String, List<String>> alias2catMap = new HashMap<>();
 	private Map<String, List<String>> keywordMap = new HashMap<>();
@@ -60,6 +61,7 @@ public class Category {
 		categoryList.add(key.getCategory());
 		cat2aliasMap.put(key.getCategory(), key.getAlias());
 		cat2IdMap.put(key.getCategory(), key.getId());
+		id2CatMap.put(key.getId(),key.getCategory());
 		keywordMap.put(key.getCategory(), new ArrayList<String>());
 		String[] strArray = key.getKeywords().split(",");
 		for(String str : strArray) {
@@ -83,6 +85,9 @@ public class Category {
 			id = cat2IdMap.get(category);
 		}
 		return id;
+	}
+	public static String getCategorybyId(int id) {
+		return id2CatMap.get(id);
 	}
 	public List<String> getCategoryList(String alias) {
 		List<String> categoryList = null;

@@ -44,4 +44,16 @@ public class StoreAMZService {
         nlpAnalysisService.saveExcel(modelName, "AMZ", StoreAMZ);
         return StoreAMZ;
     }
+	
+	public void updateSentiment(String modelName, Object obj, Integer sentiment) {
+    	StoreAMZ record = (StoreAMZ)obj;
+    	record.setSentiment(sentiment);
+    	storeAMZDao.updateByPrimaryKey(record);
+    }
+    
+	public void updateCategory(String modelName, Object obj, Integer category) {
+		StoreAMZ record = (StoreAMZ)obj;
+    	record.setCategory(category);
+    	storeAMZDao.updateByPrimaryKey(record);	
+	}
 }
