@@ -22,6 +22,7 @@ import com.srct.ril.poas.service.store.StoreJDService;
 import com.srct.ril.poas.service.store.StoreTBService;
 import com.srct.ril.poas.service.store.StoreTMService;
 import com.srct.ril.poas.utils.ServiceException;
+import com.srct.ril.poas.utils.log.Log;
 
 @Service
 public class StoreBbsService {
@@ -45,31 +46,31 @@ public class StoreBbsService {
 	public List<NLPItem> select(String modelName, String startTime, String endTime) throws ServiceException {
     	
 		List<NLPItem> NLPItemList = new ArrayList<>();
-		List<StoreJD> storeJDList = storeJDService.select(modelName,startTime,endTime);
+		List<StoreJD> storeJDList = storeJDService.select(modelName,startTime,endTime, false);
 		for(StoreJD it : storeJDList) {
 			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "JD", it));
 		}
-		List<StoreAMZ> storeAMZList = storeAMZService.select(modelName,startTime,endTime);
+		List<StoreAMZ> storeAMZList = storeAMZService.select(modelName,startTime,endTime, false);
 		for(StoreAMZ it : storeAMZList) {
 			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "AMZ", it));
 		}
-		List<StoreTB> storeTBList = storeTBService.select(modelName,startTime,endTime);
+		List<StoreTB> storeTBList = storeTBService.select(modelName,startTime,endTime, false);
 		for(StoreTB it : storeTBList) {
 			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "TB", it));
 		}
-		List<StoreTM> storeTMList = storeTMService.select(modelName,startTime,endTime);
+		List<StoreTM> storeTMList = storeTMService.select(modelName,startTime,endTime, false);
 		for(StoreTM it : storeTMList) {
 			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "TM", it));
 		}
-		List<BbsBD> bbsBDList = bbsBDService.select(modelName,startTime,endTime);
+		List<BbsBD> bbsBDList = bbsBDService.select(modelName,startTime,endTime, false);
 		for(BbsBD it : bbsBDList) {
 			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "BD", it));
 		}
-		List<BbsGC> bbsGCList = bbsGCService.select(modelName,startTime,endTime);
+		List<BbsGC> bbsGCList = bbsGCService.select(modelName,startTime,endTime, false);
 		for(BbsGC it : bbsGCList) {
 			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "GC", it));
 		}
-		List<BbsJF> bbsJFList = bbsJFService.select(modelName,startTime,endTime);
+		List<BbsJF> bbsJFList = bbsJFService.select(modelName,startTime,endTime, false);
 		for(BbsJF it : bbsJFList) {
 			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "JF", it));
 		}

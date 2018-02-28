@@ -32,7 +32,7 @@ public class StoreJDService {
      * @return
      * @throws ServiceException
      */
-    public List<StoreJD> select(String modelName, String startTime, String endTime) throws ServiceException {
+    public List<StoreJD> select(String modelName, String startTime, String endTime, boolean saveExcel) throws ServiceException {
     	
     	StoreJDExample ex = new StoreJDExample();
     	ex.setDistinct(false);
@@ -48,8 +48,14 @@ public class StoreJDService {
         if (storeJD == null) {
             throw new ServiceException("["+modelName+"] store JD from " + startTime + "to" + endTime + " not found" );
         }
-        nlpAnalysisService.saveExcel(modelName, "JD", storeJD);
+        if(saveExcel) {
+        	nlpAnalysisService.saveExcel(modelName, "JD", storeJD);
+        }
         return storeJD;
+    }
+    
+    public List<StoreJD> select(String modelName, String startTime, String endTime) throws ServiceException {
+    	return select(modelName, startTime, endTime, true);
     }
     
 	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {

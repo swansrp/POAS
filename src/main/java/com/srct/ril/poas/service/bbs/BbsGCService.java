@@ -24,7 +24,7 @@ public class BbsGCService {
 	@Autowired
 	private NLPAnalysisService nlpAnalysisService;
 	
-	public List<BbsGC> select(String modelName, String startTime, String endTime) throws ServiceException {
+	public List<BbsGC> select(String modelName, String startTime, String endTime, boolean saveExcel) throws ServiceException {
     	
     	BbsGCExample ex = new BbsGCExample();
     	ex.setDistinct(false);
@@ -40,9 +40,16 @@ public class BbsGCService {
         if (BbsGC == null) {
             throw new ServiceException("["+modelName+"] BBS GC from " + startTime + "to" + endTime + " not found" );
         }
-        nlpAnalysisService.saveExcel(modelName, "GC", BbsGC);
+        if(saveExcel) {
+        	nlpAnalysisService.saveExcel(modelName, "GC", BbsGC);
+        }
         return BbsGC;
     }
+	
+	public List<BbsGC> select(String modelName, String startTime, String endTime) throws ServiceException {
+		return select(modelName, startTime, endTime, true);
+	}
+	
 	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
 		BbsGC record = (BbsGC)obj;
 		record.setCategory(category);

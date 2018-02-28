@@ -251,12 +251,12 @@ public class NLPAnalysisService {
 	
 	public void updateNLPItemAnalysis(NLPItem it) throws ServiceException {
 		String title = it.getTitle();
-		String comment = it.getComment();
+		String comment = it.getFirstcomment();
 		if(it.needAnalysis()) {
 			NLPAnalysis titleAnalysis = null;
 			NLPAnalysis commentAnalysis = null;
-			if(title!=null) titleAnalysis = _nlp(it.getTitle());
-			if(comment!=null) commentAnalysis = _nlp(it.getComment());
+			if(title!=null) titleAnalysis = _nlp(title);
+			if(comment!=null) commentAnalysis = _nlp(comment);
 			it.setAnalysis(titleAnalysis, commentAnalysis);
 		}
 	}
@@ -292,7 +292,7 @@ public class NLPAnalysisService {
 	}
 	
 	public void saveExcel(String modelName, List<NLPItem> nlpItemList) throws ServiceException {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmmss");//设置日期格式
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmm");//设置日期格式
 		String date = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
 		for(NLPItem nlpIt : nlpItemList) {
 			List<NLPAnalysis>NLPAnalysisList = new ArrayList<>();

@@ -24,7 +24,7 @@ public class StoreAMZService {
 	@Autowired
 	private NLPAnalysisService nlpAnalysisService;
 	
-	public List<StoreAMZ> select(String modelName, String startTime, String endTime) throws ServiceException {
+	public List<StoreAMZ> select(String modelName, String startTime, String endTime, boolean saveExcel) throws ServiceException {
     	
     	StoreAMZExample ex = new StoreAMZExample();
     	ex.setDistinct(false);
@@ -40,10 +40,15 @@ public class StoreAMZService {
         if (StoreAMZ == null) {
             throw new ServiceException("["+modelName+"] store AMZ from " + startTime + "to" + endTime + " not found" );
         }
-        
-        nlpAnalysisService.saveExcel(modelName, "AMZ", StoreAMZ);
+        if(saveExcel) {
+        	nlpAnalysisService.saveExcel(modelName, "AMZ", StoreAMZ);
+        }
         return StoreAMZ;
     }
+	
+	public List<StoreAMZ> select(String modelName, String startTime, String endTime) throws ServiceException {
+		return select(modelName, startTime, endTime, true);
+	}
 	
 	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
 		StoreAMZ record = (StoreAMZ)obj;

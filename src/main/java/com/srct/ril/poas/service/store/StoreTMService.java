@@ -24,7 +24,7 @@ public class StoreTMService {
 	@Autowired
 	private NLPAnalysisService nlpAnalysisService;
 	
-	public List<StoreTM> select(String modelName, String startTime, String endTime) throws ServiceException {
+	public List<StoreTM> select(String modelName, String startTime, String endTime, boolean saveExcel) throws ServiceException {
     	
     	StoreTMExample ex = new StoreTMExample();
     	ex.setDistinct(false);
@@ -40,9 +40,16 @@ public class StoreTMService {
         if (StoreTM == null) {
             throw new ServiceException("["+modelName+"] store TM from " + startTime + "to" + endTime + " not found" );
         }
-        nlpAnalysisService.saveExcel(modelName, "TM", StoreTM);
+        if(saveExcel) {
+        	nlpAnalysisService.saveExcel(modelName, "TM", StoreTM);
+        }
         return StoreTM;
     }
+	
+	public List<StoreTM> select(String modelName, String startTime, String endTime) throws ServiceException {
+		return select(modelName, startTime, endTime, true);
+	}
+	
 	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
 		StoreTM record = (StoreTM)obj;
 		record.setCategory(category);

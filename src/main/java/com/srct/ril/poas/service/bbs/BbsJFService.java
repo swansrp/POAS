@@ -24,7 +24,7 @@ public class BbsJFService {
 	@Autowired
 	private NLPAnalysisService nlpAnalysisService;
 	
-	public List<BbsJF> select(String modelName, String startTime, String endTime) throws ServiceException {
+	public List<BbsJF> select(String modelName, String startTime, String endTime, boolean saveExcel) throws ServiceException {
     	
     	BbsJFExample ex = new BbsJFExample();
     	ex.setDistinct(false);
@@ -40,9 +40,16 @@ public class BbsJFService {
         if (BbsJF == null) {
             throw new ServiceException("["+modelName+"] BBS JF from " + startTime + "to" + endTime + " not found" );
         }
-        nlpAnalysisService.saveExcel(modelName, "JF", BbsJF);
+        if(saveExcel) {
+        	nlpAnalysisService.saveExcel(modelName, "JF", BbsJF);
+        }
         return BbsJF;
     }
+	
+	public List<BbsJF> select(String modelName, String startTime, String endTime) throws ServiceException {
+		return select(modelName, startTime, endTime, true);
+	}
+	
 	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
 		BbsJF record = (BbsJF)obj;
 		record.setCategory(category);

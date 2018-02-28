@@ -24,7 +24,7 @@ public class BbsBDService {
 	@Autowired
 	private NLPAnalysisService nlpAnalysisService;
 	
-	public List<BbsBD> select(String modelName, String startTime, String endTime) throws ServiceException {
+	public List<BbsBD> select(String modelName, String startTime, String endTime, boolean saveExcel) throws ServiceException {
     	
     	BbsBDExample ex = new BbsBDExample();
     	ex.setDistinct(false);
@@ -40,9 +40,16 @@ public class BbsBDService {
         if (BbsBD == null) {
             throw new ServiceException("["+modelName+"] BBS BD from " + startTime + "to" + endTime + " not found" );
         }
-        nlpAnalysisService.saveExcel(modelName, "BD", BbsBD);
+        if(saveExcel) {
+        	nlpAnalysisService.saveExcel(modelName, "BD", BbsBD);
+        }
         return BbsBD;
     }
+	
+	public List<BbsBD> select(String modelName, String startTime, String endTime) throws ServiceException {
+		return select(modelName, startTime, endTime, true);
+	}
+	
 	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
 		BbsBD record = (BbsBD)obj;
 		record.setCategory(category);

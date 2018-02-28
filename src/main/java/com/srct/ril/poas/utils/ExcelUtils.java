@@ -171,7 +171,7 @@ public class ExcelUtils {
 			
 			HSSFCell cell2=row.createCell(3);
 			cell2.setCellStyle(cellStyle);
-			cell2.setCellValue(listNLP.get(NLPIndex-1).getComment());
+			cell2.setCellValue(listNLP.get(NLPIndex-1).getFirstcomment());
 			
 			HSSFCell cell3=row.createCell(4);
 			cell3.setCellStyle(cellStyle);
@@ -196,7 +196,7 @@ public class ExcelUtils {
 			
 			HSSFCell cell6=row.createCell(6);
 			cell6.setCellStyle(cellStyle);
-			cell6.setCellValue(listNLP.get(NLPIndex-1).getUrl());
+			cell6.setCellValue(listNLP.get(NLPIndex-1).getLink());
 			
 			NLPIndex++;
 		}
@@ -305,22 +305,22 @@ public class ExcelUtils {
 			
 			HSSFCell cell3=row.createCell(3);
 			cell3.setCellStyle(cellStyle);
-			cell3.setCellValue(listNLP.get(NLPIndex).getComment());
+			cell3.setCellValue(listNLP.get(NLPIndex).getFirstcomment());
 			
 			HSSFCell cell4=row.createCell(4);
 			cell4.setCellStyle(cellStyle);
 			switch(listNLP.get(NLPIndex).getSentiment()){
 			case NEGATIVE:
-				cell3.setCellValue("消极");
+				cell4.setCellValue("消极");
 				break;
 			case NEUTRAL:
-				cell3.setCellValue("中性");
+				cell4.setCellValue("中性");
 				break;
 			case POSITIVE:
-				cell3.setCellValue("积极");
+				cell4.setCellValue("积极");
 				break;
 			default:
-				cell3.setCellValue("Unknown");
+				cell4.setCellValue("Unknown");
 			}
 			
 			HSSFCell cell5=row.createCell(5);
@@ -329,7 +329,7 @@ public class ExcelUtils {
 			
 			HSSFCell cell6=row.createCell(6);
 			cell6.setCellStyle(cellStyle);
-			cell6.setCellValue(listNLP.get(NLPIndex).getUrl());
+			cell6.setCellValue(listNLP.get(NLPIndex).getLink());
 			
 			NLPIndex++;
 		}
