@@ -22,9 +22,9 @@ public class NLPItem {
 	private NLPAnalysis commentAnalysis;
 	private String url;
 	
+
 	private Sentiment sentiment;
-	private String category;
-		
+	private String category;	
 	public NLPItem(String modelName, String origin, Object obj, Class<?> clazz) {
 		//Log.i("NLPItem:  origin {} modelName {}", origin,modelName);
 		this.origin = origin;

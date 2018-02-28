@@ -254,6 +254,7 @@ public class NLPAnalysisService {
 			NLPItem nlpIt = NLPitemFactory(modelName, origin,obj);
 			res.add(nlpIt);
 		}
+		ExcelUtils.NLPItem_WriteToExcel(res);
 	}
 	
 	
