@@ -51,4 +51,16 @@ public class StoreJDService {
         nlpAnalysisService.saveExcel(modelName, "JD", storeJD);
         return storeJD;
     }
+    
+    public void updateSentiment(String modelName, Object obj, Integer sentiment) {
+    	StoreJD record = (StoreJD)obj;
+    	record.setSentiment(sentiment);
+    	storeJDDao.updateByPrimaryKey(record);
+    }
+    
+	public void updateCategory(String modelName, Object obj, Integer category) {
+		StoreJD record = (StoreJD)obj;
+    	record.setCategory(category);
+    	storeJDDao.updateByPrimaryKey(record);	
+	}
 }

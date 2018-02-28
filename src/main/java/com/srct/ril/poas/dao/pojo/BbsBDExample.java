@@ -603,6 +603,126 @@ public class BbsBDExample {
             addCriterion("link not between", value1, value2, "link");
             return (Criteria) this;
         }
+
+        public Criteria andSentimentIsNull() {
+            addCriterion("sentiment is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentIsNotNull() {
+            addCriterion("sentiment is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentEqualTo(Integer value) {
+            addCriterion("sentiment =", value, "sentiment");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentNotEqualTo(Integer value) {
+            addCriterion("sentiment <>", value, "sentiment");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentGreaterThan(Integer value) {
+            addCriterion("sentiment >", value, "sentiment");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentGreaterThanOrEqualTo(Integer value) {
+            addCriterion("sentiment >=", value, "sentiment");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentLessThan(Integer value) {
+            addCriterion("sentiment <", value, "sentiment");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentLessThanOrEqualTo(Integer value) {
+            addCriterion("sentiment <=", value, "sentiment");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentIn(List<Integer> values) {
+            addCriterion("sentiment in", values, "sentiment");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentNotIn(List<Integer> values) {
+            addCriterion("sentiment not in", values, "sentiment");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentBetween(Integer value1, Integer value2) {
+            addCriterion("sentiment between", value1, value2, "sentiment");
+            return (Criteria) this;
+        }
+
+        public Criteria andSentimentNotBetween(Integer value1, Integer value2) {
+            addCriterion("sentiment not between", value1, value2, "sentiment");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryIsNull() {
+            addCriterion("category is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryIsNotNull() {
+            addCriterion("category is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryEqualTo(Integer value) {
+            addCriterion("category =", value, "category");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNotEqualTo(Integer value) {
+            addCriterion("category <>", value, "category");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryGreaterThan(Integer value) {
+            addCriterion("category >", value, "category");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryGreaterThanOrEqualTo(Integer value) {
+            addCriterion("category >=", value, "category");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryLessThan(Integer value) {
+            addCriterion("category <", value, "category");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryLessThanOrEqualTo(Integer value) {
+            addCriterion("category <=", value, "category");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryIn(List<Integer> values) {
+            addCriterion("category in", values, "category");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNotIn(List<Integer> values) {
+            addCriterion("category not in", values, "category");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryBetween(Integer value1, Integer value2) {
+            addCriterion("category between", value1, value2, "category");
+            return (Criteria) this;
+        }
+
+        public Criteria andCategoryNotBetween(Integer value1, Integer value2) {
+            addCriterion("category not between", value1, value2, "category");
+            return (Criteria) this;
+        }
     }
 
     /**
