@@ -287,8 +287,8 @@ public class NLPAnalysisService {
 		for(Object obj : (List<Object>)dataList) {
 			NLPItem nlpIt = NLPitemFactory(modelName, origin,obj);
 			nlpItemList.add(nlpIt);
-			saveExcel(modelName,nlpItemList);
 		}
+		saveExcel(modelName,nlpItemList);
 	}
 	
 	public void saveExcel(String modelName, List<NLPItem> nlpItemList) throws ServiceException {
@@ -305,7 +305,7 @@ public class NLPAnalysisService {
 				NLPAnalysisList.add(commentAnalysis);
 			}
 			if(NLPAnalysisList.size()!=0) {
-				ExcelUtils.NLP_WriteToExcel(NLPAnalysisList, debugMode, fileName+date);
+				//ExcelUtils.NLP_WriteToExcel(NLPAnalysisList, debugMode, fileName+date);
 			}
 		}
 		ExcelUtils.NLPItem_WriteToExcel(nlpItemList,fileName+date);
