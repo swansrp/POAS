@@ -7,6 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.srct.ril.poas.ai.NLPItem;
+import com.srct.ril.poas.dao.pojo.BbsBD;
+import com.srct.ril.poas.dao.pojo.BbsGC;
+import com.srct.ril.poas.dao.pojo.BbsJF;
+import com.srct.ril.poas.dao.pojo.StoreAMZ;
+import com.srct.ril.poas.dao.pojo.StoreJD;
+import com.srct.ril.poas.dao.pojo.StoreTB;
+import com.srct.ril.poas.dao.pojo.StoreTM;
 import com.srct.ril.poas.service.bbs.BbsBDService;
 import com.srct.ril.poas.service.bbs.BbsGCService;
 import com.srct.ril.poas.service.bbs.BbsJFService;
@@ -38,13 +45,35 @@ public class StoreBbsService {
 	public List<NLPItem> select(String modelName, String startTime, String endTime) throws ServiceException {
     	
 		List<NLPItem> NLPItemList = new ArrayList<>();
-		NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "JD", storeJDService.select(modelName,startTime,endTime)));
-		NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "AMZ", storeAMZService.select(modelName,startTime,endTime)));
-		NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "TB", storeTBService.select(modelName,startTime,endTime)));
-		NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "TM", storeTMService.select(modelName,startTime,endTime)));
-		NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "BD", bbsBDService.select(modelName,startTime,endTime)));
-		NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "GC", bbsGCService.select(modelName,startTime,endTime)));
-		NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "JF", bbsJFService.select(modelName,startTime,endTime)));
+		List<StoreJD> storeJDList = storeJDService.select(modelName,startTime,endTime);
+		for(StoreJD it : storeJDList) {
+			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "JD", it));
+		}
+		List<StoreAMZ> storeAMZList = storeAMZService.select(modelName,startTime,endTime);
+		for(StoreAMZ it : storeAMZList) {
+			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "AMZ", it));
+		}
+		List<StoreTB> storeTBList = storeTBService.select(modelName,startTime,endTime);
+		for(StoreTB it : storeTBList) {
+			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "TB", it));
+		}
+		List<StoreTM> storeTMList = storeTMService.select(modelName,startTime,endTime);
+		for(StoreTM it : storeTMList) {
+			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "TM", it));
+		}
+		List<BbsBD> bbsBDList = bbsBDService.select(modelName,startTime,endTime);
+		for(BbsBD it : bbsBDList) {
+			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "BD", it));
+		}
+		List<BbsGC> bbsGCList = bbsGCService.select(modelName,startTime,endTime);
+		for(BbsGC it : bbsGCList) {
+			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "GC", it));
+		}
+		List<BbsJF> bbsJFList = bbsJFService.select(modelName,startTime,endTime);
+		for(BbsJF it : bbsJFList) {
+			NLPItemList.add(nlpAnalysisService.NLPitemFactory(modelName, "JF", it));
+		}
+		
 		nlpAnalysisService.saveExcel(modelName, NLPItemList);
         return NLPItemList;
     }

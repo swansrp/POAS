@@ -79,7 +79,7 @@ public class NLPItem {
 			method = clazz.getMethod("getCategory");
 			int categoryId = (Integer)method.invoke(obj);
 			category = Category.getCategorybyId(categoryId);
-			Log.i("category {}", category);
+			//Log.i("category {}", category);
 		} catch (NoSuchMethodException | 
 				SecurityException | 
 				IllegalAccessException | 
@@ -91,7 +91,7 @@ public class NLPItem {
 		try {
 			method = clazz.getMethod("getSentiment");
 			int sentimentValue = (Integer)method.invoke(obj);
-			Log.i("sentimentValue{}",sentimentValue);
+			//Log.i("sentimentValue{}",sentimentValue);
 			sentiment = Category.Sentiment.getSetiment(sentimentValue);
 		} catch (NoSuchMethodException | 
 				SecurityException | 
