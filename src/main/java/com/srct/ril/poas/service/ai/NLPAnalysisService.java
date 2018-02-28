@@ -246,6 +246,7 @@ public class NLPAnalysisService {
 		for(Object obj : (List<Object>)dataList) {
 			res.add(new NLPItem(clazz, obj, origin, modelName));
 		}
+		ExcelUtils.NLPItem_WriteToExcel(res);
 	}
 	
 	

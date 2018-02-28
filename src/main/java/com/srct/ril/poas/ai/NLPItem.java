@@ -25,7 +25,7 @@ public class NLPItem {
 	
 	
 	public NLPItem(Class<?> clazz, Object obj, String origin, String modelName) {
-		Log.i("NLPItem:  origin {} modelName {}", origin,modelName);
+		//Log.i("NLPItem:  origin {} modelName {}", origin,modelName);
 		this.origin = origin;
 		this.modelName = modelName;
 		Method method;

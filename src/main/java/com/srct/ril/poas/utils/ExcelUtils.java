@@ -18,6 +18,7 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
+import com.srct.ril.poas.ai.NLPItem;
 
 
 
@@ -67,6 +68,82 @@ public class ExcelUtils {
 	}
 	
 
+	public static void NLPItem_WriteToExcel(Object object){
+		
+		
+		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
+		HSSFSheet sheet = wb.createSheet("NLP_Item");
+		sheet.setColumnWidth(0, 5 * 512);//第一列宽度
+		sheet.setColumnWidth(1, 15 * 512);//第二列宽度
+		sheet.setColumnWidth(2, 5 * 512);//第二列宽度
+		sheet.setColumnWidth(3, 35 * 512);//第四列宽度
+		sheet.setColumnWidth(4, 15 * 512);//第四列宽度
+		HSSFCellStyle cellStyle=wb.createCellStyle(); 
+		cellStyle.setShrinkToFit(true);
+		cellStyle.setWrapText(true);
+		cellStyle.setBorderBottom(BorderStyle.THIN);//下边框        
+		cellStyle.setBorderLeft(BorderStyle.THIN);//左边框        
+		cellStyle.setBorderRight(BorderStyle.THIN);//右边框        
+		cellStyle.setBorderTop(BorderStyle.THIN);//上边框 
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<NLPItem> listNLP = (ArrayList<NLPItem>) object;
+		Iterator<NLPItem> it = listNLP.iterator();
+
+
+		int NLPIndex = 0;
+		HSSFRow row0 = sheet.createRow(NLPIndex++);
+		//=================
+		HSSFCell cell90=row0.createCell(0);
+		cell90.setCellStyle(cellStyle);
+		cell90.setCellValue("ID");
+		
+		HSSFCell cell00=row0.createCell(1);
+		cell00.setCellStyle(cellStyle);
+		cell00.setCellValue("Time duration");
+		
+		HSSFCell cell10=row0.createCell(2);
+		cell10.setCellStyle(cellStyle);
+		cell10.setCellValue("Origin");
+		
+		HSSFCell cell20=row0.createCell(3);
+		cell20.setCellStyle(cellStyle);
+		cell20.setCellValue("comment");
+		
+		HSSFCell cell30=row0.createCell(4);
+		cell30.setCellStyle(cellStyle);
+		cell30.setCellValue("URL");
+		//=================
+		//利用迭代器读取 list中的每个NLPAnalysis
+		while(it.hasNext()&&NLPIndex<listNLP.size()) {
+			
+			HSSFRow row = sheet.createRow(NLPIndex);
+			
+			HSSFCell cell9=row.createCell(0);
+			cell9.setCellStyle(cellStyle);
+			cell9.setCellValue(listNLP.get(NLPIndex-1).getId());
+			
+			HSSFCell cell0=row.createCell(1);
+			cell0.setCellStyle(cellStyle);
+			cell0.setCellValue(listNLP.get(NLPIndex-1).getTimestamp());
+			
+			HSSFCell cell1=row.createCell(2);
+			cell1.setCellStyle(cellStyle);
+			cell1.setCellValue(listNLP.get(NLPIndex-1).getOrigin());
+			
+			HSSFCell cell2=row.createCell(3);
+			cell2.setCellStyle(cellStyle);
+			cell2.setCellValue(listNLP.get(NLPIndex-1).getComment());
+			
+			HSSFCell cell3=row.createCell(4);
+			cell3.setCellStyle(cellStyle);
+			cell3.setCellValue(listNLP.get(NLPIndex-1).getUrl());
+			
+			NLPIndex++;
+		}
+		wf(wb);
+	}
+	
 	
 	public static void NLP_WriteToExcel(Object object){
 		
