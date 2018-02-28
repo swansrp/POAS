@@ -23,7 +23,7 @@ datas = {
         }
 class AmazonSpider():
     
-    def __init__(self, url, num = 10):
+    def __init__(self, url, num = 100):
         self.url = url
         self.ProxyPort =''
         self.proxyIP =''

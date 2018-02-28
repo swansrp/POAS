@@ -17,7 +17,7 @@ from utils.Utils import StringUtils
 #sys.setdefaultencoding('utf-8')
 
 class GalaxyClubSpider():
-    def __init__(self, url, num = 5 ):
+    def __init__(self, url, num = 100 ):
         self.url = url
         self.ProxyPort =''
         self.proxyIP =''

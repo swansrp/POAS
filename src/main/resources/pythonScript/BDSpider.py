@@ -23,7 +23,7 @@ from utils.Utils import StringUtils
 
 class BaiduSpider():
 
-    def __init__(self, url, num = 5 ):
+    def __init__(self, url, num = 100 ):
         self.url = url
         self.proxyIP = ""
         self.ProxyPort = ""
