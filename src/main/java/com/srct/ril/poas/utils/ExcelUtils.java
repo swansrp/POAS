@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.plaf.basic.BasicComboBoxEditor;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -19,8 +17,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.BorderStyle;
 
-import com.alibaba.druid.support.logging.Log;
-import com.fasterxml.jackson.databind.deser.Deserializers.Base;
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
 import com.srct.ril.poas.ai.NLPItem;
@@ -126,29 +122,33 @@ public class ExcelUtils {
 		int NLPIndex = 0;
 		HSSFRow row0 = sheet.createRow(NLPIndex++);
 		//=================
-		HSSFCell cell90=row0.createCell(0);
-		cell90.setCellStyle(cellStyle);
-		cell90.setCellValue("ID");
-		
-		HSSFCell cell00=row0.createCell(1);
+		HSSFCell cell00=row0.createCell(0);
 		cell00.setCellStyle(cellStyle);
-		cell00.setCellValue("Time duration");
+		cell00.setCellValue("ID");
 		
-		HSSFCell cell10=row0.createCell(2);
+		HSSFCell cell10=row0.createCell(1);
 		cell10.setCellStyle(cellStyle);
-		cell10.setCellValue("Origin");
+		cell10.setCellValue("Time duration");
 		
-		HSSFCell cell20=row0.createCell(3);
+		HSSFCell cell20=row0.createCell(2);
 		cell20.setCellStyle(cellStyle);
-		cell20.setCellValue("comment");
+		cell20.setCellValue("Origin");
 		
-		HSSFCell cell30=row0.createCell(4);
+		HSSFCell cell30=row0.createCell(3);
 		cell30.setCellStyle(cellStyle);
-		cell30.setCellValue("setiment");
+		cell30.setCellValue("comment");
+		
+		HSSFCell cell40=row0.createCell(4);
+		cell40.setCellStyle(cellStyle);
+		cell40.setCellValue("Sentiment");
 		
 		HSSFCell cell50=row0.createCell(5);
 		cell50.setCellStyle(cellStyle);
-		cell50.setCellValue("URL");
+		cell50.setCellValue("Category");
+		
+		HSSFCell cell60=row0.createCell(6);
+		cell60.setCellStyle(cellStyle);
+		cell60.setCellValue("Url");
 		//=================
 		//利用迭代器读取 list中的每个NLPAnalysis
 		while(it.hasNext()&&NLPIndex<listNLP.size()) {
@@ -187,9 +187,14 @@ public class ExcelUtils {
 				cell3.setCellValue("没啥说的");
 			}
 			
+			
 			HSSFCell cell5=row.createCell(5);
 			cell5.setCellStyle(cellStyle);
-			cell5.setCellValue(listNLP.get(NLPIndex-1).getUrl());
+			cell5.setCellValue(listNLP.get(NLPIndex).getCategory());
+			
+			HSSFCell cell6=row.createCell(6);
+			cell6.setCellStyle(cellStyle);
+			cell6.setCellValue(listNLP.get(NLPIndex-1).getUrl());
 			
 			NLPIndex++;
 		}
@@ -530,7 +535,6 @@ public class ExcelUtils {
 	}
 	
 	
-	
 	public static void WriteToExcel(Object object) {
 		
 		@SuppressWarnings("unchecked")
@@ -561,5 +565,12 @@ public class ExcelUtils {
 		
 	}
 	
+	
+	public static String FindLatestResultFilenameForSession(String sessionname) {
+		String filename = "";
+		
+		return filename;
+		
+	}
 	
 }
