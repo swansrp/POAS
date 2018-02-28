@@ -17,7 +17,7 @@ from utils.Utils import StringUtils
 #sys.setdefaultencoding('utf-8')
 
 class GalaxyClubSpider():
-    def __init__(self, url, num = 100 ):
+    def __init__(self, url, num = 30 ):
         self.url = url
         self.ProxyPort =''
         self.proxyIP =''
@@ -142,6 +142,7 @@ class GalaxyClubSpider():
                         content_content = re.sub("&nbsp;", "",content_content)
                         content_content = re.sub("&quot;", "\"",content_content)
                         content_content = re.sub("&#39;", "",content_content)
+                        content_content = re.sub("<divclass=\"poll\">.*?</div>", "",content_content)
                     content_content = StringUtils.remove_emoji_from_string(content_content)
                     row = (theme_content,content_content,time_content,link)
                     forinsert.append(row)
@@ -218,6 +219,7 @@ class GalaxyClubSpider():
                         content_content = re.sub("&nbsp;", "",content_content)
                         content_content = re.sub("&quot;", "\"",content_content)
                         content_content = re.sub("&#39;", "",content_content)
+                        content_content = re.sub("<divclass=\"poll\">.*?</div>", "",content_content)
                     content_content = StringUtils.remove_emoji_from_string(content_content)
                     row = (theme_content,content_content,time_content,link)
                     forinsert.append(row)                
