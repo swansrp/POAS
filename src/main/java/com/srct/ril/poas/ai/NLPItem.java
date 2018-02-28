@@ -5,13 +5,12 @@ import java.lang.reflect.Method;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.srct.ril.poas.ai.category.Category;
+import com.srct.ril.poas.ai.category.Category.Sentiment;
 import com.srct.ril.poas.service.ai.NLPAnalysisService;
 import com.srct.ril.poas.utils.log.Log;
 
 public class NLPItem {
-	
-	@Autowired
-	private NLPAnalysisService nlpAnalysisService;
 	
 	private Integer id;
 	private String modelName;
@@ -23,8 +22,10 @@ public class NLPItem {
 	private NLPAnalysis commentAnalysis;
 	private String url;
 	
-	
-	public NLPItem(Class<?> clazz, Object obj, String origin, String modelName) {
+
+	private Sentiment sentiment;
+	private String category;	
+	public NLPItem(String modelName, String origin, Object obj, Class<?> clazz) {
 		//Log.i("NLPItem:  origin {} modelName {}", origin,modelName);
 		this.origin = origin;
 		this.modelName = modelName;
@@ -75,13 +76,24 @@ public class NLPItem {
 				InvocationTargetException e) {
 		}
 	}
-
-	public NLPAnalysisService getNlpAnalysisService() {
-		return nlpAnalysisService;
+	
+	public void setAnalysis(NLPAnalysis titleAnalysis, NLPAnalysis commentAnalysis) {
+		this.titleAnalysis = titleAnalysis;
+		this.commentAnalysis = commentAnalysis;
+		if(titleAnalysis!=null) {
+			if(titleAnalysis.getCategory()!=null) {
+				setCategory(titleAnalysis.getCategory());
+			}
+		}
 	}
-
-	public void setNlpAnalysisService(NLPAnalysisService nlpAnalysisService) {
-		this.nlpAnalysisService = nlpAnalysisService;
+	
+	public boolean needAnalysis() {
+		Log.d("sentiment: {} category: {}", sentiment, category);
+		return !(
+				(sentiment!=Sentiment.UNKNOWN)
+				&& 
+				(category!=null)
+			   );
 	}
 
 	public Integer getId() {
@@ -154,6 +166,22 @@ public class NLPItem {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public Sentiment getSentiment() {
+		return sentiment;
+	}
+
+	public void setSetiment(Sentiment setiment) {
+		this.sentiment = sentiment;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 }
