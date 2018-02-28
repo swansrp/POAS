@@ -76,9 +76,10 @@ public class ExcelUtils {
 	{
 		FileOutputStream fileOut;
 		String puth = "src/main/webapp/"+filename+".xls";
+		System.out.print(puth);
 			try {
 				fileOut = new FileOutputStream(puth);
-				wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
+				wb.write(fileOut);//把Workbook对象输出到文件puth中   
 				fileOut.close(); 
 				System.out.println("write to excel done !");
 				
@@ -216,6 +217,7 @@ public class ExcelUtils {
 	        wb=new HSSFWorkbook(ps);    
 	        sheet=wb.getSheetAt(0);  //获取到工作表，因为一个excel可能有多个工作表  
 	        excel_line = sheet.getLastRowNum()+1;//从这行开始写 新的数据
+	        fs.close();
 		
 		} catch (FileNotFoundException e) {
 			wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
@@ -355,6 +357,7 @@ public class ExcelUtils {
 	        sheet=wb.getSheetAt(0);  //获取到工作表，因为一个excel可能有多个工作表  
 	        excelIndex = sheet.getLastRowNum()+1;//从这行开始写 新的数据
 	        System.out.println("continue output at excel index : "+excelIndex);
+	        fs.close();
 		
 		} catch (FileNotFoundException e) {
 			wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
