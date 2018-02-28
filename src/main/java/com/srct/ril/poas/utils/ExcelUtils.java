@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -17,30 +18,132 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
+import com.srct.ril.poas.ai.NLPItem;
 
 
 
 public class ExcelUtils {
+	
+//	public static void main(String[] args) {
+//		ArrayList<String> arrayList = new ArrayList<String>();
+//		arrayList.add("lalalla");
+//		arrayList.add("lbbb");
+//		arrayList.add("lacccla");
+//		arrayList.add("ldd");
+//		WriteToExcel(arrayList);
+//		
+//	}
+	
+	public static void DelayWriteFile(HSSFWorkbook o,int time){
+		 try {
+			Thread.sleep(time);
+			wf(o);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	private static void wf(HSSFWorkbook wb)
 	{
 		FileOutputStream fileOut;
-		try {
-			fileOut = new FileOutputStream("workbook1.xls");
-			wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
-			fileOut.close(); 
-			System.out.println("write to excel done !");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.out.println("请先关闭excel文件!，然后运行");
-			//e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+		
+			try {
+				fileOut = new FileOutputStream("src/main/webapp/workbook1.xls");
+				wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
+				fileOut.close(); 
+				System.out.println("write to excel done !");
+				
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				System.out.println("请先关闭excel文件，然后稍等!");
+				DelayWriteFile(wb,5000);
+				//e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+			} 
+		
 	}
 	
 
+	public static void NLPItem_WriteToExcel(Object object){
+		
+		
+		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
+		HSSFSheet sheet = wb.createSheet("NLP_Item");
+		sheet.setColumnWidth(0, 5 * 512);//第一列宽度
+		sheet.setColumnWidth(1, 15 * 512);//第二列宽度
+		sheet.setColumnWidth(2, 5 * 512);//第二列宽度
+		sheet.setColumnWidth(3, 35 * 512);//第四列宽度
+		sheet.setColumnWidth(4, 15 * 512);//第四列宽度
+		HSSFCellStyle cellStyle=wb.createCellStyle(); 
+		cellStyle.setShrinkToFit(true);
+		cellStyle.setWrapText(true);
+		cellStyle.setBorderBottom(BorderStyle.THIN);//下边框        
+		cellStyle.setBorderLeft(BorderStyle.THIN);//左边框        
+		cellStyle.setBorderRight(BorderStyle.THIN);//右边框        
+		cellStyle.setBorderTop(BorderStyle.THIN);//上边框 
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<NLPItem> listNLP = (ArrayList<NLPItem>) object;
+		Iterator<NLPItem> it = listNLP.iterator();
+
+
+		int NLPIndex = 0;
+		HSSFRow row0 = sheet.createRow(NLPIndex++);
+		//=================
+		HSSFCell cell90=row0.createCell(0);
+		cell90.setCellStyle(cellStyle);
+		cell90.setCellValue("ID");
+		
+		HSSFCell cell00=row0.createCell(1);
+		cell00.setCellStyle(cellStyle);
+		cell00.setCellValue("Time duration");
+		
+		HSSFCell cell10=row0.createCell(2);
+		cell10.setCellStyle(cellStyle);
+		cell10.setCellValue("Origin");
+		
+		HSSFCell cell20=row0.createCell(3);
+		cell20.setCellStyle(cellStyle);
+		cell20.setCellValue("comment");
+		
+		HSSFCell cell30=row0.createCell(4);
+		cell30.setCellStyle(cellStyle);
+		cell30.setCellValue("URL");
+		//=================
+		//利用迭代器读取 list中的每个NLPAnalysis
+		while(it.hasNext()&&NLPIndex<listNLP.size()) {
+			
+			HSSFRow row = sheet.createRow(NLPIndex);
+			
+			HSSFCell cell9=row.createCell(0);
+			cell9.setCellStyle(cellStyle);
+			cell9.setCellValue(listNLP.get(NLPIndex-1).getId());
+			
+			HSSFCell cell0=row.createCell(1);
+			cell0.setCellStyle(cellStyle);
+			cell0.setCellValue(listNLP.get(NLPIndex-1).getTimestamp());
+			
+			HSSFCell cell1=row.createCell(2);
+			cell1.setCellStyle(cellStyle);
+			cell1.setCellValue(listNLP.get(NLPIndex-1).getOrigin());
+			
+			HSSFCell cell2=row.createCell(3);
+			cell2.setCellStyle(cellStyle);
+			cell2.setCellValue(listNLP.get(NLPIndex-1).getComment());
+			
+			HSSFCell cell3=row.createCell(4);
+			cell3.setCellStyle(cellStyle);
+			cell3.setCellValue(listNLP.get(NLPIndex-1).getUrl());
+			
+			NLPIndex++;
+		}
+		wf(wb);
+	}
+	
 	
 	public static void NLP_WriteToExcel(Object object){
 		

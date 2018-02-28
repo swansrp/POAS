@@ -11,6 +11,7 @@ import com.srct.ril.poas.dao.mapper.BbsBDMapper;
 import com.srct.ril.poas.dao.pojo.BbsBD;
 import com.srct.ril.poas.dao.pojo.BbsBDExample;
 import com.srct.ril.poas.dao.pojo.BbsBDExample.Criteria;
+import com.srct.ril.poas.service.ai.NLPAnalysisService;
 import com.srct.ril.poas.utils.ServiceException;
 
 @Service
@@ -19,6 +20,9 @@ public class BbsBDService {
 
 	@Autowired
 	private BbsBDMapper bbsBDDao;
+	
+	@Autowired
+	private NLPAnalysisService nlpAnalysisService;
 	
 	public List<BbsBD> select(String modelName, String startTime, String endTime) throws ServiceException {
     	
@@ -36,6 +40,7 @@ public class BbsBDService {
         if (BbsBD == null) {
             throw new ServiceException("["+modelName+"] BBS BD from " + startTime + "to" + endTime + " not found" );
         }
+        nlpAnalysisService.saveExcel(modelName, "BD", BbsBD);
         return BbsBD;
     }
 }

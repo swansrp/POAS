@@ -11,6 +11,7 @@ import com.srct.ril.poas.dao.mapper.BbsJFMapper;
 import com.srct.ril.poas.dao.pojo.BbsJF;
 import com.srct.ril.poas.dao.pojo.BbsJFExample;
 import com.srct.ril.poas.dao.pojo.BbsJFExample.Criteria;
+import com.srct.ril.poas.service.ai.NLPAnalysisService;
 import com.srct.ril.poas.utils.ServiceException;
 
 @Service
@@ -19,6 +20,9 @@ public class BbsJFService {
 
 	@Autowired
 	private BbsJFMapper bbsJFDao;
+	
+	@Autowired
+	private NLPAnalysisService nlpAnalysisService;
 	
 	public List<BbsJF> select(String modelName, String startTime, String endTime) throws ServiceException {
     	
@@ -36,6 +40,7 @@ public class BbsJFService {
         if (BbsJF == null) {
             throw new ServiceException("["+modelName+"] BBS JF from " + startTime + "to" + endTime + " not found" );
         }
+        nlpAnalysisService.saveExcel(modelName, "JF", BbsJF);
         return BbsJF;
     }
 }
