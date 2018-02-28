@@ -52,15 +52,18 @@ public class StoreJDService {
         return storeJD;
     }
     
-    public void updateSentiment(String modelName, Object obj, Integer sentiment) {
-    	StoreJD record = (StoreJD)obj;
+	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
+		StoreJD record = (StoreJD)obj;
+		record.setCategory(category);
     	record.setSentiment(sentiment);
     	storeJDDao.updateByPrimaryKey(record);
+	}
+	
+	public void updateSentiment(String modelName, Object obj, Integer sentiment) {
+		updateAnalysis(modelName,obj,sentiment,null);
     }
     
 	public void updateCategory(String modelName, Object obj, Integer category) {
-		StoreJD record = (StoreJD)obj;
-    	record.setCategory(category);
-    	storeJDDao.updateByPrimaryKey(record);	
+		updateAnalysis(modelName,obj,null,category);
 	}
 }

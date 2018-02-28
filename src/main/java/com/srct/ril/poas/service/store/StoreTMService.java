@@ -43,4 +43,18 @@ public class StoreTMService {
         nlpAnalysisService.saveExcel(modelName, "TM", StoreTM);
         return StoreTM;
     }
+	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
+		StoreTM record = (StoreTM)obj;
+		record.setCategory(category);
+    	record.setSentiment(sentiment);
+    	storeTMDao.updateByPrimaryKey(record);
+	}
+	
+	public void updateSentiment(String modelName, Object obj, Integer sentiment) {
+		updateAnalysis(modelName,obj,sentiment,null);
+    }
+    
+	public void updateCategory(String modelName, Object obj, Integer category) {
+		updateAnalysis(modelName,obj,null,category);
+	}
 }

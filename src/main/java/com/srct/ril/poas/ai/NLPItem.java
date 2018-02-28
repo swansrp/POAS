@@ -78,7 +78,6 @@ public class NLPItem {
 		try {
 			method = clazz.getMethod("getCategory");
 			int categoryId = (Integer)method.invoke(obj);
-			categoryId = 1;
 			category = Category.getCategorybyId(categoryId);
 			Log.i("category {}", category);
 		} catch (NoSuchMethodException | 

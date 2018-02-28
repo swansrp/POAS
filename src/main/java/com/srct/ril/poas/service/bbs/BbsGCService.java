@@ -43,4 +43,18 @@ public class BbsGCService {
         nlpAnalysisService.saveExcel(modelName, "GC", BbsGC);
         return BbsGC;
     }
+	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
+		BbsGC record = (BbsGC)obj;
+		record.setCategory(category);
+    	record.setSentiment(sentiment);
+    	bbsGCDao.updateByPrimaryKey(record);
+	}
+	
+	public void updateSentiment(String modelName, Object obj, Integer sentiment) {
+		updateAnalysis(modelName,obj,sentiment,null);
+    }
+    
+	public void updateCategory(String modelName, Object obj, Integer category) {
+		updateAnalysis(modelName,obj,null,category);
+	}
 }

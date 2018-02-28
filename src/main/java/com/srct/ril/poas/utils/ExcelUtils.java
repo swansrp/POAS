@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
 import com.srct.ril.poas.ai.NLPItem;
+import com.srct.ril.poas.utils.log.Log;
 
 
 
@@ -401,7 +402,8 @@ public class ExcelUtils {
 			HSSFRow row1 = sheet.createRow(excelIndex++);
 			HSSFCell cell00=row1.createCell(0);
 			cell00.setCellStyle(cellStyle);
-			cell00.setCellValue(listNLP.get(NLPIndex).getContent().toString());
+			//Log.ii(listNLP);
+			cell00.setCellValue(listNLP.get(NLPIndex).getContent());
 			
 	///--------------------------------------------------------------------		
 			

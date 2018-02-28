@@ -43,4 +43,18 @@ public class BbsJFService {
         nlpAnalysisService.saveExcel(modelName, "JF", BbsJF);
         return BbsJF;
     }
+	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
+		BbsJF record = (BbsJF)obj;
+		record.setCategory(category);
+    	record.setSentiment(sentiment);
+    	bbsJFDao.updateByPrimaryKey(record);
+	}
+	
+	public void updateSentiment(String modelName, Object obj, Integer sentiment) {
+		updateAnalysis(modelName,obj,sentiment,null);
+    }
+    
+	public void updateCategory(String modelName, Object obj, Integer category) {
+		updateAnalysis(modelName,obj,null,category);
+	}
 }

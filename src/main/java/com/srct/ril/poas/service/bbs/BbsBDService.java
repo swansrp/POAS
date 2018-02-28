@@ -43,4 +43,20 @@ public class BbsBDService {
         nlpAnalysisService.saveExcel(modelName, "BD", BbsBD);
         return BbsBD;
     }
+	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
+		BbsBD record = (BbsBD)obj;
+		record.setCategory(category);
+    	record.setSentiment(sentiment);
+    	bbsBDDao.updateByPrimaryKey(record);
+	}
+	
+	public void updateSentiment(String modelName, Object obj, Integer sentiment) {
+		updateAnalysis(modelName,obj,sentiment,null);
+    }
+    
+	public void updateCategory(String modelName, Object obj, Integer category) {
+		updateAnalysis(modelName,obj,null,category);
+	}
+	
+	
 }

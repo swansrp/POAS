@@ -45,15 +45,18 @@ public class StoreAMZService {
         return StoreAMZ;
     }
 	
-	public void updateSentiment(String modelName, Object obj, Integer sentiment) {
-    	StoreAMZ record = (StoreAMZ)obj;
+	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
+		StoreAMZ record = (StoreAMZ)obj;
+		record.setCategory(category);
     	record.setSentiment(sentiment);
     	storeAMZDao.updateByPrimaryKey(record);
+	}
+	
+	public void updateSentiment(String modelName, Object obj, Integer sentiment) {
+		updateAnalysis(modelName,obj,sentiment,null);
     }
     
 	public void updateCategory(String modelName, Object obj, Integer category) {
-		StoreAMZ record = (StoreAMZ)obj;
-    	record.setCategory(category);
-    	storeAMZDao.updateByPrimaryKey(record);	
+		updateAnalysis(modelName,obj,null,category);
 	}
 }
