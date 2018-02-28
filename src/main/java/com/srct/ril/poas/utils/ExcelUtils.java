@@ -6,14 +6,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
 
 import com.srct.ril.poas.ai.NLPAnalysis;
@@ -39,7 +36,7 @@ public class ExcelUtils {
 			Thread.sleep(time);
 			wf(o);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 	}
@@ -55,12 +52,12 @@ public class ExcelUtils {
 				System.out.println("write to excel done !");
 				
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
+
 				System.out.println("请先关闭excel文件，然后稍等!");
 				DelayWriteFile(wb,5000);
-				//e.printStackTrace();
+
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 				
 			} 
@@ -214,13 +211,13 @@ public class ExcelUtils {
 				
 				HSSFCell cell4 = row.createCell(4);
 				switch(itemlist.get(j).getSentiment()){
-				case 0:
+				case NEGATIVE:
 					cell4.setCellValue("消极");
 					break;
-				case 1:
+				case NEUTRAL:
 					cell4.setCellValue("中性");
 					break;
-				case 2:
+				case POSITIVE:
 					cell4.setCellValue("积极");
 					break;
 				default:
@@ -315,17 +312,17 @@ public static void NLP_WriteToExcel(Object object, boolean f){
 					
 					HSSFCell cell4 = row.createCell(4);
 					switch(itemlist.get(j).getSentiment()){
-					case 0:
+					case NEGATIVE:
 						cell4.setCellValue("消极");
 						break;
-					case 1:
+					case NEUTRAL:
 						cell4.setCellValue("中性");
 						break;
-					case 2:
+					case POSITIVE:
 						cell4.setCellValue("积极");
 						break;
 					default:
-						cell4.setCellValue("没啥说的");
+						cell4.setCellValue("Unknown");
 					}
 					cell4.setCellStyle(cellStyle);
 	//				line.add( itemlist.get(j).getSubContent().toString() );
