@@ -46,7 +46,7 @@ public class PythonJob implements Job{
 			// TODO Auto-generated method stub
 			mSourceAlreadyFetchIndex++;
 			Log.i("current index = " + mSourceAlreadyFetchIndex);
-			if (mSourceAlreadyFetchIndex == 1) {
+			if (mSourceAlreadyFetchIndex == mSourceCount) {
 				PythonResponseModel result = new PythonResponseModel();
 				result.message = "finish";
 				if (mFetchJobCallBack == null) {
@@ -82,8 +82,11 @@ public class PythonJob implements Job{
 		try {
 			List<UrlJoinMap> urlJoinMaps = urlMapService.getUrlJoinList();
 			Log.i("fetchByCurrentIndex url = "+ urlJoinMaps.get(mSourceAlreadyFetchIndex).getUrl() + " sourceen = " + urlJoinMaps.get(mSourceAlreadyFetchIndex).getSourceMap().getSourceEn());
+			//for server
+			//file = ResourceUtils.getFile("~/Resource/pythonScript/" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getSourceMap().getSourceEn() + "Spider.py");
+			//fetchScarProcess = Runtime.getRuntime().exec(new String[] { "/bin/sh","-c", "python3 " + file.toString() + " \"" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getUrl() + "\""});
 			file = ResourceUtils.getFile("classpath:pythonScript/" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getSourceMap().getSourceEn() + "Spider.py");
-			fetchScarProcess = Runtime.getRuntime().exec("python " + file.toString() + " " + urlJoinMaps.get(mSourceAlreadyFetchIndex).getUrl());
+            fetchScarProcess = Runtime.getRuntime().exec(new String[] { "cmd","/c", "python " + file.toString() + " \"" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getUrl() + "\""});
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -125,6 +128,7 @@ public class PythonJob implements Job{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} finally {
+					fetchScarProcess = null;
 //					try {
 //						normalIS.close();
 //					} catch (IOException e) {

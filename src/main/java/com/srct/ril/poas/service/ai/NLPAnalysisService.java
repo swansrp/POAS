@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,6 @@ import com.srct.ril.poas.ai.category.Category;
 import com.srct.ril.poas.ai.category.Category.Sentiment;
 import com.srct.ril.poas.ai.origin.Origin;
 import com.srct.ril.poas.service.ai.baidu.BaiduNLPService;
-import com.srct.ril.poas.utils.BeanUtil;
 import com.srct.ril.poas.utils.ExcelUtils;
 import com.srct.ril.poas.utils.ServiceException;
 import com.srct.ril.poas.utils.log.Log;
@@ -40,7 +40,7 @@ public class NLPAnalysisService {
 	private double prob = 0.65;
 	private Sentiment sentiment = Sentiment.ALL;
 	private boolean debugMode = true;
-	private boolean needAnalysis = true;
+	private boolean needAnalysis = false;
 	private String fileName = "DEMO";
 	
 	private BaiduNLPDepParser defParser(String content) throws ServiceException {
@@ -252,12 +252,12 @@ public class NLPAnalysisService {
 	
 	public void updateNLPItemAnalysis(NLPItem it) throws ServiceException {
 		String title = it.getTitle();
-		String comment = it.getComment();
+		String comment = it.getFirstcomment();
 		if(it.needAnalysis()) {
 			NLPAnalysis titleAnalysis = null;
 			NLPAnalysis commentAnalysis = null;
-			if(title!=null) titleAnalysis = _nlp(it.getTitle());
-			if(comment!=null) commentAnalysis = _nlp(it.getComment());
+			if(title!=null) titleAnalysis = _nlp(title);
+			if(comment!=null) commentAnalysis = _nlp(comment);
 			it.setAnalysis(titleAnalysis, commentAnalysis);
 		}
 	}
@@ -282,19 +282,34 @@ public class NLPAnalysisService {
 		}
 	}
 	
-	public void saveExcel(String modelName, String origin, Object dataList) throws ServiceException {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-		String date = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
-		List<NLPItem> res = new ArrayList<>();
+	public HSSFWorkbook saveExcel(String modelName, String origin, Object dataList) throws ServiceException {
+		if(dataList==null) return null;
+		List<NLPItem> nlpItemList = new ArrayList<>();
 		for(Object obj : (List<Object>)dataList) {
 			NLPItem nlpIt = NLPitemFactory(modelName, origin,obj);
-			res.add(nlpIt);
-			List<NLPAnalysis>NLPAnalysisList = new ArrayList<>();
-			NLPAnalysisList.add(nlpIt.getTitleAnalysis());
-			NLPAnalysisList.add(nlpIt.getCommentAnalysis());
-			ExcelUtils.NLP_WriteToExcel(NLPAnalysisList,debugMode,fileName+date);
+			nlpItemList.add(nlpIt);
 		}
-		ExcelUtils.NLPItem_WriteToExcel(res);
+		return saveExcel(modelName,nlpItemList);
+	}
+	
+	public HSSFWorkbook saveExcel(String modelName, List<NLPItem> nlpItemList) throws ServiceException {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmm");//设置日期格式
+		String date = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
+		for(NLPItem nlpIt : nlpItemList) {
+			List<NLPAnalysis>NLPAnalysisList = new ArrayList<>();
+			NLPAnalysis titleAnalysis = nlpIt.getTitleAnalysis();
+			if(titleAnalysis!=null) {
+				NLPAnalysisList.add(titleAnalysis);
+			}
+			NLPAnalysis commentAnalysis = nlpIt.getCommentAnalysis();
+			if(commentAnalysis!=null) {
+				NLPAnalysisList.add(commentAnalysis);
+			}
+			if(NLPAnalysisList.size()!=0) {
+				//ExcelUtils.NLP_WriteToExcel(NLPAnalysisList, debugMode, fileName+date);
+			}
+		}
+		return ExcelUtils.NLPItem_WriteToExcel(nlpItemList);
 	}
 	
 	

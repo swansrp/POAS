@@ -1,6 +1,9 @@
 package com.srct.ril.poas.service.bbs;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +43,29 @@ public class BbsBDService {
         if (BbsBD == null) {
             throw new ServiceException("["+modelName+"] BBS BD from " + startTime + "to" + endTime + " not found" );
         }
-        nlpAnalysisService.saveExcel(modelName, "BD", BbsBD);
         return BbsBD;
     }
+	
+    public List<BbsBD> select(String modelName, String startTime, String endTime, HttpServletResponse response) throws ServiceException, IOException {
+    	List<BbsBD> bbsBDList = select(modelName, startTime, endTime);
+		nlpAnalysisService.saveExcel(modelName, "BD", bbsBDList).write(response.getOutputStream());
+		return bbsBDList;
+    }
+	
+	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
+		BbsBD record = (BbsBD)obj;
+		record.setCategory(category);
+    	record.setSentiment(sentiment);
+    	bbsBDDao.updateByPrimaryKey(record);
+	}
+	
+	public void updateSentiment(String modelName, Object obj, Integer sentiment) {
+		updateAnalysis(modelName,obj,sentiment,null);
+    }
+    
+	public void updateCategory(String modelName, Object obj, Integer category) {
+		updateAnalysis(modelName,obj,null,category);
+	}
+	
+	
 }

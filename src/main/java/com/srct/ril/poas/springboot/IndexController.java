@@ -1,7 +1,11 @@
 package com.srct.ril.poas.springboot;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.srct.ril.poas.utils.log.Log;
 
 @Controller
 public class IndexController {
@@ -21,8 +25,10 @@ public class IndexController {
         
     }
 	@RequestMapping("/test")
-	public String testpage() {
+	public String testpage(HttpSession session) {
+		Log.ii(session);
         return "testpage";
         
     }
+
 }

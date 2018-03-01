@@ -16,10 +16,10 @@ public class NLPItem {
 	private String origin;
 	private String timestamp;
 	private String title;
-	private String comment;
+	private String firstcomment;
 	private NLPAnalysis titleAnalysis;
 	private NLPAnalysis commentAnalysis;
-	private String url;
+	private String link;
 	
 
 	private Sentiment sentiment;
@@ -50,7 +50,7 @@ public class NLPItem {
 		}
 		try {
 			method = clazz.getMethod("getLink");
-			url = (String)method.invoke(obj);
+			link = (String)method.invoke(obj);
 		} catch (NoSuchMethodException | 
 				SecurityException | 
 				IllegalAccessException | 
@@ -59,7 +59,7 @@ public class NLPItem {
 		}
 		try {
 			method = clazz.getMethod("getFirstcomment");
-			comment = (String)method.invoke(obj);
+			firstcomment = (String)method.invoke(obj);
 		} catch (NoSuchMethodException | 
 				SecurityException | 
 				IllegalAccessException | 
@@ -78,9 +78,8 @@ public class NLPItem {
 		try {
 			method = clazz.getMethod("getCategory");
 			int categoryId = (Integer)method.invoke(obj);
-			categoryId = 1;
 			category = Category.getCategorybyId(categoryId);
-			Log.i("category {}", category);
+			//Log.i("category {}", category);
 		} catch (NoSuchMethodException | 
 				SecurityException | 
 				IllegalAccessException | 
@@ -92,7 +91,7 @@ public class NLPItem {
 		try {
 			method = clazz.getMethod("getSentiment");
 			int sentimentValue = (Integer)method.invoke(obj);
-			Log.i("sentimentValue{}",sentimentValue);
+			//Log.i("sentimentValue{}",sentimentValue);
 			sentiment = Category.Sentiment.getSetiment(sentimentValue);
 		} catch (NoSuchMethodException | 
 				SecurityException | 
@@ -173,12 +172,12 @@ public class NLPItem {
 		this.title = title;
 	}
 
-	public String getComment() {
-		return comment;
+	public String getFirstcomment() {
+		return firstcomment;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setFirstcomment(String comment) {
+		this.firstcomment = comment;
 	}
 
 	public NLPAnalysis getTitleAnalysis() {
@@ -197,12 +196,12 @@ public class NLPItem {
 		this.commentAnalysis = commentAnalysis;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getLink() {
+		return link;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setLink(String link) {
+		this.link = link;
 	}
 
 	public Sentiment getSentiment() {

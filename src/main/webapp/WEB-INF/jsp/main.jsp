@@ -119,9 +119,9 @@
                                      
                             </div>
                             <div class="form-group col-md-6">
-						   	         <button id="submit" type="submit" class="btn btn-danger">确定 </button>
-							         <!-- <button id="download" type="submit" class="btn btn-danger">点击下载 </button> -->
-							         <a href="../workbook1.xls" class="btn btn-success ">点击下载</a>
+						   	         <button id="submit" type="submit" class="btn btn-danger" onclick="submit()">确定 </button>
+							         <button id="download" type="submit" class="btn btn-danger" onclick="download()">下载 </button>
+							         <!-- <a href="../workbook1.xls" class="btn btn-success ">点击下载</a> -->
                                      
                             </div>
 							
@@ -250,9 +250,110 @@
         $("#search").text(search);  
     }
     
+    
+    
+    function submit() { 
+    	$('#cTable').html("");
+	    var modelname=$('#ModelName').val();
+    	var webname=$('#WebName').val();
+    	var start=$('#stime').val();
+    	var end=$('#etime').val();
+    	var url;
+    	var json={"modelname":modelname,"start":start,"end":end};
+    	if(webname=="京东") {
+            url="/JD/modelinfo";
+        } else if(webname=="淘宝") {
+             url="/TB/modelinfo";
+        } else if(webname=="天猫") {
+             url="/TM/modelinfo";
+        } else if(webname=="亚马逊") {
+            url="/AMZ/modelinfo";
+        } else if(webname=="百度贴吧") {
+            url="/BD/modelinfo";
+        } else if(webname=="盖乐世社区") {
+            url="/GC/modelinfo";
+        } else if(webname=="机锋") {
+            url="/JF/modelinfo";
+        } else if(webname=="国美") {
+            url="/GM/modelinfo";
+        } else if(webname=="苏宁易购") {
+            url="/SN/modelinfo";
+        } else if(webname=="全部") {
+            url="/StoreBbs/modelinfo";
+        }
+    	 
+    	$.ajax({
+    		type:"post",
+    		async:true,
+    		url:url,
+    		data:json,
+    		dataType: "json",
+    		success:function(msg){
+    			var json = eval(JSON.stringify(msg.data));
+    			var item;
+    			var num=msg.code;
+    			$.each(json,function(i,result){
+    				var id=json[i].id;
+    				var comment=json[i].firstcomment;
+    				var link;
+    				if (url="/BD/modelinfo"){link=json[i].link;}
+    				item="<tr><td>"+id+"</td><td>"+comment+"</td><td><a href=' "+link+" 'target= '_Blank'> "+link+"</a></td></tr>"; 
+    				$('#cTable').append(item);  
+    				}); 
+    			/*  alert(JSON.stringify(msg.data)); */
+    			$("#Pagination").pagination(id, {
+    	    	    num_edge_entries: 2,
+    	    	    num_display_entries: 4,
+    	    	    callback: pageselectCallback,
+    	    	    items_per_page:1
+    	    	});
+            },
+            error: function (msg) {
+                alert("err");
+            }
+    	
+    	});
+	}  /* end search */   
+	function download() { 
+		$('#cTable').html("");
+	    var modelname=$('#ModelName').val();
+    	var webname=$('#WebName').val();
+    	var start=$('#stime').val();
+    	var end=$('#etime').val();
+    	var url;
+    	var json={"modelname":modelname,"start":start,"end":end};
+    	if(webname=="京东") {
+            url="/JD/modelinfo/download";
+        } else if(webname=="淘宝") {
+             url="/TB/modelinfo/download";
+        } else if(webname=="天猫") {
+             url="/TM/modelinfo/download";
+        } else if(webname=="亚马逊") {
+            url="/AMZ/modelinfo/download";
+        } else if(webname=="百度贴吧") {
+            url="/BD/modelinfo/download";
+        } else if(webname=="盖乐世社区") {
+            url="/GC/modelinfo/download";
+        } else if(webname=="机锋") {
+            url="/JF/modelinfo/download";
+        } else if(webname=="国美") {
+            url="/GM/modelinfo/download";
+        } else if(webname=="苏宁易购") {
+            url="/SN/modelinfo/download";
+        } else if(webname=="全部") {
+            url="/StoreBbs/modelinfo/download";
+        }
+    	
+     	window.location.href = url 
+     			+ "?modelname=" + modelname
+    			+ "&start=" + start
+    			+ "&end=" + end;		
+	}  /* end download */ 
+
+    
     $(function(){
     	show_model_sselect();
-    	test();
+     	test();
     	$( "#stime" ).datepicker({
     	      defaultDate: "+1w",
     	      changeMonth: true,
@@ -271,73 +372,8 @@
     	        $( "#stime" ).datepicker( "option", "maxDate", selectedDate );
     	      }
     	    });
-    	
-    	
-        $("#submit").click(function(){
-        	    $('#cTable').html("");
-    		    var modelname=$('#ModelName').val();
-            	var webname=$('#WebName').val();
-            	var start=$('#stime').val();
-            	var end=$('#etime').val();
-            	var url;
-            	var json={"modelname":modelname,"start":start,"end":end};
-            	if(webname=="京东") {
-                    url="/JD/modelinfo";
-                } else if(webname=="淘宝") {
-                     url="/TB/modelinfo";
-                } else if(webname=="天猫") {
-                     url="/TM/modelinfo";
-                } else if(webname=="亚马逊") {
-                    url="/AMZ/modelinfo";
-                } else if(webname=="百度贴吧") {
-                    url="/BD/modelinfo";
-                } else if(webname=="盖乐世社区") {
-                    url="/GC/modelinfo";
-                } else if(webname=="机锋") {
-                    url="/JF/modelinfo";
-                } else if(webname=="国美") {
-                    url="/GM/modelinfo";
-                } else if(webname=="苏宁易购") {
-                    url="/SN/modelinfo";
-                } else if(webname=="全部") {
-                    url="/all/modelinfo";
-                }
-            	 
-            	$.ajax({
-            		type:"post",
-            		async:true,
-            		url:url,
-            		data:json,
-            		dataType: "json",
-            		success:function(msg){
-            			var json = eval(JSON.stringify(msg.data));
-            			var item;
-            			var num=msg.code;
-            			$.each(json,function(i,result){
-            				var id=json[i].id;
-            				var comment=json[i].firstcomment;
-            				var link;
-            				if (url="/BD/modelinfo"){link=json[i].link;}
-            				item="<tr><td>"+id+"</td><td>"+comment+"</td><td><a href=' "+link+" 'target= '_Blank'> "+link+"</a></td></tr>"; 
-            				$('#cTable').append(item);  
-            				}); 
-            			/*  alert(JSON.stringify(msg.data)); */
-            			$("#Pagination").pagination(id, {
-            	    	    num_edge_entries: 2,
-            	    	    num_display_entries: 4,
-            	    	    callback: pageselectCallback,
-            	    	    items_per_page:1
-            	    	});
-                    },
-                    error: function (msg) {
-                        alert("err");
-                    }
-            	
-            	});
-        });  /* end search */ 
-        
-     
-        
+    		
+               
     });
     </script>
 

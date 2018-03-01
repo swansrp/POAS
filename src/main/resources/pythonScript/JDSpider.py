@@ -22,7 +22,7 @@ from utils.ScarabaeusEnum import SourceEnum
 
 class JingDongSpider():
     
-    def __init__(self, url, num = 5 ):
+    def __init__(self, url, num = 100 ):
         self.url = url
         self.proxyIP = ""
         self.ProxyPort = ""

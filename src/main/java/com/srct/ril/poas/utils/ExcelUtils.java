@@ -21,6 +21,7 @@ import com.mchange.rmi.Checkable;
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
 import com.srct.ril.poas.ai.NLPItem;
+import com.srct.ril.poas.utils.log.Log;
 
 
 
@@ -77,9 +78,10 @@ public class ExcelUtils {
 	{
 		FileOutputStream fileOut;
 		String puth = "src/main/webapp/"+filename+".xls";
+		System.out.print(puth);
 			try {
 				fileOut = new FileOutputStream(puth);
-				wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
+				wb.write(fileOut);//把Workbook对象输出到文件puth中   
 				fileOut.close(); 
 				System.out.println("write to excel done !");
 				
@@ -173,7 +175,7 @@ public class ExcelUtils {
 			
 			HSSFCell cell2=row.createCell(3);
 			cell2.setCellStyle(cellStyle);
-			cell2.setCellValue(listNLP.get(NLPIndex-1).getComment());
+			cell2.setCellValue(listNLP.get(NLPIndex-1).getFirstcomment());
 			
 			HSSFCell cell3=row.createCell(4);
 			cell3.setCellStyle(cellStyle);
@@ -198,11 +200,11 @@ public class ExcelUtils {
 			
 			HSSFCell cell6=row.createCell(6);
 			cell6.setCellStyle(cellStyle);
-			cell6.setCellValue(listNLP.get(NLPIndex-1).getUrl());
+			cell6.setCellValue(listNLP.get(NLPIndex-1).getLink());
 			
 			NLPIndex++;
 		}
-		//wf(wb);
+
 		return wb;
 	}
 	
@@ -221,6 +223,7 @@ public class ExcelUtils {
 	        wb=new HSSFWorkbook(ps);    
 	        sheet=wb.getSheetAt(0);  //获取到工作表，因为一个excel可能有多个工作表  
 	        excel_line = sheet.getLastRowNum()+1;//从这行开始写 新的数据
+	        fs.close();
 		
 		} catch (FileNotFoundException e) {
 			wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
@@ -307,22 +310,22 @@ public class ExcelUtils {
 			
 			HSSFCell cell3=row.createCell(3);
 			cell3.setCellStyle(cellStyle);
-			cell3.setCellValue(listNLP.get(NLPIndex).getComment());
+			cell3.setCellValue(listNLP.get(NLPIndex).getFirstcomment());
 			
 			HSSFCell cell4=row.createCell(4);
 			cell4.setCellStyle(cellStyle);
 			switch(listNLP.get(NLPIndex).getSentiment()){
 			case NEGATIVE:
-				cell3.setCellValue("消极");
+				cell4.setCellValue("消极");
 				break;
 			case NEUTRAL:
-				cell3.setCellValue("中性");
+				cell4.setCellValue("中性");
 				break;
 			case POSITIVE:
-				cell3.setCellValue("积极");
+				cell4.setCellValue("积极");
 				break;
 			default:
-				cell3.setCellValue("Unknown");
+				cell4.setCellValue("Unknown");
 			}
 			
 			HSSFCell cell5=row.createCell(5);
@@ -331,11 +334,11 @@ public class ExcelUtils {
 			
 			HSSFCell cell6=row.createCell(6);
 			cell6.setCellStyle(cellStyle);
-			cell6.setCellValue(listNLP.get(NLPIndex).getUrl());
+			cell6.setCellValue(listNLP.get(NLPIndex).getLink());
 			
 			NLPIndex++;
 		}
-		//wf(wb,filename);
+
 		return wb;
 	}
 	
@@ -345,7 +348,7 @@ public class ExcelUtils {
 	 * flag is false , items will be ignored
 	 * flag is true , items will be printed to excel file
 	*/
-	public static void NLP_WriteToExcel(Object object, boolean f,String filename){
+	public static HSSFWorkbook NLP_WriteToExcel(Object object, boolean f,String filename){
 		
 		
 		String puth = baseDir +filename+".xls";
@@ -361,6 +364,7 @@ public class ExcelUtils {
 	        sheet=wb.getSheetAt(0);  //获取到工作表，因为一个excel可能有多个工作表  
 	        excelIndex = sheet.getLastRowNum()+1;//从这行开始写 新的数据
 	        System.out.println("continue output at excel index : "+excelIndex);
+	        fs.close();
 		
 		} catch (FileNotFoundException e) {
 			wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
@@ -404,7 +408,8 @@ public class ExcelUtils {
 			HSSFRow row1 = sheet.createRow(excelIndex++);
 			HSSFCell cell00=row1.createCell(0);
 			cell00.setCellStyle(cellStyle);
-			cell00.setCellValue(listNLP.get(NLPIndex).getContent().toString());
+			//Log.ii(listNLP);
+			cell00.setCellValue(listNLP.get(NLPIndex).getContent());
 			
 	///--------------------------------------------------------------------		
 			
@@ -464,6 +469,7 @@ public class ExcelUtils {
 		}//while(it.hasNext()便利NLP
 		
 		wf(wb,filename);
+		return wb;
 
 	}
 	
