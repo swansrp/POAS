@@ -119,7 +119,7 @@
                                      
                             </div>
                             <div class="form-group col-md-6">
-						   	         <button id="submit" type="submit" class="btn btn-danger">确定 </button>
+						   	         <button id="submit" type="submit" class="btn btn-danger" onclick="submit()">确定 </button>
 							         <button id="download" type="submit" class="btn btn-danger" onclick="download()">下载 </button>
 							         <!-- <a href="../workbook1.xls" class="btn btn-success ">点击下载</a> -->
                                      
@@ -252,7 +252,7 @@
     
     
     
-    function search() { 
+    function submit() { 
     	$('#cTable').html("");
 	    var modelname=$('#ModelName').val();
     	var webname=$('#WebName').val();
