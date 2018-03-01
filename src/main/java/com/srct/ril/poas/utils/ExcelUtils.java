@@ -17,6 +17,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.BorderStyle;
 
+import com.mchange.rmi.Checkable;
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
 import com.srct.ril.poas.ai.NLPItem;
@@ -102,12 +103,15 @@ public class ExcelUtils {
 		
 		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
 		HSSFSheet sheet = wb.createSheet("NLP_Item");
-		sheet.setColumnWidth(0, 5 * 512);//第一列宽度
-		sheet.setColumnWidth(1, 15 * 512);//第二列宽度
-		sheet.setColumnWidth(2, 5 * 512);//第二列宽度
-		sheet.setColumnWidth(3, 35 * 512);//第四列宽度
-		sheet.setColumnWidth(4, 5 * 512);//情感
-		sheet.setColumnWidth(5, 15 * 512);//URL
+
+		
+		sheet.setColumnWidth(0, 5 * 512);//ID
+		sheet.setColumnWidth(1, 15 * 512);//Time duration
+		sheet.setColumnWidth(2, 5 * 512);//Origin
+		sheet.setColumnWidth(3, 35 * 512);//comment
+		sheet.setColumnWidth(4, 5 * 512);//sentiment
+		sheet.setColumnWidth(5, 5 * 512);//category
+		sheet.setColumnWidth(6, 15 * 512);//URL
 		HSSFCellStyle cellStyle=wb.createCellStyle(); 
 		cellStyle.setShrinkToFit(true);
 		cellStyle.setWrapText(true);
@@ -200,7 +204,7 @@ public class ExcelUtils {
 			
 			NLPIndex++;
 		}
-		wf(wb);
+
 		return wb;
 	}
 	
@@ -334,7 +338,7 @@ public class ExcelUtils {
 			
 			NLPIndex++;
 		}
-		wf(wb,filename);
+
 		return wb;
 	}
 	
