@@ -97,7 +97,7 @@ public class ExcelUtils {
 		
 	}
 
-	public static void NLPItem_WriteToExcel(Object object){
+	public static HSSFWorkbook NLPItem_WriteToExcel(Object object){
 		
 		
 		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
@@ -201,10 +201,11 @@ public class ExcelUtils {
 			NLPIndex++;
 		}
 		wf(wb);
+		return wb;
 	}
 	
 	
-	public static void NLPItem_WriteToExcel(Object object, String filename){
+	public static HSSFWorkbook NLPItem_WriteToExcel(Object object, String filename){
 		
 		String puth = baseDir +filename+".xls";
 		int excel_line = 0;
@@ -334,6 +335,7 @@ public class ExcelUtils {
 			NLPIndex++;
 		}
 		wf(wb,filename);
+		return wb;
 	}
 	
 	
@@ -342,7 +344,7 @@ public class ExcelUtils {
 	 * flag is false , items will be ignored
 	 * flag is true , items will be printed to excel file
 	*/
-	public static void NLP_WriteToExcel(Object object, boolean f,String filename){
+	public static HSSFWorkbook NLP_WriteToExcel(Object object, boolean f,String filename){
 		
 		
 		String puth = baseDir +filename+".xls";
@@ -463,6 +465,7 @@ public class ExcelUtils {
 		}//while(it.hasNext()便利NLP
 		
 		wf(wb,filename);
+		return wb;
 
 	}
 	
