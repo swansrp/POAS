@@ -141,8 +141,6 @@
                         </div>
             </div>
 			 <div class="row">
-			 
-		 
                     <div class="col-md-12">
                         <div class="alert alert-info">
                            
@@ -158,38 +156,16 @@
                         <div class="panel-body">
                             <div class="table-responsive">
                             
-                                <table id="cTable" class="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Comments</th>
-                                            <th>Link</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                        </tr>
-                                    </tbody>
-                                          
-                                </table>
-                                <ul class="Pagination">
-                                              <!--  <li><a href="#">&laquo;</a></li>
-                                               <li><a href="#">1</a></li>
-                                               <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                               <li><a href="#">4</a></li>
-                                               <li><a href="#">5</a></li>
-                                               <li><a href="#">&raquo;</a></li> -->
-                                               </ul>
+                               
                             </div>
                         </div>
                     </div>
                     </div>
                 </div>
 
-                   <!-- test -->
-                                        <div class="row-fluid">
-                        block
+               <!-- test -->
+                     <div class="row-fluid">
+                        COMMENTS
                         <div class="block">
                             <div class="navbar navbar-inner block-header">
                                 <div class="muted pull-left">Bootstrap dataTables</div>
@@ -493,12 +469,7 @@
             			
             			
             			/*  alert(JSON.stringify(msg.data)); */
-            			/* $("#Pagination").pagination(id, {
-            	    	    num_edge_entries: 2,
-            	    	    num_display_entries: 4,
-            	    	    callback: pageselectCallback,
-            	    	    items_per_page:1
-            	    	}); */
+            			
                     },
                     error: function (msg) {
                         alert("err");
