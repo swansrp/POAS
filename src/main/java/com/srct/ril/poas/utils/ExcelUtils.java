@@ -211,11 +211,15 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 			cell1.setCellStyle(cellStyle);
 			cell1.setCellValue(listNLP.get(NLPIndex-1).getOrigin());
 			
-			HSSFCell cell2=row.createCell(3);
+			cell1=row.createCell(3);
+			cell1.setCellStyle(cellStyle);
+			cell1.setCellValue(listNLP.get(NLPIndex-1).getTitle());
+			
+			HSSFCell cell2=row.createCell(4);
 			cell2.setCellStyle(cellStyle);
 			cell2.setCellValue(listNLP.get(NLPIndex-1).getFirstcomment());
 			
-			HSSFCell cell3=row.createCell(4);
+			HSSFCell cell3=row.createCell(5);
 			cell3.setCellStyle(cellStyle);
 			switch(listNLP.get(NLPIndex-1).getSentiment()){
 			case NEGATIVE:
@@ -232,11 +236,11 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 			}
 			
 			
-			HSSFCell cell5=row.createCell(5);
+			HSSFCell cell5=row.createCell(6);
 			cell5.setCellStyle(cellStyle);
 			cell5.setCellValue(listNLP.get(NLPIndex).getCategory());
 			
-			HSSFCell cell6=row.createCell(6);
+			HSSFCell cell6=row.createCell(7);
 			cell6.setCellStyle(cellStyle);
 			cell6.setCellValue(listNLP.get(NLPIndex-1).getLink());
 			
@@ -335,11 +339,15 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 			cell2.setCellStyle(cellStyle);
 			cell2.setCellValue(listNLP.get(NLPIndex).getOrigin());
 			
-			HSSFCell cell3=row.createCell(3);
+			cell2=row.createCell(3);
+			cell2.setCellStyle(cellStyle);
+			cell2.setCellValue(listNLP.get(NLPIndex).getTitle());
+			
+			HSSFCell cell3=row.createCell(4);
 			cell3.setCellStyle(cellStyle);
 			cell3.setCellValue(listNLP.get(NLPIndex).getFirstcomment());
 			
-			HSSFCell cell4=row.createCell(4);
+			HSSFCell cell4=row.createCell(5);
 			cell4.setCellStyle(cellStyle);
 			switch(listNLP.get(NLPIndex).getSentiment()){
 			case NEGATIVE:
@@ -355,11 +363,11 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 				cell4.setCellValue(" ");
 			}
 			
-			HSSFCell cell5=row.createCell(5);
+			HSSFCell cell5=row.createCell(6);
 			cell5.setCellStyle(cellStyle);
 			cell5.setCellValue(listNLP.get(NLPIndex).getCategory());
 			
-			HSSFCell cell6=row.createCell(6);
+			HSSFCell cell6=row.createCell(7);
 			cell6.setCellStyle(cellStyle);
 			cell6.setCellValue(listNLP.get(NLPIndex).getLink());
 			
