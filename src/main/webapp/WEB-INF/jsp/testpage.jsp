@@ -18,6 +18,10 @@
 
     <!-- GOOGLE FONTS-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    
+     <!-- PAGE LEVEL STYLES -->
+    <link href="assets/css/bootstrap-fileupload.min.css" rel="stylesheet" />
+    
 </head>
 <body>
     <div id="wrapper">
@@ -118,7 +122,27 @@
                            SINGUP FORM
                         </div>
                         <div  class="panel-body" >
-                            
+                           <div class="panel-heading">
+                            File Uploads
+                           </div>
+                           
+                            <div class="form-group">
+                                       <label class="control-label col-lg-4">File Uploads</label>
+                                       <div class="">
+                                           <div class="fileupload fileupload-new" data-provides="fileupload">
+                                               <span class="btn btn-file btn-default">
+                                                   <span class="fileupload-new">Select file</span>
+                                                   <span class="fileupload-exists">Change</span>
+                                                   <input id="upfile" type="file">
+                                               </span>
+                                               <span class="fileupload-preview"></span>
+                                               <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
+                                           </div>
+                                       </div>
+                                       <button id="upload" onclick="upLoadFile()" type="submit" class="btn btn-danger">提交</button>
+                            </div>
+                           
+                           
                         </div>
                 </div>
             </div>
@@ -146,6 +170,9 @@
     <script src="../assets/js/jquery-1.10.2.js"></script>
     <!-- BOOTSTRAP SCRIPTS -->
     <script src="../assets/js/bootstrap.js"></script>
+    
+        <!-- PAGE LEVEL SCRIPTS -->
+    <script src="assets/js/bootstrap-fileupload.js"></script>
     <!-- METISMENU SCRIPTS -->
     <script src="../assets/js/jquery.metisMenu.js"></script>
     <!-- CUSTOM SCRIPTS -->
@@ -153,7 +180,32 @@
 
     
     <script type="text/javascript">
- 
+    function upLoadFile() { 
+    	var formData = new FormData();
+        var name = $("#upfile").val();
+        formData.append("file",$("#upfile")[0].files[0]);
+        formData.append("name",name);
+        $.ajax({
+            url : '',
+            type : 'POST',
+            async : false,
+            data : formData,
+            // 告诉jQuery不要去处理发送的数据
+            processData : false,
+            // 告诉jQuery不要去设置Content-Type请求头
+            contentType : false,
+            beforeSend:function(){
+                console.log("正在进行，请稍候");
+            },
+            success : function(responseStr) {
+                if(responseStr=="01"){
+                    alert("导入成功");
+                }else{
+                    alert("导入失败");
+                }
+            }
+        });
+    }
 
    
     

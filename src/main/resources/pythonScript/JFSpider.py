@@ -175,7 +175,7 @@ class JifengSpider():
             pattern = re.compile('<tbody id="normalthread_.*?">.*?</tbody>',re.S)
             results = re.findall(pattern, answer)   
             if len(results) == 0:
-                break         
+                break 
             time_rule = re.compile("<td class=\"by\">.*?</td>",re.S)
             title_rule = re.compile('<a href=\"http://bbs.gfan.com/.*?\".*?onclick=\"atarget\(this\)\" class=\"xst\" >(.*?)</a>', re.S)
             for result in results:
@@ -217,7 +217,7 @@ class JifengSpider():
         self.productId = self.getProductId(self.url)
         
         #createtable = 'firstcomment text,date char,link text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,firstcomment VARCHAR(5000),date VARCHAR(20),link VARCHAR(500), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,firstcomment VARCHAR(5000),date VARCHAR(20),link VARCHAR(500),sentiment int(11) DEFAULT -1,category int(11) DEFAULT 0, PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()

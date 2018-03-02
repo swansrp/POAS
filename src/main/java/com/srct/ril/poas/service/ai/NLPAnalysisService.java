@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -281,17 +282,17 @@ public class NLPAnalysisService {
 		}
 	}
 	
-	public void saveExcel(String modelName, String origin, Object dataList) throws ServiceException {
-		if(dataList==null) return;
+	public HSSFWorkbook saveExcel(String modelName, String origin, Object dataList) throws ServiceException {
+		if(dataList==null) return null;
 		List<NLPItem> nlpItemList = new ArrayList<>();
 		for(Object obj : (List<Object>)dataList) {
 			NLPItem nlpIt = NLPitemFactory(modelName, origin,obj);
 			nlpItemList.add(nlpIt);
 		}
-		saveExcel(modelName,nlpItemList);
+		return saveExcel(modelName,nlpItemList);
 	}
 	
-	public void saveExcel(String modelName, List<NLPItem> nlpItemList) throws ServiceException {
+	public HSSFWorkbook saveExcel(String modelName, List<NLPItem> nlpItemList) throws ServiceException {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmm");//设置日期格式
 		String date = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
 		for(NLPItem nlpIt : nlpItemList) {
@@ -308,7 +309,7 @@ public class NLPAnalysisService {
 				//ExcelUtils.NLP_WriteToExcel(NLPAnalysisList, debugMode, fileName+date);
 			}
 		}
-		ExcelUtils.NLPItem_WriteToExcel(nlpItemList,fileName+date);
+		return ExcelUtils.NLPItem_WriteToExcel(nlpItemList);
 	}
 	
 	

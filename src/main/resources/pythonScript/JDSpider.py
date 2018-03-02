@@ -180,7 +180,7 @@ class JingDongSpider():
         time1 = time.time()
         commenturl =  self.getCommentUrl(self.url)
                
-        for k in range(1,self.pagenum):
+        for k in range(0,self.pagenum):
             forinsert = []
             if self.state is 'True':
                 break
@@ -226,7 +226,7 @@ class JingDongSpider():
         commenturl =  self.getCommentUrl(self.url)   
         timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
             
-        for k in range(1,self.pagenum):
+        for k in range(0,self.pagenum):
             skiptime = "False"
             forinsert = []
             if self.state is 'True':
@@ -280,7 +280,7 @@ class JingDongSpider():
 
         self.productId = self.getProductId(self.url)
         
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT, username VARCHAR(200),userlevel VARCHAR(20), firstcomment VARCHAR(5000),star VARCHAR(20),date VARCHAR(20),client VARCHAR(20), color VARCHAR(20),size VARCHAR(20),referenceName VARCHAR(200),link VARCHAR(500), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT, username VARCHAR(200),userlevel VARCHAR(20), firstcomment VARCHAR(5000),star VARCHAR(20),date VARCHAR(20),client VARCHAR(20), color VARCHAR(20),size VARCHAR(20),referenceName VARCHAR(200),link VARCHAR(500),sentiment int(11) DEFAULT -1,category int(11) DEFAULT 0, PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()

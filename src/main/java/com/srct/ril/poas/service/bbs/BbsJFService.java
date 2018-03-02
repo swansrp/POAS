@@ -1,6 +1,9 @@
 package com.srct.ril.poas.service.bbs;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +27,7 @@ public class BbsJFService {
 	@Autowired
 	private NLPAnalysisService nlpAnalysisService;
 	
-	public List<BbsJF> select(String modelName, String startTime, String endTime, boolean saveExcel) throws ServiceException {
+	public List<BbsJF> select(String modelName, String startTime, String endTime) throws ServiceException {
     	
     	BbsJFExample ex = new BbsJFExample();
     	ex.setDistinct(false);
@@ -40,15 +43,14 @@ public class BbsJFService {
         if (BbsJF == null) {
             throw new ServiceException("["+modelName+"] BBS JF from " + startTime + "to" + endTime + " not found" );
         }
-        if(saveExcel) {
-        	nlpAnalysisService.saveExcel(modelName, "JF", BbsJF);
-        }
         return BbsJF;
     }
 	
-	public List<BbsJF> select(String modelName, String startTime, String endTime) throws ServiceException {
-		return select(modelName, startTime, endTime, true);
-	}
+    public List<BbsJF> select(String modelName, String startTime, String endTime, HttpServletResponse response) throws ServiceException, IOException {
+    	List<BbsJF> bbsJFList = select(modelName, startTime, endTime);
+		nlpAnalysisService.saveExcel(modelName, "JF", bbsJFList).write(response.getOutputStream());
+		return bbsJFList;
+    }
 	
 	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
 		BbsJF record = (BbsJF)obj;

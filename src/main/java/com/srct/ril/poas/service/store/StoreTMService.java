@@ -1,6 +1,9 @@
 package com.srct.ril.poas.service.store;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +27,7 @@ public class StoreTMService {
 	@Autowired
 	private NLPAnalysisService nlpAnalysisService;
 	
-	public List<StoreTM> select(String modelName, String startTime, String endTime, boolean saveExcel) throws ServiceException {
+	public List<StoreTM> select(String modelName, String startTime, String endTime) throws ServiceException {
     	
     	StoreTMExample ex = new StoreTMExample();
     	ex.setDistinct(false);
@@ -40,15 +43,14 @@ public class StoreTMService {
         if (StoreTM == null) {
             throw new ServiceException("["+modelName+"] store TM from " + startTime + "to" + endTime + " not found" );
         }
-        if(saveExcel) {
-        	nlpAnalysisService.saveExcel(modelName, "TM", StoreTM);
-        }
         return StoreTM;
     }
 	
-	public List<StoreTM> select(String modelName, String startTime, String endTime) throws ServiceException {
-		return select(modelName, startTime, endTime, true);
-	}
+    public List<StoreTM> select(String modelName, String startTime, String endTime, HttpServletResponse response) throws ServiceException, IOException {
+    	List<StoreTM> storeTMList = select(modelName, startTime, endTime);
+		nlpAnalysisService.saveExcel(modelName, "TM", storeTMList).write(response.getOutputStream());
+		return storeTMList;
+    }
 	
 	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
 		StoreTM record = (StoreTM)obj;
