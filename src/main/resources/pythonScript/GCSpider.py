@@ -100,16 +100,20 @@ class GalaxyClubSpider():
             html = self.get_htmlviaCom(url_last, headers)
             #answer = html.decode("UTF-8","replace")
             answer = html
-            li_format = re.compile('<li class=\"\">.*?</li>',re.S)
+            #li_format = re.compile('<li class=\"\">.*?</li>',re.S)
+            li_format = re.compile('<div class=\".*?List\">.*?</div>',re.S)
             li_content = re.findall(li_format,answer)
             if len(li_content) == 0:
                 break
             for li in li_content:
                 try:
+                    if li.find('<a href="javascript:void(0)">置顶</a>') != -1:
+                        continue
                     if self.state is 'True':
                         break
                     #time.sleep(2)
-                    href = re.search(r'<a href=\"(.*?)\" class=\"tit\" .*?>(.*?)</a>',li)
+                    #href = re.search(r'<a href=\"(.*?)\" class=\"tit\" .*?>(.*?)</a>',li)
+                    href = re.search(r'<a href=\"(.*?)\" style="cursor: pointer;" target="_blank">(.*?)</a>',li)
                     url_detail = "http://www.galaxyclub.cn"+href.group(1)
                     link = url_detail
 
@@ -118,7 +122,7 @@ class GalaxyClubSpider():
                     answer = html
                     theme_content = href.group(2)
                     theme_content = re.sub("&quot;", "\"",theme_content)
-
+                    theme_content = re.sub("&amp;", "\"",theme_content)
                     time_content = re.search(r"<p class=\"data\">(.*?)</p>", answer)
                     if time_content == None:
                         time_content =" "
@@ -127,7 +131,7 @@ class GalaxyClubSpider():
 
                     time1 = time.mktime(time.strptime(time_content,'%Y-%m-%d %H:%M'))
                     time_content = TimeUtils.convert_timestamp_to_date(time1)
-                    content_format = re.compile('<div class=\"board-cont\">.*?</div>',re.S)
+                    content_format = re.compile('<div class=\"BSHARE_PO\">.*?</div>',re.S)
                     c_content = re.search(content_format,answer)
                     if c_content == None:
                         c_content = " "
@@ -173,16 +177,20 @@ class GalaxyClubSpider():
             html = self.get_htmlviaCom(url_last, headers)
             #answer = html.decode("UTF-8","replace")
             answer = html
-            li_format = re.compile('<li class=\"\">.*?</li>',re.S)
+            #li_format = re.compile('<li class=\"\">.*?</li>',re.S)
+            li_format = re.compile('<div class=\".*?List\">.*?</div>',re.S)
             li_content = re.findall(li_format,answer)
             if len(li_content) == 0:
                 break
             for li in li_content:
                 try:
+                    if li.find('<a href="javascript:void(0)">置顶</a>') != -1:
+                        continue
                     if self.state is 'True':
                         break
                     #time.sleep(2)
-                    href = re.search(r'<a href=\"(.*?)\" class=\"tit\" .*?>(.*?)</a>',li)
+                    #href = re.search(r'<a href=\"(.*?)\" class=\"tit\" .*?>(.*?)</a>',li)
+                    href = re.search(r'<a href=\"(.*?)\" style="cursor: pointer;" target="_blank">(.*?)</a>',li)
                     url_detail = "http://www.galaxyclub.cn"+href.group(1)
                     link = url_detail
 
@@ -191,7 +199,7 @@ class GalaxyClubSpider():
                     answer = html
                     theme_content = href.group(2)
                     theme_content = re.sub("&quot;", "\"",theme_content)
-
+                    theme_content = re.sub("&amp;", "\"",theme_content)
                     time_content = re.search(r"<p class=\"data\">(.*?)</p>", answer)
                     if time_content == None:
                         time_content =" "
@@ -204,7 +212,7 @@ class GalaxyClubSpider():
                         skiptime ="True"
                         break
                     
-                    content_format = re.compile('<div class=\"board-cont\">.*?</div>',re.S)
+                    content_format = re.compile('<div class=\"BSHARE_PO\">.*?</div>',re.S)
                     c_content = re.search(content_format,answer)
                     if c_content == None:
                         c_content = " "
@@ -238,7 +246,7 @@ class GalaxyClubSpider():
         self.productId = self.getProductId(self.url)
         
         #createtable = 'title text, firstcomment text,date char,link text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(5000),date VARCHAR(20),link VARCHAR(500), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(5000),date VARCHAR(20),link VARCHAR(500),sentiment int(11) DEFAULT -1,category int(11) DEFAULT 0, PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()

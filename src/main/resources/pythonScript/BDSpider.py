@@ -138,7 +138,11 @@ class BaiduSpider():
                     context = re.sub("\r", "",context)
                     context = re.sub(" ", "",context)
                     context = re.sub("<.*?>", "",context)
-                    createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer).group(1)
+                    #createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer).group(1)
+                    createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer)
+                    if createtime == None :
+                        createtime = re.search(r'<span class="tail-info">' + u'1楼' + '</span><span class="tail-info">(.*?)</span>',answer)
+                    createtime = createtime.group(1)
                     time1 = time.mktime(time.strptime(createtime,'%Y-%m-%d %H:%M'))
                     createtime = TimeUtils.convert_timestamp_to_date(time1)
                     context = StringUtils.remove_emoji_from_string(context)
@@ -185,7 +189,11 @@ class BaiduSpider():
                     replynum = num.group(2).strip()
                     #answer = self.get_htmlviaCom(link).decode("UTF-8","replace")
                     answer = self.get_htmlviaCom(link)
-                    createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer).group(1)
+                    #createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer).group(1)
+                    createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer)
+                    if createtime == None :
+                        createtime = re.search(r'<span class="tail-info">' + u'1楼' + '</span><span class="tail-info">(.*?)</span>',answer)
+                    createtime = createtime.group(1)
                     time1 = time.mktime(time.strptime(createtime,'%Y-%m-%d %H:%M'))
                     createtime = TimeUtils.convert_timestamp_to_date(time1)
                     if time1 < float(timestamp):
@@ -215,7 +223,7 @@ class BaiduSpider():
             return
         
         #createtable = 'title text, firstcomment text,replynum char,date char,link text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(5000),replynum VARCHAR(50),date VARCHAR(20),link VARCHAR(500), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(5000),replynum VARCHAR(50),date VARCHAR(20),link VARCHAR(500),sentiment int(11) DEFAULT -1,category int(11) DEFAULT 0, PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
