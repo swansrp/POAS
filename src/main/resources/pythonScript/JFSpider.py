@@ -158,7 +158,6 @@ class JifengSpider():
             datas['fid'] = p_group.group(1)
             timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
         except:
-            print("sww")
             return
         #for p in range(1, totalPage):#全部版
         skiptime = "False"
@@ -197,7 +196,6 @@ class JifengSpider():
                     subject = title.group(1).strip()   
                     time1 = time.mktime(time.strptime(posttime,'%Y-%m-%d %H:%M'))
                     posttime = TimeUtils.convert_timestamp_to_date(time1)
-                    print(posttime)
                     if time1 < float(timestamp):
                         skiptime ="True"
                         break
