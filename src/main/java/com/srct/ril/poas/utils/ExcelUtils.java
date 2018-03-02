@@ -15,17 +15,14 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 
-import com.mchange.rmi.Checkable;
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
 import com.srct.ril.poas.ai.NLPItem;
-import com.srct.ril.poas.utils.log.Log;
 
 
 
@@ -79,10 +76,11 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 	sheet.setColumnWidth(0, 5 * 512);//ID
 	sheet.setColumnWidth(1, 15 * 512);//Time duration
 	sheet.setColumnWidth(2, 5 * 512);//Origin
-	sheet.setColumnWidth(3, 35 * 512);//comment
-	sheet.setColumnWidth(4, 5 * 512);//sentiment
-	sheet.setColumnWidth(5, 5 * 512);//category
-	sheet.setColumnWidth(6, 15 * 512);//URL
+	sheet.setColumnWidth(3, 30 * 512);
+	sheet.setColumnWidth(4, 35 * 512);//comment
+	sheet.setColumnWidth(5, 5 * 512);//sentiment
+	sheet.setColumnWidth(6, 5 * 512);//category
+	sheet.setColumnWidth(7, 15 * 512);//URL
 	
 	return sheet;
 }
@@ -177,19 +175,24 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 		
 		HSSFCell cell30=row0.createCell(3);
 		cell30.setCellStyle(titleStyle);
-		cell30.setCellValue("comment");
+		cell30.setCellValue("title");
 		
 		HSSFCell cell40=row0.createCell(4);
 		cell40.setCellStyle(titleStyle);
-		cell40.setCellValue("Sentiment");
+		cell40.setCellValue("comment");
 		
 		HSSFCell cell50=row0.createCell(5);
 		cell50.setCellStyle(titleStyle);
-		cell50.setCellValue("Category");
+		cell50.setCellValue("Sentiment");
 		
 		HSSFCell cell60=row0.createCell(6);
 		cell60.setCellStyle(titleStyle);
+		cell60.setCellValue("Category");
+		
+		cell60=row0.createCell(7);
+		cell60.setCellStyle(titleStyle);
 		cell60.setCellValue("Url");
+		
 		//=================
 		//利用迭代器读取 list中的每个NLPAnalysis
 		while(it.hasNext()&&NLPIndex<listNLP.size()) {
@@ -225,7 +228,7 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 				cell3.setCellValue("积极");
 				break;
 			default:
-				cell3.setCellValue("Unknown");
+				cell3.setCellValue(" ");
 			}
 			
 			
@@ -296,17 +299,21 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 		
 		HSSFCell cell30=row0.createCell(3);
 		cell30.setCellStyle(titleStyle);
-		cell30.setCellValue("comment");
+		cell30.setCellValue("title");
 		
 		HSSFCell cell40=row0.createCell(4);
 		cell40.setCellStyle(titleStyle);
-		cell40.setCellValue("Sentiment");
+		cell40.setCellValue("comment");
 		
 		HSSFCell cell50=row0.createCell(5);
 		cell50.setCellStyle(titleStyle);
-		cell50.setCellValue("Category");
+		cell50.setCellValue("Sentiment");
 		
 		HSSFCell cell60=row0.createCell(6);
+		cell60.setCellStyle(titleStyle);
+		cell60.setCellValue("Category");
+		
+		cell60=row0.createCell(7);
 		cell60.setCellStyle(titleStyle);
 		cell60.setCellValue("Url");
 		
@@ -345,7 +352,7 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 				cell4.setCellValue("积极");
 				break;
 			default:
-				cell4.setCellValue("Unknown");
+				cell4.setCellValue(" ");
 			}
 			
 			HSSFCell cell5=row.createCell(5);
@@ -519,12 +526,30 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 		
 	}
 	
-	
-	public static String FindLatestResultFilenameForSession(String sessionname) {
-		String filename = "";
+	public static ArrayList<NLPItem> ReadFromExcel(HSSFWorkbook wb ){
 		
-		return filename;
+		ArrayList<NLPItem> listNLP = new ArrayList<NLPItem> ();
+		
+		HSSFSheet sheet = null;
+		sheet=wb.getSheetAt(0);  //获取到工作表，因为一个excel可能有多个工作表  
+        int maxline = sheet.getLastRowNum();//从这行开始写 新的数据
+        
+        for(int i =0 ; i<= maxline ; i++){
+        	HSSFRow row = sheet.getRow(i);
+        	if (row != null) {
+				Integer id = Integer.parseInt( row.getCell(0).getStringCellValue() );
+				String origin = row.getCell(2).getStringCellValue();
+				String timestamp = row.getCell(1).getStringCellValue();
+				String title = row.getCell(3).getStringCellValue();
+				String link = row.getCell(7).getStringCellValue();
+				NLPItem temp = new NLPItem( id,  timestamp,  origin,  title,  link);
+				listNLP.add(temp);
+        	}
+        }
+		
+		return listNLP;
 		
 	}
+	
 	
 }
