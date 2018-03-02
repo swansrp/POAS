@@ -138,7 +138,7 @@ class SpiderMySqlDatabase():
             cursor.execute('SET CHARACTER SET utf8;')
             cursor.execute('SET character_set_connection=utf8;')
             for x in value:
-                sql = 'insert into ' + self.tablename + ' values (null,"' + '","'.join(x) + '")'
+                sql = 'insert into ' + self.tablename + ' values (null,"' + '","'.join(x) + '",-1,0)'
                 cursor.execute(sql)
             self.db.commit()
         except MySQLdb.Error as e:

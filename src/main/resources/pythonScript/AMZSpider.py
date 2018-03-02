@@ -187,7 +187,7 @@ class AmazonSpider():
         self.productId = self.getProductId(self.url)
         
         #createtable = 'title text, firstcomment text,star text,date char,referenceName text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(5000),star VARCHAR(50),date VARCHAR(20),referenceName VARCHAR(200),link VARCHAR(500), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(5000),star VARCHAR(50),date VARCHAR(20),referenceName VARCHAR(200),link VARCHAR(500),sentiment int(11) DEFAULT -1,category int(11) DEFAULT 0, PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()

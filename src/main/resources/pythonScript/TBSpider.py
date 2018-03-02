@@ -326,7 +326,7 @@ class TaoBaoSpider():
         self.productId = self.getProductId(self.url)
         
         #createtable = 'username text, firstcomment text,date char,appendComment text, appenddate char,reply text,referenceName text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,username VARCHAR(200),firstcomment VARCHAR(5000),date VARCHAR(20),appendComment VARCHAR(5000), appenddate VARCHAR(20),reply VARCHAR(5000),referenceName VARCHAR(200),link VARCHAR(500), PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,username VARCHAR(200),firstcomment VARCHAR(5000),date VARCHAR(20),appendComment VARCHAR(5000), appenddate VARCHAR(20),reply VARCHAR(5000),referenceName VARCHAR(200),link VARCHAR(500),sentiment int(11) DEFAULT -1,category int(11) DEFAULT 0, PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
