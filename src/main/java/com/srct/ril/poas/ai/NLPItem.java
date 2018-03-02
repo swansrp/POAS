@@ -24,6 +24,13 @@ public class NLPItem {
 
 	private Sentiment sentiment;
 	private String category;	
+	public NLPItem (Integer id, String timestamp, String origin, String title, String link ){
+		this.id = id;
+		this.timestamp = timestamp;
+		this.origin = origin;
+		this.title = title;
+		this.link = link;
+	}
 	public NLPItem(String modelName, String origin, Object obj, Class<?> clazz) {
 		//Log.i("NLPItem:  origin {} modelName {}", origin,modelName);
 		this.daoPojoObject = obj;
