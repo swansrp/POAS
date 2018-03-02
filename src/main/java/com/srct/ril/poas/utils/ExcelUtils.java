@@ -1,4 +1,5 @@
 package com.srct.ril.poas.utils;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -14,8 +15,11 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 
 import com.mchange.rmi.Checkable;
 import com.srct.ril.poas.ai.NLPAnalysis;
@@ -39,7 +43,50 @@ public class ExcelUtils {
 //		WriteToExcel(arrayList);
 //		
 //	}
+	private static HSSFCellStyle GetNormalCellStyle(HSSFWorkbook wb){
+		
+		
+		HSSFCellStyle cellStyle = wb.createCellStyle(); 
+		cellStyle.setShrinkToFit(true);
+		cellStyle.setWrapText(true);
+		cellStyle.setBorderBottom(BorderStyle.THIN);//下边框        
+		cellStyle.setBorderLeft(BorderStyle.THIN);//左边框        
+		cellStyle.setBorderRight(BorderStyle.THIN);//右边框        
+		cellStyle.setBorderTop(BorderStyle.THIN);//上边框 
+		
+		return cellStyle;
+	}
 	
+private static HSSFCellStyle GetClolorCellStyle(HSSFWorkbook wb){
+		
+		
+		HSSFCellStyle cellStyle = wb.createCellStyle(); 
+		cellStyle.setShrinkToFit(true);
+		cellStyle.setWrapText(true);
+		cellStyle.setBorderBottom(BorderStyle.THIN);//下边框        
+		cellStyle.setBorderLeft(BorderStyle.THIN);//左边框        
+		cellStyle.setBorderRight(BorderStyle.THIN);//右边框        
+		cellStyle.setBorderTop(BorderStyle.THIN);//上边框 
+		cellStyle.setFillForegroundColor( HSSFColorPredefined.PALE_BLUE.getIndex());
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		return cellStyle;
+	}
+	
+	
+private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
+	
+	HSSFSheet sheet = wb.createSheet("NLP_Item");
+	sheet.setColumnWidth(0, 5 * 512);//ID
+	sheet.setColumnWidth(1, 15 * 512);//Time duration
+	sheet.setColumnWidth(2, 5 * 512);//Origin
+	sheet.setColumnWidth(3, 35 * 512);//comment
+	sheet.setColumnWidth(4, 5 * 512);//sentiment
+	sheet.setColumnWidth(5, 5 * 512);//category
+	sheet.setColumnWidth(6, 15 * 512);//URL
+	
+	return sheet;
+}
+
 	public static void DelayWriteFile(HSSFWorkbook o,int time){
 		 try {
 			Thread.sleep(time);
@@ -102,23 +149,11 @@ public class ExcelUtils {
 		
 		
 		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
-		HSSFSheet sheet = wb.createSheet("NLP_Item");
+		HSSFSheet sheet = GetSheetOfNlpItem(wb);
 
 		
-		sheet.setColumnWidth(0, 5 * 512);//ID
-		sheet.setColumnWidth(1, 15 * 512);//Time duration
-		sheet.setColumnWidth(2, 5 * 512);//Origin
-		sheet.setColumnWidth(3, 35 * 512);//comment
-		sheet.setColumnWidth(4, 5 * 512);//sentiment
-		sheet.setColumnWidth(5, 5 * 512);//category
-		sheet.setColumnWidth(6, 15 * 512);//URL
-		HSSFCellStyle cellStyle=wb.createCellStyle(); 
-		cellStyle.setShrinkToFit(true);
-		cellStyle.setWrapText(true);
-		cellStyle.setBorderBottom(BorderStyle.THIN);//下边框        
-		cellStyle.setBorderLeft(BorderStyle.THIN);//左边框        
-		cellStyle.setBorderRight(BorderStyle.THIN);//右边框        
-		cellStyle.setBorderTop(BorderStyle.THIN);//上边框 
+		HSSFCellStyle cellStyle= GetNormalCellStyle(wb);
+		HSSFCellStyle titleStyle = GetClolorCellStyle(wb);
 		
 		@SuppressWarnings("unchecked")
 		ArrayList<NLPItem> listNLP = (ArrayList<NLPItem>) object;
@@ -129,31 +164,31 @@ public class ExcelUtils {
 		HSSFRow row0 = sheet.createRow(NLPIndex++);
 		//=================
 		HSSFCell cell00=row0.createCell(0);
-		cell00.setCellStyle(cellStyle);
+		cell00.setCellStyle(titleStyle);
 		cell00.setCellValue("ID");
 		
 		HSSFCell cell10=row0.createCell(1);
-		cell10.setCellStyle(cellStyle);
+		cell10.setCellStyle(titleStyle);
 		cell10.setCellValue("Time duration");
 		
 		HSSFCell cell20=row0.createCell(2);
-		cell20.setCellStyle(cellStyle);
+		cell20.setCellStyle(titleStyle);
 		cell20.setCellValue("Origin");
 		
 		HSSFCell cell30=row0.createCell(3);
-		cell30.setCellStyle(cellStyle);
+		cell30.setCellStyle(titleStyle);
 		cell30.setCellValue("comment");
 		
 		HSSFCell cell40=row0.createCell(4);
-		cell40.setCellStyle(cellStyle);
+		cell40.setCellStyle(titleStyle);
 		cell40.setCellValue("Sentiment");
 		
 		HSSFCell cell50=row0.createCell(5);
-		cell50.setCellStyle(cellStyle);
+		cell50.setCellStyle(titleStyle);
 		cell50.setCellValue("Category");
 		
 		HSSFCell cell60=row0.createCell(6);
-		cell60.setCellStyle(cellStyle);
+		cell60.setCellStyle(titleStyle);
 		cell60.setCellValue("Url");
 		//=================
 		//利用迭代器读取 list中的每个NLPAnalysis
@@ -190,7 +225,7 @@ public class ExcelUtils {
 				cell3.setCellValue("积极");
 				break;
 			default:
-				cell3.setCellValue("没啥说的");
+				cell3.setCellValue("Unknown");
 			}
 			
 			
@@ -227,7 +262,7 @@ public class ExcelUtils {
 		
 		} catch (FileNotFoundException e) {
 			wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
-			sheet = wb.createSheet("NLP_Item");
+			sheet = GetSheetOfNlpItem(wb);
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -237,23 +272,8 @@ public class ExcelUtils {
 		
 		
 		
-		sheet.setColumnWidth(0, 5 * 512);//ID
-		sheet.setColumnWidth(1, 15 * 512);//Time duration
-		sheet.setColumnWidth(2, 5 * 512);//Origin
-		sheet.setColumnWidth(3, 35 * 512);//comment
-		sheet.setColumnWidth(4, 5 * 512);//sentiment
-		sheet.setColumnWidth(5, 5 * 512);//category
-		sheet.setColumnWidth(6, 15 * 512);//URL
-		
-		
-		HSSFCellStyle cellStyle=wb.createCellStyle(); 
-		cellStyle.setShrinkToFit(true);
-		cellStyle.setWrapText(true);
-		cellStyle.setBorderBottom(BorderStyle.THIN);//下边框        
-		cellStyle.setBorderLeft(BorderStyle.THIN);//左边框        
-		cellStyle.setBorderRight(BorderStyle.THIN);//右边框        
-		cellStyle.setBorderTop(BorderStyle.THIN);//上边框 
-		
+		HSSFCellStyle cellStyle=GetNormalCellStyle(wb);
+		HSSFCellStyle titleStyle = GetClolorCellStyle(wb);
 		@SuppressWarnings("unchecked")
 		ArrayList<NLPItem> listNLP = (ArrayList<NLPItem>) object;
 		Iterator<NLPItem> it = listNLP.iterator();
@@ -263,31 +283,31 @@ public class ExcelUtils {
 		HSSFRow row0 = sheet.createRow(excel_line++);
 		//=================
 		HSSFCell cell00=row0.createCell(0);
-		cell00.setCellStyle(cellStyle);
+		cell00.setCellStyle(titleStyle);
 		cell00.setCellValue("ID");
 		
 		HSSFCell cell10=row0.createCell(1);
-		cell10.setCellStyle(cellStyle);
+		cell10.setCellStyle(titleStyle);
 		cell10.setCellValue("Time duration");
 		
 		HSSFCell cell20=row0.createCell(2);
-		cell20.setCellStyle(cellStyle);
+		cell20.setCellStyle(titleStyle);
 		cell20.setCellValue("Origin");
 		
 		HSSFCell cell30=row0.createCell(3);
-		cell30.setCellStyle(cellStyle);
+		cell30.setCellStyle(titleStyle);
 		cell30.setCellValue("comment");
 		
 		HSSFCell cell40=row0.createCell(4);
-		cell40.setCellStyle(cellStyle);
+		cell40.setCellStyle(titleStyle);
 		cell40.setCellValue("Sentiment");
 		
 		HSSFCell cell50=row0.createCell(5);
-		cell50.setCellStyle(cellStyle);
+		cell50.setCellStyle(titleStyle);
 		cell50.setCellValue("Category");
 		
 		HSSFCell cell60=row0.createCell(6);
-		cell60.setCellStyle(cellStyle);
+		cell60.setCellStyle(titleStyle);
 		cell60.setCellValue("Url");
 		
 		//=================
@@ -382,14 +402,8 @@ public class ExcelUtils {
 		sheet.setColumnWidth(0, 25 * 512);//第一列宽度
 		sheet.setColumnWidth(1, 15 * 512);//第二列宽度
 		sheet.setColumnWidth(3,10 * 512);//第四列宽度
-		HSSFCellStyle cellStyle=wb.createCellStyle(); 
-		cellStyle.setShrinkToFit(true);
-		cellStyle.setWrapText(true);
-		cellStyle.setBorderBottom(BorderStyle.THIN);//下边框        
-		cellStyle.setBorderLeft(BorderStyle.THIN);//左边框        
-		cellStyle.setBorderRight(BorderStyle.THIN);//右边框        
-		cellStyle.setBorderTop(BorderStyle.THIN);//上边框 
-		
+		HSSFCellStyle cellStyle=GetNormalCellStyle(wb);
+		HSSFCellStyle titleStyle=GetClolorCellStyle(wb);
 		@SuppressWarnings("unchecked")
 		ArrayList<NLPAnalysis> listNLP = (ArrayList<NLPAnalysis>) object;
 		Iterator<NLPAnalysis> it = listNLP.iterator();
@@ -407,7 +421,7 @@ public class ExcelUtils {
 			//每个NLPAnalysis句子的第一行
 			HSSFRow row1 = sheet.createRow(excelIndex++);
 			HSSFCell cell00=row1.createCell(0);
-			cell00.setCellStyle(cellStyle);
+			cell00.setCellStyle(titleStyle);
 			//Log.ii(listNLP);
 			cell00.setCellValue(listNLP.get(NLPIndex).getContent());
 			
@@ -482,10 +496,8 @@ public class ExcelUtils {
 		
 		HSSFWorkbook wb = new HSSFWorkbook();//建立新HSSFWorkbook对象  
 		HSSFSheet sheet = wb.createSheet("NLP_Analysis");
-		HSSFCellStyle cellStyle=wb.createCellStyle(); 
-		cellStyle.setShrinkToFit(true);
-		cellStyle.setWrapText(true);
-		
+		HSSFCellStyle cellStyle = GetNormalCellStyle(wb);
+		HSSFCellStyle titleStyle = GetClolorCellStyle(wb);
 		
 		Iterator<String> it = listarray.iterator();
 		int Index = 0;
@@ -494,8 +506,11 @@ public class ExcelUtils {
 		while(it.hasNext()&&Index<listarray.size()) {
 			HSSFRow row = sheet.createRow(Index);
 			HSSFCell cell=row.createCell(0);
+			HSSFCell cell1=row.createCell(1);
 			cell.setCellValue(listarray.get(Index).toString());
 			cell.setCellStyle(cellStyle);
+			cell1.setCellStyle(titleStyle);
+			cell1.setCellValue("obq");
 			System.out.println(listarray.get(Index).toString());
 			Index++;
 		}
