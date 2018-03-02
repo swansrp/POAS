@@ -182,7 +182,6 @@ class JifengSpider():
                 try:
                     if self.state is 'True':
                         break
-                    print(result)
                     result = result.replace("\n","")
                     time_g = re.search(time_rule,result)
                     posttime = time_g.group()
