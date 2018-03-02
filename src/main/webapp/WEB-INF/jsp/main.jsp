@@ -15,6 +15,17 @@
     <!--CUSTOM MAIN STYLES-->
     <link href="../assets/css/custom.css" rel="stylesheet" />
         <link href="../datepicker/jquery-ui.css" rel="stylesheet" />
+        <link href="../datepicker/jquery-ui.min.css" rel="stylesheet" />
+        
+        
+        <!--data table-->
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+        <link href="assets/styles.css" rel="stylesheet" media="screen">
+        <link href="assets/DT_bootstrap.css" rel="stylesheet" media="screen">
+        <!--end data table-->
+        
+        
     <!-- GOOGLE FONTS-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 </head>
@@ -140,13 +151,19 @@
                         <div class="panel-heading">
                             COMMENTS
                         </div>
+                        
+                        <!-- test -->
+                        
+                        <!-- test end -->
                         <div class="panel-body">
                             <div class="table-responsive">
+                            
                                 <table id="cTable" class="table table-striped table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Comments</th>
+                                            <th>Link</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -170,6 +187,28 @@
                     </div>
                 </div>
 
+                   <!-- test -->
+                                        <div class="row-fluid">
+                        block
+                        <div class="block">
+                            <div class="navbar navbar-inner block-header">
+                                <div class="muted pull-left">Bootstrap dataTables</div>
+                            </div>
+                            <div class="block-content collapse in">
+                                <div class="span12" id="add_table">
+                                    
+  								
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div> 
+                   
+                  <!--  end test -->
+
+
+
+
             </div>
             <!-- /. PAGE INNER  -->
         </div>
@@ -190,6 +229,20 @@
     <!-- CUSTOM SCRIPTS -->
     <script src="../assets/js/custom.js"></script>
         <script src="../datepicker/jquery-ui.js"></script>
+        <script src="../datepicker/jquery-ui.min.js"></script>
+        
+        
+        
+        
+        <!--data table-->
+        <script src="vendors/jquery-1.9.1.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script src="vendors/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="vendors/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        <script src="assets/scripts.js"></script>
+        <script src="assets/DT_bootstrap.js"></script>
+        <!--end  data table-->
+  
     <script type="text/javascript">
     function show_model_sselect() { 
     	$.ajax({
@@ -356,7 +409,7 @@
      	test();
     	$( "#stime" ).datepicker({
     	      defaultDate: "+1w",
-    	      changeMonth: true,
+    	       changeMonth: true,
     	      numberOfMonths: 3,
     	      dateFormat: 'yy-mm-dd 00:00:00',
     	      onClose: function( selectedDate ) {
@@ -373,7 +426,89 @@
     	      }
     	    });
     		
-               
+    	
+        $("#submit").click(function(){
+        	    $('#add_table').html("");
+        	    
+    		    var modelname=$('#ModelName').val();
+            	var webname=$('#WebName').val();
+            	var start=$('#stime').val();
+            	var end=$('#etime').val();
+            	var url;
+            	var json={"modelname":modelname,"start":start,"end":end};
+            	if(webname=="京东") {
+                    url="/JD/modelinfo";
+                } else if(webname=="淘宝") {
+                     url="/TB/modelinfo";
+                } else if(webname=="天猫") {
+                     url="/TM/modelinfo";
+                } else if(webname=="亚马逊") {
+                    url="/AMZ/modelinfo";
+                } else if(webname=="百度贴吧") {
+                    url="/BD/modelinfo";
+                } else if(webname=="盖乐世社区") {
+                    url="/GC/modelinfo";
+                } else if(webname=="机锋") {
+                    url="/JF/modelinfo";
+                } else if(webname=="国美") {
+                    url="/GM/modelinfo";
+                } else if(webname=="苏宁易购") {
+                    url="/SN/modelinfo";
+                } else if(webname=="全部") {
+                    url="/StoreBbs/modelinfo";
+                }
+            	 
+            	$.ajax({
+            		type:"post",
+            		async:true,
+            		url:url,
+            		data:json,
+            		dataType: "json",
+            		success:function(msg){
+            			var json = eval(JSON.stringify(msg.data));
+            			var item;
+            			var num=msg.code;
+            			
+            			item="<table cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered' id='example'><thead><tr><th>#</th><th>Comments</th><th>Link</th></tr></thead><tbody>";
+            			$('#add_table').append(item);
+            			item="</tbody></table>";
+            			$('#add_table').append(item);
+            			$.each(json,function(i,result){
+            				var id=json[i].id;
+            				var comment=json[i].firstcomment;
+            				var link;
+            				if (url="/BD/modelinfo"){link=json[i].link;}
+            				item="<tr><td>"+id+"</td><td>"+comment+"</td><td><a href=' "+link+" 'target= '_Blank'> "+link+"</a></td></tr>"; 
+            				$('#example').append(item);  
+            				}); 
+            			
+            			 $('#example').dataTable( {
+            				"sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+            				"sPaginationType": "bootstrap",
+            				"oLanguage": {
+            					"sLengthMenu": "_MENU_ records per page"
+            				}
+            			} ); 
+            			
+            			
+            			
+            			/*  alert(JSON.stringify(msg.data)); */
+            			/* $("#Pagination").pagination(id, {
+            	    	    num_edge_entries: 2,
+            	    	    num_display_entries: 4,
+            	    	    callback: pageselectCallback,
+            	    	    items_per_page:1
+            	    	}); */
+                    },
+                    error: function (msg) {
+                        alert("err");
+                    }
+            	
+            	});
+        });  /* end search */ 
+        
+     
+        
     });
     </script>
 
