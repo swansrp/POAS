@@ -17,7 +17,7 @@ from utils.Utils import StringUtils
 #sys.setdefaultencoding('utf-8')
 
 class GalaxyClubSpider():
-    def __init__(self, url, num = 30 ):
+    def __init__(self, url, num = 100 ):
         self.url = url
         self.ProxyPort =''
         self.proxyIP =''
@@ -87,9 +87,9 @@ class GalaxyClubSpider():
         html = self.get_htmlviaCom(self.url, headers)
         #answer = html.decode("UTF-8","replace")
         answer = html
-        page_total = re.search(r"<span class=\'last-no\'>.*?</span>",answer)
-        total = page_total.group()
-        total = re.sub('<.*?>','',total)
+        #page_total = re.search(r"<span class='last-no'>.*?</span>",answer)
+        #total = page_total.group()
+        #total = re.sub('<.*?>','',total)
         #for page_num in range(1,int(total)+1):#全部版
         for page_num in range(1,self.pagenum):#演示版
             forinsert = []
@@ -101,7 +101,7 @@ class GalaxyClubSpider():
             #answer = html.decode("UTF-8","replace")
             answer = html
             #li_format = re.compile('<li class=\"\">.*?</li>',re.S)
-            li_format = re.compile('<div class=\".*?List\">.*?</div>',re.S)
+            li_format = re.compile('<div class=\".*?List\">.*?</dl>',re.S)
             li_content = re.findall(li_format,answer)
             if len(li_content) == 0:
                 break
@@ -131,7 +131,7 @@ class GalaxyClubSpider():
 
                     time1 = time.mktime(time.strptime(time_content,'%Y-%m-%d %H:%M'))
                     time_content = TimeUtils.convert_timestamp_to_date(time1)
-                    content_format = re.compile('<div class=\"BSHARE_PO\">.*?</div>',re.S)
+                    content_format = re.compile('<div class=\"BSHARE_POP\">.*?</div>',re.S)
                     c_content = re.search(content_format,answer)
                     if c_content == None:
                         c_content = " "
@@ -162,9 +162,9 @@ class GalaxyClubSpider():
         html = self.get_htmlviaCom(self.url, headers)
         #answer = html.decode("UTF-8","replace")
         answer = html
-        page_total = re.search(r"<span class=\'last-no\'>.*?</span>",answer)
-        total = page_total.group()
-        total = re.sub('<.*?>','',total)
+        #page_total = re.search(r"<span class=\'last-no\'>.*?</span>",answer)
+        #total = page_total.group()
+        #total = re.sub('<.*?>','',total)
         #for page_num in range(1,int(total)+1):#全部版
         timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
         skiptime = "False"
@@ -178,7 +178,7 @@ class GalaxyClubSpider():
             #answer = html.decode("UTF-8","replace")
             answer = html
             #li_format = re.compile('<li class=\"\">.*?</li>',re.S)
-            li_format = re.compile('<div class=\".*?List\">.*?</div>',re.S)
+            li_format = re.compile('<div class=\".*?List\">.*?</dl>',re.S)
             li_content = re.findall(li_format,answer)
             if len(li_content) == 0:
                 break
@@ -212,7 +212,7 @@ class GalaxyClubSpider():
                         skiptime ="True"
                         break
                     
-                    content_format = re.compile('<div class=\"BSHARE_PO\">.*?</div>',re.S)
+                    content_format = re.compile('<div class=\"BSHARE_POP\">.*?</div>',re.S)
                     c_content = re.search(content_format,answer)
                     if c_content == None:
                         c_content = " "
@@ -232,7 +232,7 @@ class GalaxyClubSpider():
                     row = (theme_content,content_content,time_content,link)
                     forinsert.append(row)                
                 except:
-                        continue   
+                    continue   
             self.mdatabase.insert_values(forinsert)                        
             if skiptime is 'True':
                 break
