@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.srct.ril.poas.ai.category.Category;
 import com.srct.ril.poas.dao.dbconfig.DS;
 import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 import com.srct.ril.poas.dao.mapper.KeywordMapper;
 import com.srct.ril.poas.dao.pojo.Keyword;
 import com.srct.ril.poas.dao.pojo.KeywordExample;
+import com.srct.ril.poas.dao.utils.category.Category;
 import com.srct.ril.poas.utils.log.Log;
 
 @Service

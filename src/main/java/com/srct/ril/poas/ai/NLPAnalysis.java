@@ -3,7 +3,7 @@ package com.srct.ril.poas.ai;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.srct.ril.poas.ai.category.Category.Sentiment;
+import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
 
 public class NLPAnalysis {
 	private String content;

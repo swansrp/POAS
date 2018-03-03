@@ -107,67 +107,74 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!--生成对应表及类名-->
-        <table tableName="JD" domainObjectName="StoreJD" 
+        <table tableName="JD" domainObjectName="DaoJD" 
         	enableCountByExample="true" 
         	enableUpdateByExample="true" 
         	enableDeleteByExample="true" 
         	enableSelectByExample="true" 
         	selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
+            <property name="rootClass" value="com.srct.ril.poas.dao.pojo.StoreBbsPojoBase"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
-        <table tableName="AMZ" domainObjectName="StoreAMZ" 
+        <table tableName="AMZ" domainObjectName="DaoAMZ" 
         	enableCountByExample="true" 
         	enableUpdateByExample="true" 
         	enableDeleteByExample="true" 
         	enableSelectByExample="true" 
         	selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
+            <property name="rootClass" value="com.srct.ril.poas.dao.pojo.StoreBbsPojoBase"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
-        <table tableName="BD" domainObjectName="BbsBD" 
+        <table tableName="BD" domainObjectName="DaoBD" 
         	enableCountByExample="true" 
         	enableUpdateByExample="true" 
         	enableDeleteByExample="true" 
         	enableSelectByExample="true" 
         	selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
+            <property name="rootClass" value="com.srct.ril.poas.dao.pojo.StoreBbsPojoBase"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
-        <table tableName="JF" domainObjectName="BbsJF" 
+        <table tableName="JF" domainObjectName="DaoJF" 
         	enableCountByExample="true" 
         	enableUpdateByExample="true" 
         	enableDeleteByExample="true" 
         	enableSelectByExample="true" 
         	selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
+            <property name="rootClass" value="com.srct.ril.poas.dao.pojo.StoreBbsPojoBase"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
-        <table tableName="GC" domainObjectName="BbsGC" 
+        <table tableName="GC" domainObjectName="DaoGC" 
         	enableCountByExample="true" 
         	enableUpdateByExample="true" 
         	enableDeleteByExample="true" 
         	enableSelectByExample="true" 
         	selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
+            <property name="rootClass" value="com.srct.ril.poas.dao.pojo.StoreBbsPojoBase"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
-        <table tableName="TB" domainObjectName="StoreTB" 
+        <table tableName="TB" domainObjectName="DaoTB" 
         	enableCountByExample="true" 
         	enableUpdateByExample="true" 
         	enableDeleteByExample="true" 
         	enableSelectByExample="true" 
         	selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
+            <property name="rootClass" value="com.srct.ril.poas.dao.pojo.StoreBbsPojoBase"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
-        <table tableName="TM" domainObjectName="StoreTM" 
+        <table tableName="TM" domainObjectName="DaoTM" 
         	enableCountByExample="true" 
         	enableUpdateByExample="true" 
         	enableDeleteByExample="true" 
         	enableSelectByExample="true" 
         	selectByExampleQueryId="true">
             <property name="my.isgen.usekeys" value="true"/>
+            <property name="rootClass" value="com.srct.ril.poas.dao.pojo.StoreBbsPojoBase"/>
             <generatedKey column="id" sqlStatement="JDBC"/>       
         </table>
 <!--         <table tableName="product_" domainObjectName="Product" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> -->

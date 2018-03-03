@@ -18,9 +18,10 @@ import com.srct.ril.poas.ai.baidunlp.BaiduNLPCommentTag;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPDepParser;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPLexer;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPSentiment;
-import com.srct.ril.poas.ai.category.Category;
-import com.srct.ril.poas.ai.category.Category.Sentiment;
-import com.srct.ril.poas.ai.origin.Origin;
+import com.srct.ril.poas.dao.pojo.StoreBbsPojoBase;
+import com.srct.ril.poas.dao.utils.category.Category;
+import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
+import com.srct.ril.poas.dao.utils.origin.Origin;
 import com.srct.ril.poas.service.ai.baidu.BaiduNLPService;
 import com.srct.ril.poas.utils.ExcelUtils;
 import com.srct.ril.poas.utils.ServiceException;
@@ -240,7 +241,7 @@ public class NLPAnalysisService {
 		return res;
 	}
 	
-	public NLPItem NLPitemFactory(String modelName, String origin, Object obj) throws ServiceException {
+	public NLPItem NLPitemFactory(String modelName, String origin, StoreBbsPojoBase obj) throws ServiceException {
 		Class<?> clazz = ori.getPojoClassFromSource(origin);
 		NLPItem nlpIt = new NLPItem(modelName, origin, obj, clazz);
 		if(needAnalysis) {
@@ -263,8 +264,8 @@ public class NLPAnalysisService {
 	}
 	
 	public void syncNLPItem2DB(NLPItem it) {
-		Class<?> serviceDaoClass = ori.getServiceClassFromSource(it.getOrigin());
-		Object serviceDao = ori.getServiceFromSource(it.getOrigin());
+		Class<?> serviceDaoClass = ori.getDaoClassFromSource(it.getOrigin());
+		Object serviceDao = ori.getDaoFromSource(it.getOrigin());
 		Method method;
 		
 		try {
@@ -282,11 +283,11 @@ public class NLPAnalysisService {
 		}
 	}
 	
-	public HSSFWorkbook saveExcel(String modelName, String origin, Object dataList) throws ServiceException {
+	public HSSFWorkbook saveExcel(String modelName, String origin, List<StoreBbsPojoBase> dataList) throws ServiceException {
 		if(dataList==null) return null;
 		List<NLPItem> nlpItemList = new ArrayList<>();
-		for(Object obj : (List<Object>)dataList) {
-			NLPItem nlpIt = NLPitemFactory(modelName, origin,obj);
+		for(StoreBbsPojoBase obj : (List<StoreBbsPojoBase>)dataList) {
+			NLPItem nlpIt = NLPitemFactory(modelName, origin, obj);
 			nlpItemList.add(nlpIt);
 		}
 		return saveExcel(modelName,nlpItemList);
@@ -309,7 +310,7 @@ public class NLPAnalysisService {
 				//ExcelUtils.NLP_WriteToExcel(NLPAnalysisList, debugMode, fileName+date);
 			}
 		}
-		return ExcelUtils.NLPItem_WriteToExcel(nlpItemList);
+		return ExcelUtils.NLPItem_WriteToExcel(nlpItemList,fileName);
 	}
 	
 	

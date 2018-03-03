@@ -3,8 +3,9 @@ package com.srct.ril.poas.ai;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.srct.ril.poas.ai.category.Category;
-import com.srct.ril.poas.ai.category.Category.Sentiment;
+import com.srct.ril.poas.dao.pojo.StoreBbsPojoBase;
+import com.srct.ril.poas.dao.utils.category.Category;
+import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
 import com.srct.ril.poas.utils.log.Log;
 
 public class NLPItem {
@@ -23,15 +24,16 @@ public class NLPItem {
 	
 
 	private Sentiment sentiment;
-	private String category;	
-	public NLPItem (Integer id, String timestamp, String origin, String title, String link ){
+	private String category;
+	public NLPItem (Integer id, String timestamp, String origin, String title, String link ) {
 		this.id = id;
 		this.timestamp = timestamp;
 		this.origin = origin;
 		this.title = title;
 		this.link = link;
 	}
-	public NLPItem(String modelName, String origin, Object obj, Class<?> clazz) {
+
+	public NLPItem(String modelName, String origin, StoreBbsPojoBase obj, Class<?> clazz) {
 		//Log.i("NLPItem:  origin {} modelName {}", origin,modelName);
 		this.daoPojoObject = obj;
 		this.origin = origin;

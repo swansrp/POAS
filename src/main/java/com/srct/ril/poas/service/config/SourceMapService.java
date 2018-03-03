@@ -6,13 +6,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.srct.ril.poas.ai.origin.Origin;
 import com.srct.ril.poas.dao.dbconfig.DS;
 import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 import com.srct.ril.poas.dao.mapper.SourceMapMapper;
 import com.srct.ril.poas.dao.pojo.SourceMap;
 import com.srct.ril.poas.dao.pojo.SourceMapExample;
 import com.srct.ril.poas.dao.pojo.SourceMapExample.Criteria;
+import com.srct.ril.poas.dao.utils.origin.Origin;
 import com.srct.ril.poas.utils.ServiceException;
 import com.srct.ril.poas.utils.log.Log;
 

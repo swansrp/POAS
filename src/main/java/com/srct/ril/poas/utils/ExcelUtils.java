@@ -1,7 +1,4 @@
 package com.srct.ril.poas.utils;
-import java.awt.Color;
-import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,6 +20,7 @@ import org.apache.poi.ss.usermodel.FillPatternType;
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
 import com.srct.ril.poas.ai.NLPItem;
+import com.srct.ril.poas.dao.utils.origin.Origin;
 
 
 
@@ -209,7 +207,7 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 			
 			HSSFCell cell1=row.createCell(2);
 			cell1.setCellStyle(cellStyle);
-			cell1.setCellValue(listNLP.get(NLPIndex-1).getOrigin());
+			cell1.setCellValue(Origin.displayOrigin(listNLP.get(NLPIndex-1).getOrigin()));
 			
 			cell1=row.createCell(3);
 			cell1.setCellStyle(cellStyle);
@@ -337,7 +335,7 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 			
 			HSSFCell cell2=row.createCell(2);
 			cell2.setCellStyle(cellStyle);
-			cell2.setCellValue(listNLP.get(NLPIndex).getOrigin());
+			cell2.setCellValue(Origin.displayOrigin(listNLP.get(NLPIndex).getOrigin()));
 			
 			cell2=row.createCell(3);
 			cell2.setCellStyle(cellStyle);
