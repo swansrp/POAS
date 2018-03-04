@@ -27,8 +27,9 @@ public class BaiduNLPService {
 		// 传入可选参数调用接口
 	    HashMap<String, Object> options = new HashMap<String, Object>();
 		AipNlp client = baiduClent.getClient();
+		Log.d(getClass(), "<BaiduNLP>:词法分析");
 		JSONObject resJson = client.lexer(content, options);
-		Log.d(resJson.toString(2));
+		//Log.d(resJson.toString(2));
 		BaiduNLPLexer res;
 		try {
 			res = (BaiduNLPLexer)JSONUtil.readJson(resJson.toString(), BaiduNLPLexer.class);
@@ -45,7 +46,7 @@ public class BaiduNLPService {
 		AipNlp client = baiduClent.getClient();
 		HashMap<String, Object> options = new HashMap<String, Object>();
 	    options.put("mode", mode);
-	    Log.d(getClass(), "<BaiduNLP>:拆分句子");
+	    Log.d(getClass(), "<BaiduNLP>:句法分析");
 		JSONObject resJson = client.depParser(content, options);
 		//Log.d(getClass(), resJson.toString(2));
 		BaiduNLPDepParser res;

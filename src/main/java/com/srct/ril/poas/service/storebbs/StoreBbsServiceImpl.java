@@ -28,13 +28,15 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 	private NLPAnalysisService nlpAnalysisService;
 	@Autowired
 	private Origin originBean;
+	@Autowired
+	private StoreBbsServiceImpl self;
 	
 	@Override
 	public List<NLPItem> select(String modelName, String startTime, String endTime) throws ServiceException {
 		List<NLPItem> nlpItemList = new ArrayList<>();
 		List<String> originList = originBean.getOriginList();
-		for(String origin : originList) {
-			List<StoreBbsPojoBase> storeBbsPojoList = select(modelName, origin, startTime, endTime);
+		for(String origin : originList) {			
+			List<StoreBbsPojoBase> storeBbsPojoList = self.select(modelName, origin, startTime, endTime);
 			if(storeBbsPojoList!=null) {
 				for(StoreBbsPojoBase pojo : storeBbsPojoList) {
 					nlpItemList.add(nlpAnalysisService.NLPitemFactory(modelName, origin, pojo));
@@ -57,7 +59,6 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 			return null;
 		}
 		Class<?> daoClass = originBean.getDaoClassFromSource(origin);
-		Class<?> pojoClass = originBean.getPojoClassFromSource(origin);
 		Class<?> pojoExampleClass = originBean.getPojoExampleClassFromSource(origin);
 		Class<?> pojoCriteriaClass = originBean.getpojoCriteriaFromSource(origin);
 		Method method;
@@ -67,11 +68,11 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 			method.invoke(pojoExamplseClassObj,false);
 			method = pojoExampleClass.getMethod("createCriteria");
 			Object pojoCriteriaClassObj = method.invoke(pojoExamplseClassObj);
-			if(startTime.equals("") || endTime.equals("")) {
-	    		
-	    	} else {
-	    		method = pojoCriteriaClass.getMethod("andDateGreaterThan", new Class[] { String.class });
+			if(!startTime.equals("")) {
+				method = pojoCriteriaClass.getMethod("andDateGreaterThan", new Class[] { String.class });
 	    		method.invoke(pojoCriteriaClassObj,startTime);
+	    	} 
+			if(!endTime.equals("")) {
 	    		method = pojoCriteriaClass.getMethod("andDateLessThan", new Class[] { String.class });
 	    		method.invoke(pojoCriteriaClassObj,endTime);
 	    	}
@@ -110,21 +111,103 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 	}
 
 	@Override
-	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category) {
+	public void updateAnalysis(String modelName, String origin, StoreBbsPojoBase pojo, Integer sentiment, Integer category)
+			throws ServiceException {
 		// TODO Auto-generated method stub
-		
+		Class<?> daoClass = originBean.getDaoClassFromSource(origin);
+		Method method = null;
+		Integer id = null;
+		try {
+			method = daoClass.getMethod("getId");
+			id = (Integer) method.invoke(pojo);
+		} catch (NoSuchMethodException | 
+				SecurityException |
+				IllegalAccessException | 
+				IllegalArgumentException | 
+				InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			throw new ServiceException("["+modelName+"] from "  + origin + " get Id occur exception " + e);
+		}
+		if(id == null) {
+			throw new ServiceException("["+modelName+"] from "  + origin + " get Id failed ");
+			
+		}
+		self.updateAnalysis(modelName,origin,id,sentiment,category);
 	}
 
 	@Override
-	public void updateSentiment(String modelName, Object obj, Integer sentiment) {
+	public void updateSentiment(String modelName, String origin, StoreBbsPojoBase pojo, Integer sentiment)
+			throws ServiceException {
 		// TODO Auto-generated method stub
-		
+		updateAnalysis(modelName, origin, pojo, sentiment, null);
 	}
 
 	@Override
-	public void updateCategory(String modelName, Object obj, Integer category) {
+	public void updateCategory(String modelName, String origin, StoreBbsPojoBase pojo, Integer category)
+			throws ServiceException {
 		// TODO Auto-generated method stub
-		
+		updateAnalysis(modelName, origin, pojo, null, category);
+	}
+	
+	@Override
+	public void updateAnalysis(String modelName, String origin, NLPItem nlp, Integer sentiment, Integer category)
+			throws ServiceException {
+		// TODO Auto-generated method stub
+		self.updateAnalysis(modelName,origin,nlp.getId(),sentiment,category);
+	}
+
+	@Override
+	public void updateSentiment(String modelName, String origin, NLPItem nlp, Integer sentiment) 
+			throws ServiceException {
+		// TODO Auto-generated method stub
+		updateAnalysis(modelName, origin, nlp, sentiment, null);
+	}
+	
+	@Override
+	public void updateCategory(String modelName, String origin, NLPItem nlp, Integer category)
+			throws ServiceException {
+		// TODO Auto-generated method stub
+		updateAnalysis(modelName, origin, nlp, null, category);
+	}
+
+	@Override
+	public void updateAnalysis(String modelName, String origin, Integer id, Integer sentiment, Integer category) 
+			throws ServiceException {
+		// TODO Auto-generated method stub
+		Log.i("[{}, updateAnalysis from {} id[{}] {}--{}]",modelName,origin,id,sentiment,category);
+		if(sentiment==null && category==null) {
+    		return;
+    	}
+		Object dao = null;
+		try {
+			dao = originBean.getDaoFromSource(origin);
+		} catch (NoSuchBeanDefinitionException e) {
+			return;
+		}
+		Class<?> daoClass = originBean.getDaoClassFromSource(origin);
+		Class<?> pojoClass = originBean.getPojoClassFromSource(origin);
+		Method method;
+		try {
+			Object pojoClassObj = pojoClass.newInstance();
+			method = pojoClass.getMethod("setId", new Class[] {Integer.class});
+			method.invoke(pojoClassObj, id);
+			
+			method = pojoClass.getMethod("setSentiment", new Class[] {Integer.class});
+			method.invoke(pojoClassObj, sentiment);
+					
+			method = pojoClass.getMethod("setCategory", new Class[] {Integer.class});
+			method.invoke(pojoClassObj, category);
+			
+			method = daoClass.getMethod("updateByPrimaryKeySelective", new Class[] {pojoClass});
+			method.invoke(dao, pojoClassObj);
+		} catch (NoSuchMethodException | 
+				SecurityException | 
+				IllegalAccessException | 
+				IllegalArgumentException | 
+				InvocationTargetException | 
+				InstantiationException e) {
+			throw new ServiceException("["+modelName+"] from "  + origin + " set analysis " + id + " occur exception " + e);
+		}
 	}
 
     

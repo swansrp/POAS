@@ -1,13 +1,16 @@
 package com.srct.ril.poas.ai;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
 
 public class NLPAnalysis {
 	private String content;
 	private List<Item> items = new ArrayList<>();
+	private Map<Sentiment, List<String>> summary = new HashMap<Sentiment, List<String>>();
 	private Sentiment sentiment; 
 	public static class Item {
 		private int id;
@@ -54,6 +57,12 @@ public class NLPAnalysis {
 		}
 	}
 	
+	public NLPAnalysis() {
+		summary.put(Sentiment.NEGATIVE, new ArrayList<String>());
+		summary.put(Sentiment.POSITIVE, new ArrayList<String>());
+		summary.put(sentiment.NEUTRAL, new ArrayList<String>());
+	}
+	
 	public String getContent() {
 		return content;
 	}
@@ -61,24 +70,12 @@ public class NLPAnalysis {
 		this.content = content;
 	}
 	public List<Item> getItems() {
-		if(this.sentiment != Sentiment.NEGATIVE 
-		&& this.sentiment != Sentiment.POSITIVE) 
-			return items;
-		List<Item> res = new ArrayList<>();
-		for(Item it :items) {
-			if(it.getSentiment() == sentiment) {
-				res.add(it);
-			}
-		}
-		return res;
+		return items;
 	}
 	public void setItems(List<Item> items) {
 		this.items = items;
 	}
 	
-	public NLPAnalysis(Sentiment sentiment) {
-		this.sentiment = sentiment;
-	}
 	public int addItem(Item it) {
 		it.setId(items.size());
 		items.add(it);
@@ -88,12 +85,36 @@ public class NLPAnalysis {
 		return items.get(id);
 	}
 	
-	public String getCategory() {
+	public void parse() {
+		if(items==null) {
+			return;
+		}
 		for(Item it : items) {
-			if(it.getCategory()!=null) {
-				return it.getCategory();
+			if(it.getSentiment() != Sentiment.UNKNOWN) {	
+				summary.get(it.getSentiment()).add(it.getCategory());
+			}
+		}
+		if(summary.get(Sentiment.NEGATIVE).size() != 0) {
+			this.sentiment = Sentiment.NEGATIVE;
+		} else if(summary.get(Sentiment.POSITIVE).size() != 0) {
+			this.sentiment = Sentiment.POSITIVE;
+		} else if(summary.get(Sentiment.NEUTRAL).size() != 0) {
+			this.sentiment = Sentiment.NEUTRAL;
+		} else {
+			this.sentiment = Sentiment.ALL;
+		}
+	}
+	
+	public String getCategory(Sentiment sentiment) {
+		for(String cat : summary.get(sentiment)) {
+			if(cat!=null) {
+				return cat;
 			}
 		}
 		return null;
+	}
+	
+	public Sentiment getSentiment() {		
+		return this.sentiment;
 	}
 }

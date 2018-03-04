@@ -113,13 +113,35 @@ public class NLPItem {
 	public void setAnalysis(NLPAnalysis titleAnalysis, NLPAnalysis commentAnalysis) {
 		this.titleAnalysis = titleAnalysis;
 		this.commentAnalysis = commentAnalysis;
-		if(titleAnalysis!=null) {
-			if(titleAnalysis.getCategory()!=null) {
-				setCategory(titleAnalysis.getCategory());
+		if(this.sentiment == Sentiment.UNKNOWN) {
+			if(titleAnalysis!=null) {
+				this.sentiment = titleAnalysis.getSentiment();
 			}
-		} else if(commentAnalysis!=null) {
-			if(commentAnalysis.getCategory()!=null) {
-				setCategory(commentAnalysis.getCategory());
+			if(this.sentiment == Sentiment.NEGATIVE) {
+				this.category = titleAnalysis.getCategory(Sentiment.NEGATIVE);
+			} else {
+				if(commentAnalysis!=null) {
+					this.sentiment = commentAnalysis.getSentiment();
+				}
+				if(this.sentiment == Sentiment.NEGATIVE) {
+					this.category = commentAnalysis.getCategory(Sentiment.NEGATIVE);
+				}
+			}
+		}
+		if(this.sentiment == Sentiment.UNKNOWN) {
+			boolean bPostive = true;
+			if(titleAnalysis!=null) {
+				if(titleAnalysis.getSentiment() != Sentiment.POSITIVE) {
+					bPostive = false;
+				}
+			}
+			if(commentAnalysis!=null) {
+				if(commentAnalysis.getSentiment() != Sentiment.POSITIVE) {
+					bPostive = false;
+				}
+			}
+			if(bPostive) {
+				this.sentiment = Sentiment.POSITIVE;
 			}
 		}
 	}
@@ -128,7 +150,7 @@ public class NLPItem {
 		Log.d("sentiment: {} category: {}", sentiment, category);
 		return !(
 				(sentiment!=Sentiment.UNKNOWN)
-				&& 
+				|| 
 				(category!=null)
 			   );
 	}

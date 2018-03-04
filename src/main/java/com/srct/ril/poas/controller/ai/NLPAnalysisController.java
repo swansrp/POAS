@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.srct.ril.poas.ai.NLPItem;
+import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
 import com.srct.ril.poas.http.CommonResponse;
 import com.srct.ril.poas.http.Response;
 import com.srct.ril.poas.service.ai.NLPAnalysisService;
@@ -25,8 +26,9 @@ public class NLPAnalysisController {
 	
 	@RequestMapping("/nlp")
 	public CommonResponse nlp(
-			@RequestParam(value="text") String content) throws ServiceException {
-		return Response.generateResponse(nlpService.nlp(content).getCategory());
+			@RequestParam(value="text") String content,
+			@RequestParam(value="Sentiment") Integer sentiment) throws ServiceException {
+		return Response.generateResponse(nlpService.nlp(content).getCategory(Sentiment.getSetiment(sentiment)));
 	}
 	
 	@RequestMapping("/nlp/JD")

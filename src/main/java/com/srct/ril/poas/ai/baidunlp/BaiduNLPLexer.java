@@ -27,8 +27,10 @@ public class BaiduNLPLexer extends BaiduNLPBase {
 	}
 	
 	public void parse() {
-		for(Item it:items) {
-			keyWordsList.add(it.item);
+		if(items!=null) {
+			for(Item it:items) {
+				keyWordsList.add(it.item);
+			}
 		}
 	}
 	

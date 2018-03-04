@@ -17,9 +17,19 @@ public interface StoreBbsService {
 			throws ServiceException, IOException;
 	public List<NLPItem> select(String modelName, String startTime, String endTime, HttpServletResponse response)
 			throws ServiceException, IOException;
-	public void updateAnalysis(String modelName, Object obj, Integer sentiment, Integer category);
-	public void updateSentiment(String modelName, Object obj, Integer sentiment);
-	public void updateCategory(String modelName, Object obj, Integer category);
+	void updateAnalysis(String modelName, String origin, StoreBbsPojoBase pojo, Integer sentiment, Integer category)
+			throws ServiceException, IOException;
+	void updateSentiment(String modelName, String origin, StoreBbsPojoBase pojo, Integer sentiment)
+			throws ServiceException, IOException;
+	void updateCategory(String modelName, String origin, StoreBbsPojoBase pojo, Integer category)
+			throws ServiceException, IOException;
+	void updateAnalysis(String modelName, String origin, NLPItem nlp, Integer sentiment, Integer category)
+			throws ServiceException, IOException;
+	void updateSentiment(String modelName, String origin, NLPItem nlp, Integer sentiment)
+			throws ServiceException, IOException;
+	void updateCategory(String modelName, String origin, NLPItem nlp, Integer category)
+			throws ServiceException, IOException;
+	void updateAnalysis(String modelName, String origin, Integer id, Integer sentiment, Integer category)
+			throws ServiceException, IOException;
 	
-
 }

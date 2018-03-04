@@ -1,5 +1,6 @@
 package com.srct.ril.poas.service.ai;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -23,6 +24,7 @@ import com.srct.ril.poas.dao.utils.category.Category;
 import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
 import com.srct.ril.poas.dao.utils.origin.Origin;
 import com.srct.ril.poas.service.ai.baidu.BaiduNLPService;
+import com.srct.ril.poas.service.storebbs.StoreBbsService;
 import com.srct.ril.poas.utils.ExcelUtils;
 import com.srct.ril.poas.utils.ServiceException;
 import com.srct.ril.poas.utils.log.Log;
@@ -36,12 +38,13 @@ public class NLPAnalysisService {
 	private Category cat;
 	@Autowired
 	private Origin ori;
+	@Autowired
+	private StoreBbsService storeBbsService;
 	
 	private double confidence = 0.7;
 	private double prob = 0.65;
 	private Sentiment sentiment = Sentiment.ALL;
 	private boolean debugMode = true;
-	private boolean needAnalysis = false;
 	private String fileName = "DEMO";
 	
 	private BaiduNLPDepParser defParser(String content) throws ServiceException {
@@ -67,6 +70,8 @@ public class NLPAnalysisService {
 		}
 		
 		if(sc == null) {
+			Log.i("提取情感失败");
+		} else if(sc.items == null){
 			Log.i("提取情感失败");
 		} else {
 			Log.ii(sc);
@@ -168,8 +173,10 @@ public class NLPAnalysisService {
 	
 	//0表示消极，1表示中性，2表示积极
 	private NLPAnalysis _nlp(String content) throws ServiceException {
-		
-		NLPAnalysis res = new NLPAnalysis(sentiment);
+		if(content == null ||content.equals("")) {
+			return null;
+		}
+		NLPAnalysis res = new NLPAnalysis();
 		res.setContent(content);
 		//Step 1. 分句
 		Log.i("======{}======",content);
@@ -220,7 +227,7 @@ public class NLPAnalysisService {
 		if(successful == false) {
 			Log.w("分类失败");
 		}
-		//Log.d(JSONUtil.toJSONString(res));
+		res.parse();
 		return res;
 	}
 	
@@ -242,16 +249,22 @@ public class NLPAnalysisService {
 	}
 	
 	public NLPItem NLPitemFactory(String modelName, String origin, StoreBbsPojoBase obj) throws ServiceException {
+		return NLPitemFactory(modelName, origin, obj, false);
+	}
+	
+	public NLPItem NLPitemFactory(String modelName, String origin, StoreBbsPojoBase obj, boolean needAnalysis) throws ServiceException {
 		Class<?> clazz = ori.getPojoClassFromSource(origin);
 		NLPItem nlpIt = new NLPItem(modelName, origin, obj, clazz);
 		if(needAnalysis) {
-			updateNLPItemAnalysis(nlpIt);
-			syncNLPItem2DB(nlpIt);
+			boolean bUpdated = updateNLPItemAnalysis(nlpIt);
+			if(bUpdated) {
+				syncNLPItem2DB(nlpIt);
+			}
 		}
 		return nlpIt;
 	}
 	
-	public void updateNLPItemAnalysis(NLPItem it) throws ServiceException {
+	public boolean updateNLPItemAnalysis(NLPItem it) throws ServiceException {
 		String title = it.getTitle();
 		String comment = it.getFirstcomment();
 		if(it.needAnalysis()) {
@@ -260,26 +273,19 @@ public class NLPAnalysisService {
 			if(title!=null) titleAnalysis = _nlp(title);
 			if(comment!=null) commentAnalysis = _nlp(comment);
 			it.setAnalysis(titleAnalysis, commentAnalysis);
+			return true;
+		} else {
+			return false;
 		}
 	}
 	
-	public void syncNLPItem2DB(NLPItem it) {
-		Class<?> serviceDaoClass = ori.getDaoClassFromSource(it.getOrigin());
-		Object serviceDao = ori.getDaoFromSource(it.getOrigin());
-		Method method;
-		
+	public void syncNLPItem2DB(NLPItem it) throws ServiceException {
 		try {
-			method = serviceDaoClass.getMethod("updateSentiment", new Class[] {String.class, Object.class, Integer.class});
-			method.invoke(serviceDao,it.getModelName(), it.getDaoPojoObject(), it.getSentiment().getValue());
-			method = serviceDaoClass.getMethod("updateCategory", new Class[] {String.class, Object.class, Integer.class});
-			Log.i("ID {}->{}", it.getCategory(), cat.getId(it.getCategory()));
-			method.invoke(serviceDao,it.getModelName(),it.getDaoPojoObject(),cat.getId(it.getCategory()));
-		} catch (NoSuchMethodException | 
-				SecurityException | 
-				IllegalAccessException | 
-				IllegalArgumentException | 
-				InvocationTargetException e) {
-			Log.w("exception occur: ", e);
+			storeBbsService.updateAnalysis(it.getModelName(), it.getOrigin(), it.getId(), 
+					it.getSentiment().getValue(), cat.getId(it.getCategory()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -289,6 +295,7 @@ public class NLPAnalysisService {
 		for(StoreBbsPojoBase obj : (List<StoreBbsPojoBase>)dataList) {
 			NLPItem nlpIt = NLPitemFactory(modelName, origin, obj);
 			nlpItemList.add(nlpIt);
+			Log.i("[{}] from {} {}/{}", modelName, origin, nlpItemList.size(),dataList.size());
 		}
 		return saveExcel(modelName,nlpItemList);
 	}
@@ -307,10 +314,10 @@ public class NLPAnalysisService {
 				NLPAnalysisList.add(commentAnalysis);
 			}
 			if(NLPAnalysisList.size()!=0) {
-				//ExcelUtils.NLP_WriteToExcel(NLPAnalysisList, debugMode, fileName+date);
+				ExcelUtils.NLP_WriteToExcel(NLPAnalysisList, debugMode, fileName+date);
 			}
 		}
-		return ExcelUtils.NLPItem_WriteToExcel(nlpItemList,fileName);
+		return ExcelUtils.NLPItem_WriteToExcel(nlpItemList);
 	}
 	
 	

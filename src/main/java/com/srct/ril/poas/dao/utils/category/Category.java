@@ -20,11 +20,11 @@ public class Category {
 		NEUTRAL(1),
 		ALL(3);
 		
-		private int value;
-		private Sentiment(int v) {
+		private Integer value;
+		private Sentiment(Integer v) {
 			this.value = v;
 		}
-		public int getValue() {
+		public Integer getValue() {
 			return this.value;
 		}
 		public static Sentiment getSetiment(int value) {
@@ -79,8 +79,8 @@ public class Category {
 		}
 		return alias;
 	}
-	public int getId(String category) {
-		int id = -1;
+	public Integer getId(String category) {
+		Integer id = null;
 		if(cat2IdMap.containsKey(category)) {
 			id = cat2IdMap.get(category);
 		}
