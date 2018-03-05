@@ -16,6 +16,7 @@ import com.srct.ril.poas.dao.pojo.SourceMapExample;
 import com.srct.ril.poas.dao.pojo.UrlJoinMap;
 import com.srct.ril.poas.dao.pojo.UrlMap;
 import com.srct.ril.poas.dao.pojo.UrlMapExample;
+import com.srct.ril.poas.dao.pojo.UrlMapExample.Criteria;
 import com.srct.ril.poas.utils.ServiceException;
 
 @Service
@@ -41,11 +42,26 @@ public class UrlMapService {
 		return urlMap.getId();
 	}
 	
-	public List<UrlMap> getAllUrl() throws ServiceException {
+	public List<UrlMap> getUrl(String modelName, String srcCN) throws ServiceException {
 		UrlMapExample ex = new UrlMapExample();
     	ex.setDistinct(false);
+    	Criteria criteria = ex.createCriteria();
+    	if(modelName != null && !modelName.equals("")) {
+    		criteria.andModelIdEqualTo(modelMapService.getId(modelName));
+    	}
+    	if(srcCN != null && !srcCN.equals("")) {
+    		criteria.andSourceIdEqualTo(sourceMapService.getId(srcCN));
+    	}
     	List<UrlMap> urlMapList = urlMapDao.selectByExample(ex);
     	return urlMapList;
+	}
+	
+	public void delUrl(String webUrl) {
+		UrlMapExample ex = new UrlMapExample();
+    	ex.setDistinct(false);
+    	Criteria criteria = ex.createCriteria();
+    	criteria.andUrlEqualTo(webUrl);
+    	urlMapDao.deleteByExample(ex);
 	}
 	
 	public List<UrlJoinMap> getUrlJoinList() throws ServiceException{
