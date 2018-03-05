@@ -74,7 +74,7 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 	sheet.setColumnWidth(0, 5 * 512);//ID
 	sheet.setColumnWidth(1, 15 * 512);//Time duration
 	sheet.setColumnWidth(2, 5 * 512);//Origin
-	sheet.setColumnWidth(3, 30 * 512);
+	sheet.setColumnWidth(3, 30 * 512);//title
 	sheet.setColumnWidth(4, 35 * 512);//comment
 	sheet.setColumnWidth(5, 5 * 512);//sentiment
 	sheet.setColumnWidth(6, 5 * 512);//category
@@ -157,90 +157,77 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 
 
 		int NLPIndex = 0;
-		HSSFRow row0 = sheet.createRow(NLPIndex++);
+		int excel_line = 0;
+		HSSFRow row0 = sheet.createRow(excel_line++);
 		//=================
 		HSSFCell cell00=row0.createCell(0);
 		cell00.setCellStyle(titleStyle);
 		cell00.setCellValue("ID");
 		
-		HSSFCell cell10=row0.createCell(1);
-		cell10.setCellStyle(titleStyle);
-		cell10.setCellValue("Time duration");
+		cell00=row0.createCell(1);
+		cell00.setCellValue("Time duration");
 		
-		HSSFCell cell20=row0.createCell(2);
-		cell20.setCellStyle(titleStyle);
-		cell20.setCellValue("Origin");
+		cell00=row0.createCell(2);
+		cell00.setCellValue("Origin");
 		
-		HSSFCell cell30=row0.createCell(3);
-		cell30.setCellStyle(titleStyle);
-		cell30.setCellValue("title");
+		cell00=row0.createCell(3);
+		cell00.setCellValue("title");
 		
-		HSSFCell cell40=row0.createCell(4);
-		cell40.setCellStyle(titleStyle);
-		cell40.setCellValue("comment");
+		cell00=row0.createCell(4);
+		cell00.setCellValue("comment");
 		
-		HSSFCell cell50=row0.createCell(5);
-		cell50.setCellStyle(titleStyle);
-		cell50.setCellValue("Sentiment");
+		cell00=row0.createCell(5);
+		cell00.setCellValue("Sentiment");
 		
-		HSSFCell cell60=row0.createCell(6);
-		cell60.setCellStyle(titleStyle);
-		cell60.setCellValue("Category");
+		cell00=row0.createCell(6);
+		cell00.setCellValue("Category");
 		
-		cell60=row0.createCell(7);
-		cell60.setCellStyle(titleStyle);
-		cell60.setCellValue("Url");
+		cell00=row0.createCell(7);
+		cell00.setCellValue("Url");
 		
 		//=================
 		//利用迭代器读取 list中的每个NLPAnalysis
 		while(it.hasNext()&&NLPIndex<listNLP.size()) {
 			
-			HSSFRow row = sheet.createRow(NLPIndex);
+			HSSFRow row = sheet.createRow(excel_line++);
 			
-			HSSFCell cell9=row.createCell(0);
-			cell9.setCellStyle(cellStyle);
-			cell9.setCellValue(listNLP.get(NLPIndex-1).getId());
+			HSSFCell cell=row.createCell(0);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(listNLP.get(NLPIndex).getId());
 			
-			HSSFCell cell0=row.createCell(1);
-			cell0.setCellStyle(cellStyle);
-			cell0.setCellValue(listNLP.get(NLPIndex-1).getTimestamp());
+			cell=row.createCell(1);
+			cell.setCellValue(listNLP.get(NLPIndex).getTimestamp());
 			
-			HSSFCell cell1=row.createCell(2);
-			cell1.setCellStyle(cellStyle);
-			cell1.setCellValue(Origin.displayOrigin(listNLP.get(NLPIndex-1).getOrigin()));
+			cell=row.createCell(2);
+			cell.setCellValue(listNLP.get(NLPIndex).getOrigin());
 			
-			cell1=row.createCell(3);
-			cell1.setCellStyle(cellStyle);
-			cell1.setCellValue(listNLP.get(NLPIndex-1).getTitle());
+			cell=row.createCell(3);
+			cell.setCellValue(listNLP.get(NLPIndex).getTitle());
 			
-			HSSFCell cell2=row.createCell(4);
-			cell2.setCellStyle(cellStyle);
-			cell2.setCellValue(listNLP.get(NLPIndex-1).getFirstcomment());
+			cell=row.createCell(4);
+			cell.setCellValue(listNLP.get(NLPIndex).getFirstcomment());
 			
-			HSSFCell cell3=row.createCell(5);
-			cell3.setCellStyle(cellStyle);
-			switch(listNLP.get(NLPIndex-1).getSentiment()){
+			cell=row.createCell(5);
+			switch(listNLP.get(NLPIndex).getSentiment()){
 			case NEGATIVE:
-				cell3.setCellValue("消极");
+				cell.setCellValue("消极");
 				break;
 			case NEUTRAL:
-				cell3.setCellValue("中性");
+				cell.setCellValue("中性");
 				break;
 			case POSITIVE:
-				cell3.setCellValue("积极");
+				cell.setCellValue("积极");
 				break;
 			default:
-				cell3.setCellValue(" ");
+				cell.setCellValue(" ");
 			}
 			
 			
-			HSSFCell cell5=row.createCell(6);
-			cell5.setCellStyle(cellStyle);
-			cell5.setCellValue(listNLP.get(NLPIndex-1).getCategory());
+			cell=row.createCell(6);
+			cell.setCellValue(listNLP.get(NLPIndex).getCategory());
 			
-			HSSFCell cell6=row.createCell(7);
-			cell6.setCellStyle(cellStyle);
-			cell6.setCellValue(listNLP.get(NLPIndex-1).getLink());
+			cell=row.createCell(7);
+			cell.setCellValue(listNLP.get(NLPIndex).getLink());
 			
 			NLPIndex++;
 		}
@@ -291,33 +278,26 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 		cell00.setCellStyle(titleStyle);
 		cell00.setCellValue("ID");
 		
-		HSSFCell cell10=row0.createCell(1);
-		cell10.setCellStyle(titleStyle);
-		cell10.setCellValue("Time duration");
+		cell00=row0.createCell(1);
+		cell00.setCellValue("Time duration");
 		
-		HSSFCell cell20=row0.createCell(2);
-		cell20.setCellStyle(titleStyle);
-		cell20.setCellValue("Origin");
+		cell00=row0.createCell(2);
+		cell00.setCellValue("Origin");
 		
-		HSSFCell cell30=row0.createCell(3);
-		cell30.setCellStyle(titleStyle);
-		cell30.setCellValue("title");
+		cell00=row0.createCell(3);
+		cell00.setCellValue("title");
 		
-		HSSFCell cell40=row0.createCell(4);
-		cell40.setCellStyle(titleStyle);
-		cell40.setCellValue("comment");
+		cell00=row0.createCell(4);
+		cell00.setCellValue("comment");
 		
-		HSSFCell cell50=row0.createCell(5);
-		cell50.setCellStyle(titleStyle);
-		cell50.setCellValue("Sentiment");
+		cell00=row0.createCell(5);
+		cell00.setCellValue("Sentiment");
 		
-		HSSFCell cell60=row0.createCell(6);
-		cell60.setCellStyle(titleStyle);
-		cell60.setCellValue("Category");
+		cell00=row0.createCell(6);
+		cell00.setCellValue("Category");
 		
-		cell60=row0.createCell(7);
-		cell60.setCellStyle(titleStyle);
-		cell60.setCellValue("Url");
+		cell00=row0.createCell(7);
+		cell00.setCellValue("Url");
 		
 		//=================
 		//利用迭代器读取 list中的每个NLPAnalysis
@@ -325,49 +305,42 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 			
 			HSSFRow row = sheet.createRow(excel_line++);
 			
-			HSSFCell cell0=row.createCell(0);
-			cell0.setCellStyle(cellStyle);
-			cell0.setCellValue(listNLP.get(NLPIndex).getId());
+			HSSFCell cell=row.createCell(0);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue(listNLP.get(NLPIndex).getId());
 			
-			HSSFCell cell1=row.createCell(1);
-			cell1.setCellStyle(cellStyle);
-			cell1.setCellValue(listNLP.get(NLPIndex).getTimestamp());
+			cell=row.createCell(1);
+			cell.setCellValue(listNLP.get(NLPIndex).getTimestamp());
 			
-			HSSFCell cell2=row.createCell(2);
-			cell2.setCellStyle(cellStyle);
-			cell2.setCellValue(Origin.displayOrigin(listNLP.get(NLPIndex).getOrigin()));
+			cell=row.createCell(2);
+			cell.setCellValue(listNLP.get(NLPIndex).getOrigin());
 			
-			cell2=row.createCell(3);
-			cell2.setCellStyle(cellStyle);
-			cell2.setCellValue(listNLP.get(NLPIndex).getTitle());
+			cell=row.createCell(3);
+			cell.setCellValue(listNLP.get(NLPIndex).getTitle());
 			
-			HSSFCell cell3=row.createCell(4);
-			cell3.setCellStyle(cellStyle);
-			cell3.setCellValue(listNLP.get(NLPIndex).getFirstcomment());
+			cell=row.createCell(4);
+			cell.setCellValue(listNLP.get(NLPIndex).getFirstcomment());
 			
-			HSSFCell cell4=row.createCell(5);
-			cell4.setCellStyle(cellStyle);
+			cell=row.createCell(5);
 			switch(listNLP.get(NLPIndex).getSentiment()){
 			case NEGATIVE:
-				cell4.setCellValue("消极");
+				cell.setCellValue("消极");
 				break;
 			case NEUTRAL:
-				cell4.setCellValue("中性");
+				cell.setCellValue("中性");
 				break;
 			case POSITIVE:
-				cell4.setCellValue("积极");
+				cell.setCellValue("积极");
 				break;
 			default:
-				cell4.setCellValue(" ");
+				cell.setCellValue(" ");
 			}
 			
-			HSSFCell cell5=row.createCell(6);
-			cell5.setCellStyle(cellStyle);
-			cell5.setCellValue(listNLP.get(NLPIndex).getCategory());
+			cell=row.createCell(6);
+			cell.setCellValue(listNLP.get(NLPIndex).getCategory());
 			
-			HSSFCell cell6=row.createCell(7);
-			cell6.setCellStyle(cellStyle);
-			cell6.setCellValue(listNLP.get(NLPIndex).getLink());
+			cell=row.createCell(7);
+			cell.setCellValue(listNLP.get(NLPIndex).getLink());
 			
 			NLPIndex++;
 		}
