@@ -1,12 +1,13 @@
 package com.srct.ril.poas.service.ai.nlp;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import com.srct.ril.poas.ai.baidunlp.BaiduNLPSentiment;
 import com.srct.ril.poas.ai.nlp.MyAnsj;
 import com.srct.ril.poas.ai.nlp.NLPAnalysis;
 import com.srct.ril.poas.ai.nlp.NLPItem;
-import com.srct.ril.poas.dao.dbconfig.DataSourceConfig;
 import com.srct.ril.poas.dao.pojo.StoreBbsPojoBase;
 import com.srct.ril.poas.dao.pojo.UrlJoinMap;
 import com.srct.ril.poas.dao.utils.category.Category;
@@ -51,7 +51,7 @@ public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 	private boolean debugMode = true;
 	private String fileName = "DEMO";
 	
-	private BaiduNLPDepParser defParser(String content) throws ServiceException {
+	private Map<String, List<String>> defParser(String content) throws ServiceException {
 		BaiduNLPDepParser dp = null;
 		try {
 			dp = baiduService.depParser(content);
@@ -59,11 +59,29 @@ public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 			// TODO Auto-generated catch block
 			throw new ServiceException("分句异常 ", e);
 		}
-		Log.dd(dp.simpleText);
-		return dp;
+		List<String> subContentList = new ArrayList<>();
+		Map<String, List<String>> subContentKeyworkMap = new HashMap<String, List<String>>();
+		if(dp != null) {
+			Log.dd(dp.simpleText);
+			Log.i("error code : {}",dp.error_code);
+			if(dp.error_code == 282131) {
+				subContentList = MyAnsj.deperParse(content);
+				for(String subContent : subContentList) {
+					BaiduNLPLexer lexer = lexer(subContent);
+					subContentKeyworkMap.put(subContent, lexer.getKeywords());
+				}
+			} else {
+				subContentList = dp.simpleText;
+				for(String subContent : subContentList) {
+					subContentKeyworkMap.put(subContent, dp.getKeyWords(subContent));
+				}
+			}
+		}
+		
+		return subContentKeyworkMap;
 	}
 	
-	private Sentiment setimentClassify(String subContent) throws ServiceException {
+	private Sentiment setimentClassify(String subContent, List<String> keywords) throws ServiceException {
 		Sentiment sentimental = Sentiment.UNKNOWN;
 		BaiduNLPSentiment sc = null;
 		try {
@@ -155,14 +173,16 @@ public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 				it.setAdj(ct.items[0].adj);
 				it.setProp(ct.items[0].prop);
 				it.setSentiment(Sentiment.getSetiment(ct.items[0].sentiment));
-				String key=cat.getCategory(keyWords);
-				if(key==null) {
-					Log.i("收集情感关键字");
-					cat.addUnknownKeywordList(ct.items[0].prop);
-				} else {
-					it.setCategory(key);
-				}
+				Log.i("收集情感关键字");
+				cat.addUnknownKeywordList(ct.items[0].prop+ct.items[0].adj);
 			}
+			boolean smooth = false;
+			if (sentimental==Sentiment.POSITIVE ||
+				sentimental==Sentiment.NEGATIVE) {
+				smooth = true;
+			}
+			String key=cat.getCategory(keyWords,smooth);
+			it.setCategory(key);
 		} else {
 			String key=cat.getCategory(keyWords);
 			it.setCategory(key);
@@ -184,49 +204,23 @@ public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 		res.setContent(content);
 		//Step 1. 分句
 		Log.i("======{}======",content);
-		List<String> subContentList = null;
 		boolean successful = false;
-		boolean needLexer = true;
-		BaiduNLPDepParser dp = defParser(content);
-		if(dp != null) {
-			Log.i("error code : {}",dp.error_code);
-			if(dp.error_code == 282131) {
-				subContentList = MyAnsj.deperParse(content);
-			} else {
-				subContentList = dp.simpleText;
-			}
-		}
-		for(String subContent : subContentList) {
+		Map<String, List<String>> subContentKeyworkMap = defParser(content);
+		
+		for(Entry<String, List<String>> entry : subContentKeyworkMap.entrySet()) {
+			String subContent = entry.getKey();
+			List<String> keyWords = entry.getValue();
 			if(subContent.equals(""))continue;
 			Log.i(">>>>{}<<<<",subContent);
 			//Step 2. 各分句情感分析
-			Sentiment sentimental = setimentClassify(subContent);
+			Sentiment sentimental = setimentClassify(subContent, keyWords);
 			//Step 3. 根据情感分析结果分类
-			List<String> keyWords = null;
-			keyWords = dp.getKeyWords(subContent);
-			if(keyWords == null) {
-				BaiduNLPLexer lexer = lexer(subContent);
-				keyWords = lexer.getKeywords();
-				needLexer = false;
-			}
 			NLPAnalysis.Item it = parseCategory(sentimental, subContent, keyWords);
 			if(it.getCategory() != null) {
-				needLexer = false;
 				successful = true;
 				Log.i("<{}>情感关键词获取<{}>", subContent, it.getCategory());
 			}
-			res.addItem(it);			
-		}
-		if(needLexer) {
-			Log.i("全句逐词提取");
-			BaiduNLPLexer lexer = lexer(content);
-			Sentiment sentimental = setimentClassify(content);
-			NLPAnalysis.Item it = parseCategory(sentimental, content, lexer.getKeywords());
-			if(it.getCategory() != null) {
-				successful = true;
-				Log.i("<{}>情感关键词获取<{}>", content, it.getCategory());
-			}
-			res.addItem(it);	
+			res.addItem(it);
 		}
 		if(successful == false) {
 			Log.w("分类失败");

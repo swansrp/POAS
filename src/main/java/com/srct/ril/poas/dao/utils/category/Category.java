@@ -112,7 +112,7 @@ public class Category {
 		}
 		return res;
 	}
-	public String getCategory(List<String> words) {
+	public String getCategory(List<String> words, boolean smooth) {
 		String res = null;
 		if(categoryList==null) {
 			Log.d("categoryList is null");
@@ -128,7 +128,22 @@ public class Category {
 				}
 			}
 		}
+		if(smooth) {
+			for(String cat : categoryList) {
+				for(String key : keywordMap.get(cat)) {
+					for(String word : words) {
+						if(word.contains(key)) {
+							Log.i("key:{}, word:{}", key, word);
+							return cat;
+						}
+					}
+				}
+			}
+		}
 		return res;
+	}
+	public String getCategory(List<String> words) {
+		return getCategory(words,false);
 	}
 	public List<String> getCategoryList() {
 		return categoryList;
