@@ -12,9 +12,6 @@ public class OriginLifeCycle implements SmartLifecycle {
 
 private boolean isRunning = false;
 	
-	//必须先注入dsc促使Mybatis sessionfactoryBean先被建立
-	@Autowired
-	DataSourceConfig dsc;
 	@Autowired
 	private SourceMapService sourceMapService;
 	

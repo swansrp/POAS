@@ -21,6 +21,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.srct.ril.poas.service.config.ModelMapService;
+import com.srct.ril.poas.utils.BeanUtil;
   
   
 @Configuration
@@ -28,7 +29,6 @@ public class DataSourceConfig {
 	
 	private static final Logger log = LoggerFactory.getLogger(DataSourceConfig.class);
 	
-	@Autowired
     private ModelMapService modelMapService;
 	
 	@Value("${my.db.config.url}")  
@@ -106,6 +106,7 @@ public class DataSourceConfig {
     public void updateDynamicDataSource() {
 
 		//DataSourceContextHolder.setDB(DataSourceEnum.CONFIG);
+    	modelMapService = (ModelMapService) BeanUtil.getBean("modelMapService");
     	List<String> modelDBNameList = modelMapService.getNameList();
 
 		DynamicDataSource dds = (DynamicDataSource)dynamicDataSource();

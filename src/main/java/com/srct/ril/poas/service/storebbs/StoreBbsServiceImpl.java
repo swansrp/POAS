@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.srct.ril.poas.ai.nlp.NLPItem;
 import com.srct.ril.poas.dao.dbconfig.DS;
+import com.srct.ril.poas.dao.dbconfig.DataSourceConfig;
 import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 import com.srct.ril.poas.dao.pojo.StoreBbsPojoBase;
 import com.srct.ril.poas.dao.utils.origin.Origin;
@@ -38,17 +39,15 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 	
 	@Override
 	public List<NLPItem> select(String modelName, String startTime, String endTime, boolean bAnalysis) throws ServiceException {
-		List<NLPItem> nlpItemList = new ArrayList<>();
+		List<NLPItem> resList = new ArrayList<>();
 		List<String> originList = originBean.getOriginList();
 		for(String origin : originList) {			
-			List<StoreBbsPojoBase> storeBbsPojoList = self.select(modelName, origin, startTime, endTime);
-			if(storeBbsPojoList!=null) {
-				for(StoreBbsPojoBase pojo : storeBbsPojoList) {
-					nlpItemList.add(nlpAnalysisService.NLPitemFactory(modelName, origin, pojo, bAnalysis));
-				}
+			List<NLPItem> nlpItemList = select(modelName,origin,startTime,endTime,bAnalysis);
+			for(NLPItem nlp : nlpItemList) {
+				resList.add(nlp);
 			}
 		}
-        return nlpItemList;
+        return resList;
     }
 	
 	@Override
@@ -58,6 +57,7 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 		if(storeBbsPojoList!=null) {
 			for(StoreBbsPojoBase pojo : storeBbsPojoList) {
 				nlpItemList.add(nlpAnalysisService.NLPitemFactory(modelName, origin, pojo, bAnalysis));
+				Log.i("[{}] from {} {}/{}", modelName, origin, nlpItemList.size(),storeBbsPojoList.size());
 			}
 		}
         return nlpItemList;

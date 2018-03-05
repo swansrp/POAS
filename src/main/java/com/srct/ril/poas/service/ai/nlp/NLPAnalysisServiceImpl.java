@@ -19,6 +19,7 @@ import com.srct.ril.poas.ai.baidunlp.BaiduNLPSentiment;
 import com.srct.ril.poas.ai.nlp.MyAnsj;
 import com.srct.ril.poas.ai.nlp.NLPAnalysis;
 import com.srct.ril.poas.ai.nlp.NLPItem;
+import com.srct.ril.poas.dao.dbconfig.DataSourceConfig;
 import com.srct.ril.poas.dao.pojo.StoreBbsPojoBase;
 import com.srct.ril.poas.dao.pojo.UrlJoinMap;
 import com.srct.ril.poas.dao.utils.category.Category;
@@ -35,7 +36,6 @@ import com.srct.ril.poas.utils.log.Log;
 public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 	@Autowired
 	private BaiduNLPService baiduService;
-	
 	@Autowired
 	private Category cat;
 	@Autowired
@@ -318,7 +318,6 @@ public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 		for(StoreBbsPojoBase obj : (List<StoreBbsPojoBase>)dataList) {
 			NLPItem nlpIt = NLPitemFactory(modelName, origin, obj);
 			nlpItemList.add(nlpIt);
-			Log.i("[{}] from {} {}/{}", modelName, origin, nlpItemList.size(),dataList.size());
 		}
 		return saveExcel(modelName,nlpItemList);
 	}
