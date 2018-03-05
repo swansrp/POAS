@@ -50,6 +50,18 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 		}
         return nlpItemList;
     }
+	
+	@Override
+	public List<NLPItem> select(String modelName, String origin, String startTime, String endTime, boolean bAnalysis) throws ServiceException {
+		List<NLPItem> nlpItemList = new ArrayList<>();		
+		List<StoreBbsPojoBase> storeBbsPojoList = self.select(modelName, origin, startTime, endTime);
+		if(storeBbsPojoList!=null) {
+			for(StoreBbsPojoBase pojo : storeBbsPojoList) {
+				nlpItemList.add(nlpAnalysisService.NLPitemFactory(modelName, origin, pojo, bAnalysis));
+			}
+		}
+        return nlpItemList;
+    }
 
 	@Override
 	public List<StoreBbsPojoBase> select(String modelName, String origin, String startTime, String endTime)

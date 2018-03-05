@@ -20,10 +20,12 @@ import com.srct.ril.poas.ai.nlp.MyAnsj;
 import com.srct.ril.poas.ai.nlp.NLPAnalysis;
 import com.srct.ril.poas.ai.nlp.NLPItem;
 import com.srct.ril.poas.dao.pojo.StoreBbsPojoBase;
+import com.srct.ril.poas.dao.pojo.UrlJoinMap;
 import com.srct.ril.poas.dao.utils.category.Category;
 import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
 import com.srct.ril.poas.dao.utils.origin.Origin;
 import com.srct.ril.poas.service.ai.baidu.BaiduNLPService;
+import com.srct.ril.poas.service.config.UrlMapService;
 import com.srct.ril.poas.service.storebbs.StoreBbsService;
 import com.srct.ril.poas.utils.ExcelUtils;
 import com.srct.ril.poas.utils.ServiceException;
@@ -40,6 +42,8 @@ public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 	private Origin ori;
 	@Autowired
 	private StoreBbsService storeBbsService;
+	@Autowired
+	private UrlMapService urlMapService;
 	
 	private double confidence = 0.7;
 	private double prob = 0.65;
@@ -251,8 +255,17 @@ public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 	}
 	
 	@Override
-	public List<NLPItem> analyse(String modelName, String startTime, String endTime) throws ServiceException {
-		return storeBbsService.select(modelName, startTime, endTime, true);
+	public void analyse() throws ServiceException {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+		String startTime = df.format(new Date(new Date().getTime()-24*60*60*1000));
+		String endTime = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
+		List<UrlJoinMap> urlModelMapList = urlMapService.getUrlJoinList();
+		for(UrlJoinMap urlModel : urlModelMapList) {
+			storeBbsService.select(
+					urlModel.getModelMap().getModelName(), 
+					urlModel.getSourceMap().getSourceEn(),
+					startTime, endTime, true);
+		}
 	}
 	
 	@Override

@@ -25,6 +25,9 @@ public interface StoreBbsService {
 	public List<NLPItem> select(String modelName, String startTime, String endTime, boolean bAnalysis) 
 			throws ServiceException;
 	
+	public List<NLPItem> select(String modelName, String origin, String startTime, String endTime, boolean bAnalysis) 
+			throws ServiceException;
+	
 	public void updateAnalysis(String modelName, String origin, StoreBbsPojoBase pojo, Integer sentiment, Integer category)
 			throws ServiceException, IOException;
 	
