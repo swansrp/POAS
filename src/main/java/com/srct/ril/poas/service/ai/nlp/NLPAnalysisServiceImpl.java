@@ -1,4 +1,4 @@
-package com.srct.ril.poas.service.ai;
+package com.srct.ril.poas.service.ai.nlp;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -12,13 +12,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.srct.ril.poas.ai.MyAnsj;
-import com.srct.ril.poas.ai.NLPAnalysis;
-import com.srct.ril.poas.ai.NLPItem;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPCommentTag;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPDepParser;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPLexer;
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPSentiment;
+import com.srct.ril.poas.ai.nlp.MyAnsj;
+import com.srct.ril.poas.ai.nlp.NLPAnalysis;
+import com.srct.ril.poas.ai.nlp.NLPItem;
 import com.srct.ril.poas.dao.pojo.StoreBbsPojoBase;
 import com.srct.ril.poas.dao.utils.category.Category;
 import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
@@ -30,7 +30,7 @@ import com.srct.ril.poas.utils.ServiceException;
 import com.srct.ril.poas.utils.log.Log;
 
 @Service
-public class NLPAnalysisService {
+public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 	@Autowired
 	private BaiduNLPService baiduService;
 	
@@ -231,6 +231,7 @@ public class NLPAnalysisService {
 		return res;
 	}
 	
+	@Override
 	public NLPAnalysis nlp(String content) throws ServiceException {
 		List<NLPAnalysis> NLPAnalysisList = new ArrayList<>();
 		NLPAnalysis nlpAnalysis = _nlp(content);
@@ -239,6 +240,7 @@ public class NLPAnalysisService {
 		return nlpAnalysis;
 	}
 	
+	@Override
 	public List<NLPAnalysis> nlpList(List<String> contentList) throws ServiceException {
 		List<NLPAnalysis> res = new ArrayList<>();
 		for(String content : contentList) {
@@ -248,10 +250,17 @@ public class NLPAnalysisService {
 		return res;
 	}
 	
+	@Override
+	public List<NLPItem> analyse(String modelName, String startTime, String endTime) throws ServiceException {
+		return storeBbsService.select(modelName, startTime, endTime, true);
+	}
+	
+	@Override
 	public NLPItem NLPitemFactory(String modelName, String origin, StoreBbsPojoBase obj) throws ServiceException {
 		return NLPitemFactory(modelName, origin, obj, false);
 	}
 	
+	@Override
 	public NLPItem NLPitemFactory(String modelName, String origin, StoreBbsPojoBase obj, boolean needAnalysis) throws ServiceException {
 		Class<?> clazz = ori.getPojoClassFromSource(origin);
 		NLPItem nlpIt = new NLPItem(modelName, origin, obj, clazz);
@@ -264,7 +273,7 @@ public class NLPAnalysisService {
 		return nlpIt;
 	}
 	
-	public boolean updateNLPItemAnalysis(NLPItem it) throws ServiceException {
+	private boolean updateNLPItemAnalysis(NLPItem it) throws ServiceException {
 		String title = it.getTitle();
 		String comment = it.getFirstcomment();
 		if(it.needAnalysis()) {
@@ -279,7 +288,7 @@ public class NLPAnalysisService {
 		}
 	}
 	
-	public void syncNLPItem2DB(NLPItem it) throws ServiceException {
+	private void syncNLPItem2DB(NLPItem it) throws ServiceException {
 		try {
 			storeBbsService.updateAnalysis(it.getModelName(), it.getOrigin(), it.getId(), 
 					it.getSentiment().getValue(), cat.getId(it.getCategory()));
@@ -289,6 +298,7 @@ public class NLPAnalysisService {
 		}
 	}
 	
+	@Override
 	public HSSFWorkbook saveExcel(String modelName, String origin, List<StoreBbsPojoBase> dataList) throws ServiceException {
 		if(dataList==null) return null;
 		List<NLPItem> nlpItemList = new ArrayList<>();
@@ -300,6 +310,7 @@ public class NLPAnalysisService {
 		return saveExcel(modelName,nlpItemList);
 	}
 	
+	@Override
 	public HSSFWorkbook saveExcel(String modelName, List<NLPItem> nlpItemList) throws ServiceException {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HHmm");//设置日期格式
 		String date = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳

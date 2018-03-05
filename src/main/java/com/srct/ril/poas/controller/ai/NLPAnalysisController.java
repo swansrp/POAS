@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.srct.ril.poas.ai.NLPItem;
+import com.srct.ril.poas.ai.nlp.NLPItem;
 import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
 import com.srct.ril.poas.http.CommonResponse;
 import com.srct.ril.poas.http.Response;
-import com.srct.ril.poas.service.ai.NLPAnalysisService;
+import com.srct.ril.poas.service.ai.nlp.NLPAnalysisServiceImpl;
 import com.srct.ril.poas.service.storebbs.StoreBbsService;
 import com.srct.ril.poas.utils.ServiceException;
 
@@ -20,7 +20,7 @@ import com.srct.ril.poas.utils.ServiceException;
 
 public class NLPAnalysisController {
 	@Autowired
-	private NLPAnalysisService nlpService;
+	private NLPAnalysisServiceImpl nlpService;
 	@Autowired
 	private StoreBbsService storeBbsService;
 	

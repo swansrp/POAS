@@ -12,12 +12,12 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.srct.ril.poas.ai.NLPItem;
+import com.srct.ril.poas.ai.nlp.NLPItem;
 import com.srct.ril.poas.dao.dbconfig.DS;
 import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 import com.srct.ril.poas.dao.pojo.StoreBbsPojoBase;
 import com.srct.ril.poas.dao.utils.origin.Origin;
-import com.srct.ril.poas.service.ai.NLPAnalysisService;
+import com.srct.ril.poas.service.ai.nlp.NLPAnalysisServiceImpl;
 import com.srct.ril.poas.utils.ServiceException;
 import com.srct.ril.poas.utils.log.Log;
 
@@ -25,7 +25,7 @@ import com.srct.ril.poas.utils.log.Log;
 @DS(DataSourceEnum.MODEL)
 public class StoreBbsServiceImpl implements StoreBbsService {
 	@Autowired
-	private NLPAnalysisService nlpAnalysisService;
+	private NLPAnalysisServiceImpl nlpAnalysisService;
 	@Autowired
 	private Origin originBean;
 	@Autowired
@@ -33,13 +33,18 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 	
 	@Override
 	public List<NLPItem> select(String modelName, String startTime, String endTime) throws ServiceException {
+		return select(modelName, startTime, endTime, false);
+    }
+	
+	@Override
+	public List<NLPItem> select(String modelName, String startTime, String endTime, boolean bAnalysis) throws ServiceException {
 		List<NLPItem> nlpItemList = new ArrayList<>();
 		List<String> originList = originBean.getOriginList();
 		for(String origin : originList) {			
 			List<StoreBbsPojoBase> storeBbsPojoList = self.select(modelName, origin, startTime, endTime);
 			if(storeBbsPojoList!=null) {
 				for(StoreBbsPojoBase pojo : storeBbsPojoList) {
-					nlpItemList.add(nlpAnalysisService.NLPitemFactory(modelName, origin, pojo));
+					nlpItemList.add(nlpAnalysisService.NLPitemFactory(modelName, origin, pojo, bAnalysis));
 				}
 			}
 		}

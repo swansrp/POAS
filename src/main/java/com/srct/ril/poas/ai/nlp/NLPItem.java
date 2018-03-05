@@ -1,4 +1,4 @@
-package com.srct.ril.poas.ai;
+package com.srct.ril.poas.ai.nlp;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -17,13 +17,9 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 
-import com.srct.ril.poas.ai.NLPAnalysis;
-import com.srct.ril.poas.ai.NLPAnalysis.Item;
-import com.srct.ril.poas.ai.NLPItem;
-import com.srct.ril.poas.dao.utils.origin.Origin;
-
-
-
+import com.srct.ril.poas.ai.nlp.NLPAnalysis;
+import com.srct.ril.poas.ai.nlp.NLPAnalysis.Item;
+import com.srct.ril.poas.ai.nlp.NLPItem;
 
 public class ExcelUtils {
 	
