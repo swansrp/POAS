@@ -1,7 +1,4 @@
 package com.srct.ril.poas.utils;
-import java.awt.Color;
-import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,6 +20,7 @@ import org.apache.poi.ss.usermodel.FillPatternType;
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
 import com.srct.ril.poas.ai.NLPItem;
+import com.srct.ril.poas.dao.utils.origin.Origin;
 
 
 
@@ -30,7 +28,7 @@ import com.srct.ril.poas.ai.NLPItem;
 public class ExcelUtils {
 	
 	
-	private static String baseDir = "src/main/webapp/";
+	private static String baseDir = "excel_log/";
 //	public static void main(String[] args) {
 //		ArrayList<String> arrayList = new ArrayList<String>();
 //		arrayList.add("lalalla");
@@ -100,7 +98,7 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 		FileOutputStream fileOut;
 		
 			try {
-				fileOut = new FileOutputStream("src/main/webapp/workbook1.xls");
+				fileOut = new FileOutputStream(baseDir+"workbook1.xls");
 				wb.write(fileOut);//把Workbook对象输出到文件workbook.xls中   
 				fileOut.close(); 
 				System.out.println("write to excel done !");
@@ -122,7 +120,7 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 	private static void wf(HSSFWorkbook wb,String filename)
 	{
 		FileOutputStream fileOut;
-		String puth = "src/main/webapp/"+filename+".xls";
+		String puth = baseDir+filename+".xls";
 		System.out.print(puth);
 			try {
 				fileOut = new FileOutputStream(puth);

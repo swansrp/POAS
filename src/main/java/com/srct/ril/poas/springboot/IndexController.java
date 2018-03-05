@@ -26,7 +26,6 @@ public class IndexController {
     }
 	@RequestMapping("/test")
 	public String testpage(HttpSession session) {
-		Log.ii(session);
         return "testpage";
         
     }

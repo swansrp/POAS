@@ -56,11 +56,12 @@ public class DynamicDataSourceAspect {
                 DS annotation = method.getAnnotation(DS.class);
                 // 取出注解中的数据源名
                 dataSource = annotation.value();
-                log.info("注解中的数据源 is {}", dataSource);
+                log.debug("Method注解中的数据源 is {}", dataSource);
             } else if (clazz.isAnnotationPresent(DS.class)) {
             	DS annotation = clazz.getAnnotation(DS.class);
                 // 取出注解中的数据源名
                 dataSource = annotation.value();
+                log.debug("Class注解中的数据源 is {}", dataSource);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,7 +78,7 @@ public class DynamicDataSourceAspect {
     			String[] paramNames = getFieldsName(this.getClass(), clazzName, methodName);
     			Object[] args = point.getArgs();
     			for(int index=0;index<paramNames.length;index++) {
-    				log.info("paramNames {} args {} ", paramNames[index],args[index]);
+    				log.debug("paramNames {} args {} ", paramNames[index],args[index]);
     				if(paramNames[index].equals("modelName")) {
     					modelDBName = (String)args[index];
     					break;
