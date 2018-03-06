@@ -49,4 +49,7 @@ public interface StoreBbsService {
 	public void updateAnalysis(String modelName, String origin, Integer id, Integer sentiment, Integer category)
 			throws ServiceException, IOException;
 	
+	public void updateAnalysis(String modelName, String origin, Integer id, Integer sentiment, String category)
+			throws ServiceException, IOException;
+	
 }

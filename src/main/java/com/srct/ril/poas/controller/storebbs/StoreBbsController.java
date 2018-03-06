@@ -51,4 +51,19 @@ public class StoreBbsController {
 			e.printStackTrace();
 		}
     }
+    
+    @RequestMapping("/modelinfo/update/analysis")
+    public void updateAnalysis(
+    		@RequestParam(value="modelname", required = true) String modelName,
+			@RequestParam(value="origin", required = true) String origin,
+			@RequestParam(value="id", required = true) Integer id,
+			@RequestParam(value="sentiment", required = true) Integer sentiment,
+			@RequestParam(value="category", required = true) String cetegory) throws ServiceException {
+    	try {
+			storeBbsService.updateAnalysis(modelName, origin, id, sentiment, cetegory);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    	
+    }
 }

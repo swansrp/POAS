@@ -50,4 +50,19 @@ public class StoreAMZController {
 			e.printStackTrace();
 		}
     }
+    
+    @RequestMapping("/modelinfo/update/analysis")
+    public void updateAnalysis(
+    		@RequestParam(value="modelname", required = true) String modelName,
+			@RequestParam(value="id", required = true) Integer id,
+			@RequestParam(value="sentiment", required = true) Integer sentiment,
+			@RequestParam(value="category", required = true) String cetegory) throws ServiceException {
+    	String origin = getClass().getAnnotation(RequestMapping.class).value()[0].substring(1);
+    	try {
+			storeBbsService.updateAnalysis(modelName, origin, id, sentiment, cetegory);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    	
+    }
 }
