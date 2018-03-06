@@ -55,7 +55,7 @@ class GalaxyClubSpider():
             return r.text
         except:
             return " ERROR "  
-        
+
     def get_htmlviaCom(self,url,header):
         try:
             http_proxy = str("http://")+ str(self.proxyIP)+":"+str(self.ProxyPort)
@@ -73,7 +73,7 @@ class GalaxyClubSpider():
                 opener = urllib2.build_opener(proxy_handler)
                 urllib2.install_opener(opener)
                 request = urllib2.Request(url,headers=header)
-                response = urllib2.urlopen(request)  
+                response = urllib2.urlopen(request)
                 content = response.read()
                 response.close()
 
@@ -81,7 +81,7 @@ class GalaxyClubSpider():
         except:
             return " ERROR "    
               
-    def getGalaxyClubComment(self):
+    def getGalaxyClubComment(self,viatime):
         
         headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'}
         html = self.get_htmlviaCom(self.url, headers)
@@ -91,6 +91,8 @@ class GalaxyClubSpider():
         #total = page_total.group()
         #total = re.sub('<.*?>','',total)
         #for page_num in range(1,int(total)+1):#全部版
+        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
+        skiptime = "False"
         for page_num in range(1,self.pagenum):#演示版
             forinsert = []
             if self.state is 'True':
@@ -131,6 +133,9 @@ class GalaxyClubSpider():
 
                     time1 = time.mktime(time.strptime(time_content,'%Y-%m-%d %H:%M'))
                     time_content = TimeUtils.convert_timestamp_to_date(time1)
+                    if viatime and time1 < float(timestamp):
+                        skiptime ="True"
+                        break
                     content_format = re.compile('<div class=\"BSHARE_POP\">.*?</div>',re.S)
                     c_content = re.search(content_format,answer)
                     if c_content == None:
@@ -153,88 +158,7 @@ class GalaxyClubSpider():
                 except:
                     continue        
             self.mdatabase.insert_values(forinsert)
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.GalaxyClub.value, "success")
-        JsonResponseToClient.generate_json_response(resp)
-        
-    def getGalaxyClubViaTime(self):
-
-        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'}
-        html = self.get_htmlviaCom(self.url, headers)
-        #answer = html.decode("UTF-8","replace")
-        answer = html
-        #page_total = re.search(r"<span class=\'last-no\'>.*?</span>",answer)
-        #total = page_total.group()
-        #total = re.sub('<.*?>','',total)
-        #for page_num in range(1,int(total)+1):#全部版
-        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
-        skiptime = "False"
-        for page_num in range(1,self.pagenum):#演示版 
-            forinsert = []        
-            if self.state is 'True':
-                break
-            url_base = re.sub(".html","",self.url)
-            url_last = url_base+'-0-last-0'+'-p'+str(page_num)+".html"
-            html = self.get_htmlviaCom(url_last, headers)
-            #answer = html.decode("UTF-8","replace")
-            answer = html
-            #li_format = re.compile('<li class=\"\">.*?</li>',re.S)
-            li_format = re.compile('<div class=\".*?List\">.*?</dl>',re.S)
-            li_content = re.findall(li_format,answer)
-            if len(li_content) == 0:
-                break
-            for li in li_content:
-                try:
-                    if li.find('<a href="javascript:void(0)">置顶</a>') != -1:
-                        continue
-                    if self.state is 'True':
-                        break
-                    #time.sleep(2)
-                    #href = re.search(r'<a href=\"(.*?)\" class=\"tit\" .*?>(.*?)</a>',li)
-                    href = re.search(r'<a href=\"(.*?)\" style="cursor: pointer;" target="_blank">(.*?)</a>',li)
-                    url_detail = "http://www.galaxyclub.cn"+href.group(1)
-                    link = url_detail
-
-                    html = self.get_htmlviaCom(url_detail, headers)
-                    #answer = html.decode("UTF-8","replace")
-                    answer = html
-                    theme_content = href.group(2)
-                    theme_content = re.sub("&quot;", "\"",theme_content)
-                    theme_content = re.sub("&amp;", "\"",theme_content)
-                    time_content = re.search(r"<p class=\"data\">(.*?)</p>", answer)
-                    if time_content == None:
-                        time_content =" "
-                    else:
-                        time_content = time_content.group(1)
-                    
-                    time1 = time.mktime(time.strptime(time_content,'%Y-%m-%d %H:%M'))
-                    time_content = TimeUtils.convert_timestamp_to_date(time1)
-                    if time1 < float(timestamp):
-                        skiptime ="True"
-                        break
-                    
-                    content_format = re.compile('<div class=\"BSHARE_POP\">.*?</div>',re.S)
-                    c_content = re.search(content_format,answer)
-                    if c_content == None:
-                        c_content = " "
-                    else:
-                        content_content = c_content.group()
-                        content_content = re.sub("\n", "",content_content)
-                        content_content = re.sub("\n\r", "",content_content)
-                        content_content = re.sub("\r", "",content_content)
-                        content_content = re.sub(" ", "",content_content)
-                        content_content = re.sub("<divclass=\"Hid_cont\">.*?</div>", "",content_content)
-                        content_content = re.sub("<.*?>", "",content_content)
-                        content_content = re.sub("&nbsp;", "",content_content)
-                        content_content = re.sub("&quot;", "\"",content_content)
-                        content_content = re.sub("&#39;", "",content_content)
-                        content_content = re.sub("<divclass=\"poll\">.*?</div>", "",content_content)
-                    content_content = StringUtils.remove_emoji_from_string(content_content)
-                    row = (theme_content,content_content,time_content,link)
-                    forinsert.append(row)                
-                except:
-                    continue   
-            self.mdatabase.insert_values(forinsert)                        
-            if skiptime is 'True':
+            if viatime and skiptime is 'True':
                 break
         resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.GalaxyClub.value, "success")
         JsonResponseToClient.generate_json_response(resp)
@@ -254,10 +178,7 @@ class GalaxyClubSpider():
         if result == 1:
             tablename = self.mdatabase.load_table_name()
             self.mdatabase.create_table_with_column(createtable)
-            if self.searchState() is 'True' and continueTask is 'True':
-                self.getGalaxyClubViaTime()
-            else:
-                self.getGalaxyClubComment()
+            self.getGalaxyClubComment(self.searchState() is 'True' and continueTask is 'True')
         else:
             self.mdatabase.disconnect()
 

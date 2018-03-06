@@ -87,7 +87,7 @@ class JifengSpider():
             return " ERROR "
         
         
-    def getJifengComment(self):
+    def getJifengComment(self,viatime):
         
         headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'}
         try:
@@ -98,9 +98,11 @@ class JifengSpider():
             totalPage = int(pageNum.group(1)) + 1
             p_group = re.search(r'http://bbs.gfan.com/forum-(.*?)-1.html', self.url)
             datas['fid'] = p_group.group(1)
+            timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
         except:
             return
         #for p in range(1, totalPage):#全部版
+        skiptime = "False"
         for p in range(1,self.pagenum):#演示版 
             forinsert = []        
             if self.state is 'True':
@@ -135,77 +137,17 @@ class JifengSpider():
                     link = baseurl + str(href.group(1)) + '-1-1.html'
                     subject = title.group(1).strip()
                     time1 = time.mktime(time.strptime(posttime,'%Y-%m-%d %H:%M'))
-                    posttime = TimeUtils.convert_timestamp_to_date(time1)       
+                    posttime = TimeUtils.convert_timestamp_to_date(time1)
+                    if viatime and time1 < float(timestamp):
+                        skiptime ="True"
+                        break
                     subject = StringUtils.remove_emoji_from_string(subject)
-                    row = (subject,posttime,link)
+                    row = (subject,'',posttime,link)
                     forinsert.append(row)                              
                 except:
                     continue        
             self.mdatabase.insert_values(forinsert)
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.JiFeng.value, "success")
-        JsonResponseToClient.generate_json_response(resp)
-        
-    def getJifengViaTime(self):   
-
-        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'}
-        try:    
-            html = self.get_htmlviaCom(self.url, headers)
-            #answer = html.decode("UTF-8","replace").encode("UTF-8")
-            answer = html
-            pageNum = re.search(r'<span title="共 (.*?) 页"> / .*? 页</span>', answer)
-            totalPage = int(pageNum.group(1)) + 1
-            p_group = re.search(r'http://bbs.gfan.com/forum-(.*?)-1.html', self.url)
-            datas['fid'] = p_group.group(1)
-            timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
-        except:
-            return
-        #for p in range(1, totalPage):#全部版
-        skiptime = "False"
-        for p in range(1,self.pagenum):#演示版   
-            forinsert = []
-            if self.state is 'True':
-                break
-            data=urllib.parse.urlencode(datas)
-            new_url = 'http://bbs.gfan.com/forum.php?mod=forumdisplay&'+data+'&orderby=dateline&filter=author&page='+str(p)
-            html = self.get_htmlviaCom(new_url, headers)  
-            #answer = html.decode("UTF-8","replace")
-            answer = html 
-            baseurl = 'http://bbs.gfan.com/android-'
-                       
-            pattern = re.compile('<tbody id="normalthread_.*?">.*?</tbody>',re.S)
-            results = re.findall(pattern, answer)   
-            if len(results) == 0:
-                break 
-            time_rule = re.compile("<td class=\"by\">.*?</td>",re.S)
-            title_rule = re.compile('<a href=\"http://bbs.gfan.com/.*?\".*?onclick=\"atarget\(this\)\" class=\"xst\" >(.*?)</a>', re.S)
-            for result in results:
-                try:
-                    if self.state is 'True':
-                        break
-                    result = result.replace("\n","")
-                    time_g = re.search(time_rule,result)
-                    posttime = time_g.group()
-                    posttime = re.sub("\n", "",posttime)
-                    posttime = re.sub("\n\r", "",posttime)
-                    posttime = re.sub("\r", "",posttime)
-                    posttime = re.sub("<cite>.*?</cite>", "",posttime)
-                    posttime = re.sub("<.*?>","",posttime)
-                    title = re.search(title_rule,result)
-                    href = re.search('<tbody id="normalthread_(.*?)">',result)
-                    link = baseurl + str(href.group(1)) + '-1-1.html'
-                    subject = title.group(1).strip()   
-                    time1 = time.mktime(time.strptime(posttime,'%Y-%m-%d %H:%M'))
-                    posttime = TimeUtils.convert_timestamp_to_date(time1)
-                    if time1 < float(timestamp):
-                        skiptime ="True"
-                        break
-                    subject = StringUtils.remove_emoji_from_string(subject)
-                    row = (subject,posttime,link)
-                    forinsert.append(row)                               
-                except:
-                    continue
-            self.mdatabase.insert_values(forinsert)                    
-            if skiptime is 'True':
+            if viatime and skiptime is 'True':
                 break
         resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.JiFeng.value, "success")
         JsonResponseToClient.generate_json_response(resp)
@@ -217,7 +159,7 @@ class JifengSpider():
         self.productId = self.getProductId(self.url)
         
         #createtable = 'firstcomment text,date char,link text'
-        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,firstcomment VARCHAR(5000),date VARCHAR(20),link VARCHAR(500),sentiment int(11) DEFAULT -1,category int(11) DEFAULT 0, PRIMARY KEY(id)'
+        createtable = 'id int(11) NOT NULL AUTO_INCREMENT,title VARCHAR(200),firstcomment VARCHAR(5000),date VARCHAR(20),link VARCHAR(500),sentiment int(11) DEFAULT -1,category int(11) DEFAULT 0, PRIMARY KEY(id)'
         self.mdatabase = SpiderMySqlDatabase.SpiderMySqlDatabase(self.url)
         self.mdatabase.connect()
         dbname = self.mdatabase.load_database_name()
@@ -225,10 +167,7 @@ class JifengSpider():
         if result == 1:
             tablename = self.mdatabase.load_table_name()
             self.mdatabase.create_table_with_column(createtable)
-            if self.searchState() is 'True' and continueTask is 'True':
-                self.getJifengViaTime()
-            else:
-                self.getJifengComment()
+            self.getJifengComment(self.searchState() is 'True' and continueTask is 'True')
         else:
             self.mdatabase.disconnect()
 

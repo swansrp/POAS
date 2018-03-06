@@ -179,78 +179,11 @@ class TaoBaoSpider():
         except:
             return " ERROR "
 
-    def getTaobaoComment(self):
+    def getTaobaoComment(self,viatime):
         time1 = time.time()
         commenturl = self.getCommentUrl(self.url)
         sellerid = self.getSellerId(self.url)
-    
-        for k in range(1, self.pagenum):
-            forinsert = []
-            if self.state is 'True':
-                break
-            time3 = time.time()
-
-            url = commenturl % (self.productId, sellerid, k)
-            headers = {'User-Agent': self.choiceUseragent()}
-            #             res = urllib2.Request(url, headers =headers)
-            #             response = urllib2.urlopen(res)
-            #             content = response.read()
-            #             response = self.get_html(url,headers)
-
-            try:
-                response = self.get_htmlviaCom(url, headers)
-                #tbjson = response.decode('utf-8', 'ignore').strip().replace('(', '').replace(')', '')
-                tbjson = response.strip().replace('(', '').replace(')', '')
-                #tbjson = json.loads(tbjson, "utf-8")
-                tbjson = json.loads(tbjson)
-                tbcomment = tbjson['comments']
-            except:
-                continue
-
-                #             print content
-                #
-                #             #构建标准Json数据
-                #             tbjson = content.decode('gbk','ignore').strip().replace('(','').replace(')','')
-                #
-                #             try:
-                #                 tbjson = json.loads(tbjson,"utf-8")
-                #             except:
-                #                 continue
-
-            for hot in tbcomment:
-                username = hot['user']
-                name = username['nick']
-                comment1 = hot['content']
-                date1 = hot['date']
-                product = hot['auction']
-                productinfo = product['sku']
-                appendc = hot['appendList']
-                time1 = time.mktime(time.strptime(date1,u'%Y年%m月%d日 %H:%M'))
-                date1 = TimeUtils.convert_timestamp_to_date(time1)
-                if appendc:
-                    comment2 = appendc[0]['content']  # 追评内容
-                    date2 = appendc[0]['dayAfterConfirm']  # 几天后追评
-                else:
-                    comment2 = ''
-                    date2 = ''
-                replay = hot['reply']
-                if replay:
-                    replay = replay['content']
-                else:
-                    replay = ''
-                row = (name,comment1,date1,comment2,str(date2),replay,productinfo,self.url)
-                forinsert.append(row)
-            self.mdatabase.insert_values(forinsert)
-
-        time4 = time.time()
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.TaoBao.value, "success")
-        JsonResponseToClient.generate_json_response(resp)
-    
-    def getTaobaoViaTime(self):
-        time1 = time.time()
-        commenturl = self.getCommentUrl(self.url)
-        sellerid = self.getSellerId(self.url)
-        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))       
+        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))   
         
         for k in range(1, self.pagenum):
             skiptime = "False"
@@ -290,21 +223,20 @@ class TaoBaoSpider():
                 name = username['nick']
                 comment1 = hot['content']
                 date1 = hot['date']
-                time1 = time.mktime(time.strptime(date1,u'%Y年%m月%d日 %H:%M'))
-                date1 = TimeUtils.convert_timestamp_to_date(time1)
-                if time1 < float(timestamp):
-                    skiptime ="True"
-                    break
                 product = hot['auction']
                 productinfo = product['sku']
                 appendc = hot['appendList']
+                time1 = time.mktime(time.strptime(date1,u'%Y年%m月%d日 %H:%M'))
+                date1 = TimeUtils.convert_timestamp_to_date(time1)
+                if viatime and time1 < float(timestamp):
+                    skiptime ="True"
+                    break
                 if appendc:
                     comment2 = appendc[0]['content']  # 追评内容
                     date2 = appendc[0]['dayAfterConfirm']  # 几天后追评
                 else:
                     comment2 = ''
                     date2 = ''
-                    
                 replay = hot['reply']
                 if replay:
                     replay = replay['content']
@@ -313,7 +245,7 @@ class TaoBaoSpider():
                 row = (name,comment1,date1,comment2,str(date2),replay,productinfo,self.url)
                 forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
-            if skiptime is 'True':
+            if viatime and skiptime is 'True':
                 break
         time4 = time.time()
         resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.TaoBao.value, "success")
@@ -334,10 +266,7 @@ class TaoBaoSpider():
         if result == 1:
             tablename = self.mdatabase.load_table_name()
             self.mdatabase.create_table_with_column(createtable)
-            if self.searchState() is 'True' and continueTask is 'True':
-                self.getTaobaoViaTime()
-            else:
-                self.getTaobaoComment()
+            self.getTaobaoComment(self.searchState() is 'True' and continueTask is 'True')
         else:
             self.mdatabase.disconnect()
 
