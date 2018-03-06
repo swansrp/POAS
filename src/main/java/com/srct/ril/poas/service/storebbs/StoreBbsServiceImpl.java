@@ -17,6 +17,7 @@ import com.srct.ril.poas.dao.dbconfig.DS;
 import com.srct.ril.poas.dao.dbconfig.DataSourceConfig;
 import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 import com.srct.ril.poas.dao.pojo.StoreBbsPojoBase;
+import com.srct.ril.poas.dao.utils.category.Category;
 import com.srct.ril.poas.dao.utils.origin.Origin;
 import com.srct.ril.poas.service.ai.nlp.NLPAnalysisServiceImpl;
 import com.srct.ril.poas.utils.ServiceException;
@@ -30,7 +31,10 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 	@Autowired
 	private Origin originBean;
 	@Autowired
+	private Category catBean;
+	@Autowired
 	private StoreBbsServiceImpl self;
+	
 	
 	@Override
 	public List<NLPItem> select(String modelName, String startTime, String endTime) throws ServiceException {
@@ -165,13 +169,7 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 		// TODO Auto-generated method stub
 		updateAnalysis(modelName, origin, pojo, null, category);
 	}
-	
-	@Override
-	public void updateAnalysis(String modelName, String origin, NLPItem nlp, Integer sentiment, Integer category)
-			throws ServiceException {
-		// TODO Auto-generated method stub
-		self.updateAnalysis(modelName,origin,nlp.getId(),sentiment,category);
-	}
+
 
 	@Override
 	public void updateSentiment(String modelName, String origin, NLPItem nlp, Integer sentiment) 
@@ -185,6 +183,20 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 			throws ServiceException {
 		// TODO Auto-generated method stub
 		updateAnalysis(modelName, origin, nlp, null, category);
+	}
+	
+	@Override
+	public void updateAnalysis(String modelName, String origin, NLPItem nlp, Integer sentiment, Integer category)
+			throws ServiceException {
+		// TODO Auto-generated method stub
+		self.updateAnalysis(modelName,origin,nlp.getId(),sentiment,category);
+	}
+	
+	@Override
+	public void updateAnalysis(String modelName, String origin, Integer id, Integer sentiment, String category)
+			throws ServiceException, IOException {
+		// TODO Auto-generated method stub
+		self.updateAnalysis(modelName,origin,id,sentiment,catBean.getId(category));	
 	}
 
 	@Override
@@ -226,6 +238,7 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 			throw new ServiceException("["+modelName+"] from "  + origin + " set analysis " + id + " occur exception " + e);
 		}
 	}
+
 
     
     

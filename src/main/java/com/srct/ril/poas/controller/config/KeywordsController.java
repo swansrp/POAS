@@ -24,4 +24,10 @@ public class KeywordsController {
 			throws ServiceException {
 		return keywordsService.getKeywords();
 	}
+	
+	@RequestMapping("/nlp")
+	public void nlpKeywords() 
+			throws ServiceException {
+		keywordsService.nlpKeywords();
+	}
 }
