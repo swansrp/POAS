@@ -87,9 +87,12 @@ class AmazonSpider():
         except:
             return " ERROR "
                 
-    def getAmazonCommnet(self):
+    def getAmazonCommnet(self,viatime):
         baseurl = 'https://www.amazon.cn'
         p = 1
+        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
+                    
+        skiptime = "False"
         while True:
             forinsert = []
             if self.state is 'True':
@@ -122,61 +125,17 @@ class AmazonSpider():
                         type_comment = re.sub('<.*?>','',type_comment)
                     time1 = time.mktime(time.strptime(time_comment,u'%Y年%m月%d日'))
                     time_comment = TimeUtils.convert_timestamp_to_date(time1)
+                    if viatime and time1 < float(timestamp):
+                        print("time1 is less")
+                        break
                     row = (subject,comment,star_comment,time_comment,type_comment,self.url)
                     forinsert.append(row)                          
                 except:
                     continue        
             p += 1
             self.mdatabase.insert_values(forinsert)
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.Amazon.value, "success")
-        JsonResponseToClient.generate_json_response(resp)
-        
-    def getAmazonViaTime(self):
-        baseurl = 'https://www.amazon.cn'
-        p = 1
-        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
-                    
-        skiptime = "False"
-        while True:
-            forinsert = []
-            if self.state is 'True':
+            if viatime and skiptime is 'True':
                 break
-            comment_url = self.get_commentUrl(self.url, p)
-            headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'}
-            html = self.get_htmlviaCom(comment_url, headers)
-            #answer = html.decode("UTF-8","replace")
-            answer = html
-            results = re.findall('<div id=\".*?\" data-hook=\"review\" class=\"a-section review\">.*</div>', answer)
-            if(len(results) == 0):
-                break
-            for result in results:
-                result = result.replace("\n","")   
-                star = re.search('<span class=\"a-icon-alt\">(.*?)</span>',result)                    
-                title = re.search('<a data-hook=\"review-title\" class=\"a-size-base a-link-normal review-title a-color-base a-text-bold\" href=\"(.*?)\">(.*?)</a>',result )
-                content = re.search('<span data-hook=\"review-body\" class=\"a-size-base review-text\">(.*?)</span>',result)
-                timen = re.search('<span data-hook=\"review-date\" class=\"a-size-base a-color-secondary review-date\">' + u'于' + ' (.*?)</span>',result)
-                type = re.search(u'产品款式' + ': (.*?)</a>',result)
-                star_comment = star.group(1)
-                subject = title.group(2).strip()
-                comment = content.group(1).strip()
-                comment = re.sub('<.*?>','',comment)
-                time_comment = timen.group(1).strip()
-                type_comment = ''
-                if(type != None):
-                    type_comment = type.group(1).strip()
-                    type_comment = re.sub('<.*?>','',type_comment)
-
-                time1 = time.mktime(time.strptime(time_comment,u'%Y年%m月%d日'))
-                time_comment = TimeUtils.convert_timestamp_to_date(time1)
-                if time1 < float(timestamp):
-                    skiptime = "True"
-                    break
-                row = (subject,comment,star_comment,time_comment,type_comment,self.url)
-                forinsert.append(row)                      
-            self.mdatabase.insert_values(forinsert)                    
-            if skiptime is 'True':
-                break
-            p += 1
         resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.Amazon.value, "success")
         JsonResponseToClient.generate_json_response(resp)
     
@@ -195,10 +154,7 @@ class AmazonSpider():
         if result == 1:
             tablename = self.mdatabase.load_table_name()
             self.mdatabase.create_table_with_column(createtable)
-            if self.searchState() is 'True' and continueTask is 'True':
-                self.getAmazonViaTime()
-            else:
-                self.getAmazonCommnet()
+            self.getAmazonCommnet(self.searchState() is 'True' and continueTask is 'True')
         else:
             self.mdatabase.disconnect()
     

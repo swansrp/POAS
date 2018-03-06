@@ -98,69 +98,13 @@ class BaiduSpider():
         except:
             return " ERROR "
     
-    def getTiebaComment(self):
+    def getTiebaComment(self,viatime):
         
         baseurl = 'http://tieba.baidu.com'
         pattern = re.compile('<li class=" j_thread_list clearfix".*?</li>',re.S)
         
-        for num in range(0,self.pagenums):
-            forinsert = []
-            if self.state is 'True':
-                break
-                
-            url1 = self.url + '&pn='
-            url1 = url1+str(num*50)
-
-            #html = self.get_htmlviaCom(url1).decode("UTF-8","replace")
-            html = self.get_htmlviaCom(url1)
-            results = re.findall(pattern, html)
-
-            title_rule = re.compile('a rel=(.*?) href=\"(.*?)\" title=\"(.*?)\" target=', re.S)
-            postinfo_rule =re.compile('<span class=\"threadlist_rep_num center_text\"(.*?)>(.*?)</span>',re.S)
-            for result in results:
-                try:
-                    if self.state is 'True':
-                        break
-                    result = result.replace("\n","")
-                    num = re.search(postinfo_rule,result)
-                    title = re.search(title_rule,result )
-                
-                    #链接地址， 帖子主题， 帖子内容， 回复数
-                    link = baseurl + str(title.group(2))
-                    subject = title.group(3).strip()
-                    replynum = num.group(2).strip()
-                    #answer = self.get_htmlviaCom(link).decode("UTF-8","replace")
-                    answer = self.get_htmlviaCom(link)
-                    context = re.search(r'<cc>(.*?)</cc>',answer).group(1)
-                    context = re.sub("<span(.*?)span>", "",context)
-                    context = re.sub("\n", "",context)
-                    context = re.sub("\n\r", "",context)
-                    context = re.sub("\r", "",context)
-                    context = re.sub(" ", "",context)
-                    context = re.sub("<.*?>", "",context)
-                    #createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer).group(1)
-                    createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer)
-                    if createtime == None :
-                        createtime = re.search(r'<span class="tail-info">' + u'1楼' + '</span><span class="tail-info">(.*?)</span>',answer)
-                    createtime = createtime.group(1)
-                    time1 = time.mktime(time.strptime(createtime,'%Y-%m-%d %H:%M'))
-                    createtime = TimeUtils.convert_timestamp_to_date(time1)
-                    context = StringUtils.remove_emoji_from_string(context)
-                    row = (subject,context,replynum,createtime,link)
-                    forinsert.append(row)
-                except:
-                    continue
-            self.mdatabase.insert_values(forinsert)
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.Baidu.value, "success")
-        JsonResponseToClient.generate_json_response(resp)
-            
-    def getTiebaviaTime(self):
-        
-        baseurl = 'http://tieba.baidu.com'
-        pattern = re.compile('<li class=" j_thread_list clearfix".*?</li>',re.S)
-
         timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
-         
+        
         for num in range(0,self.pagenums):
             forinsert = []
             if self.state is 'True':
@@ -182,22 +126,13 @@ class BaiduSpider():
                     result = result.replace("\n","")
                     num = re.search(postinfo_rule,result)
                     title = re.search(title_rule,result )
-
+                
                     #链接地址， 帖子主题， 帖子内容， 回复数
                     link = baseurl + str(title.group(2))
                     subject = title.group(3).strip()
                     replynum = num.group(2).strip()
                     #answer = self.get_htmlviaCom(link).decode("UTF-8","replace")
                     answer = self.get_htmlviaCom(link)
-                    #createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer).group(1)
-                    createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer)
-                    if createtime == None :
-                        createtime = re.search(r'<span class="tail-info">' + u'1楼' + '</span><span class="tail-info">(.*?)</span>',answer)
-                    createtime = createtime.group(1)
-                    time1 = time.mktime(time.strptime(createtime,'%Y-%m-%d %H:%M'))
-                    createtime = TimeUtils.convert_timestamp_to_date(time1)
-                    if time1 < float(timestamp):
-                        continue
                     context = re.search(r'<cc>(.*?)</cc>',answer).group(1)
                     context = re.sub("<span(.*?)span>", "",context)
                     context = re.sub("\n", "",context)
@@ -205,6 +140,15 @@ class BaiduSpider():
                     context = re.sub("\r", "",context)
                     context = re.sub(" ", "",context)
                     context = re.sub("<.*?>", "",context)
+                    #createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer).group(1)
+                    createtime = re.search(r'date&quot;:&quot;(.*?)&quot',answer)
+                    if createtime == None :
+                        createtime = re.search(r'<span class="tail-info">' + u'1楼' + '</span><span class="tail-info">(.*?)</span>',answer)
+                    createtime = createtime.group(1)
+                    time1 = time.mktime(time.strptime(createtime,'%Y-%m-%d %H:%M'))
+                    if viatime and time1 < float(timestamp):
+                        continue
+                    createtime = TimeUtils.convert_timestamp_to_date(time1)
                     context = StringUtils.remove_emoji_from_string(context)
                     row = (subject,context,replynum,createtime,link)
                     forinsert.append(row)
@@ -231,10 +175,7 @@ class BaiduSpider():
         if result == 1:
             tablename = self.mdatabase.load_table_name()
             self.mdatabase.create_table_with_column(createtable)
-            if self.searchState() is 'True' and continueTask is 'True':
-                self.getTiebaviaTime()
-            else:
-                self.getTiebaComment()
+            self.getTiebaComment(self.searchState() is 'True' and continueTask is 'True')
         else:
             self.mdatabase.disconnect()            
 

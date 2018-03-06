@@ -176,61 +176,17 @@ class JingDongSpider():
         except:
             return " ERROR "
 
-    def getJDComment(self):
+    def getJDComment(self,viatime):
         time1 = time.time()
         commenturl =  self.getCommentUrl(self.url)
-               
-        for k in range(0,self.pagenum):
-            forinsert = []
-            if self.state is 'True':
-                break
-
-            url = commenturl%(self.productId,k)
-            headers = {'User-Agent':self.choiceUseragent()}
-#             res = urllib2.Request(url, headers =headers)
-#             response = urllib2.urlopen(res)
-#             content = response.read()
-#
-            responsed = self.get_htmlviaCom(url,headers)
-
-            #将中文编码格式转成utf-8
-#             content=unicode(content,"gbk").encode("utf-8")
-            try:
-                content ='['+responsed+']'
-                content = json.loads(content)
-            except:
-                continue
-
-            for tc in content:
-                comment = tc['comments']
-
-                for hot in comment:
-                    username=hot['nickname']
-                    goldUser = hot['userLevelName']
-                    comment1=hot['content']
-                    date1=hot['creationTime']
-                    score = hot['score']
-                    referenceName=hot['referenceName']
-                    productColor = hot['productColor']
-                    productSize = hot['productSize']
-                    userClientShow = hot['userClientShow']
-                    row = (username,goldUser,comment1,str(score),date1,userClientShow,productColor,productSize,referenceName,self.url)
-                    forinsert.append(row)
-            self.mdatabase.insert_values(forinsert)
-        time4 = time.time()
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.JingDong.value, "success")
-        JsonResponseToClient.generate_json_response(resp)
-
-    def getJDviaTime(self):
-        time1 = time.time()        
-        commenturl =  self.getCommentUrl(self.url)   
         timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
-            
+        
         for k in range(0,self.pagenum):
             skiptime = "False"
             forinsert = []
             if self.state is 'True':
                 break
+
             url = commenturl%(self.productId,k)
             headers = {'User-Agent':self.choiceUseragent()}
 #             res = urllib2.Request(url, headers =headers)
@@ -249,13 +205,14 @@ class JingDongSpider():
 
             for tc in content:
                 comment = tc['comments']
+
                 for hot in comment:
                     username=hot['nickname']
                     goldUser = hot['userLevelName']
                     comment1=hot['content']
                     date1=hot['creationTime']
                     time1 = time.mktime(time.strptime(date1,'%Y-%m-%d %H:%M:%S'))
-                    if time1 < float(timestamp):
+                    if viatime and time1 < float(timestamp):
                         skiptime ="True"
                         break
                     score = hot['score']
@@ -265,10 +222,10 @@ class JingDongSpider():
                     userClientShow = hot['userClientShow']
                     row = (username,goldUser,comment1,str(score),date1,userClientShow,productColor,productSize,referenceName,self.url)
                     forinsert.append(row)
-                if skiptime is 'True':
+                if viatime and skiptime is 'True':
                     break
             self.mdatabase.insert_values(forinsert)
-            if skiptime is 'True':
+            if viatime and skiptime is 'True':
                 break
         time4 = time.time()
         resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.JingDong.value, "success")
@@ -288,10 +245,7 @@ class JingDongSpider():
         if result == 1:
             tablename = self.mdatabase.load_table_name()
             self.mdatabase.create_table_with_column(createtable)
-            if self.searchState() is 'True' and continueTask is 'True':
-                self.getJDviaTime()
-            else:
-                self.getJDComment()
+            self.getJDComment(self.searchState() is 'True' and continueTask is 'True')
         else:
             self.mdatabase.disconnect()
 

@@ -183,65 +183,12 @@ class TmallSpider():
         except:
             return " ERROR "
 
-    def getTmallComment(self):
-        time1 = time.time()
-        commenturl = self.getCommentUrl(self.url)
-        sellerid = self.getSellerId(self.url)
-
-        for k in range(1,self.pagenum):
-            forinsert = []
-            if self.state is 'True':
-                break
-
-            time2 = time.time()
-            url = commenturl%(self.productId,sellerid,k)
-            headers = {'User-Agent':self.choiceUseragent()}
-#            res = urllib2.Request(url, headers =headers)
-#            response = requests.get(url, headers=headers).text
-            try:
-                response = self.get_htmlviaCom(url,headers)
-                #tmjson = '{'+response.decode('utf-8','ignore').strip()+'}'
-                #tmjson = json.loads(tmjson,"utf-8")
-                tmjson = '{'+response.strip()+'}'
-                tmjson = json.loads(tmjson)
-            except:
-                continue
-
-            time4 = time.time()
-
-            tmallCom=tmjson['rateDetail']['rateList']
-
-            if tmallCom:
-                pass
-            else:
-                continue
-
-            for tc in tmallCom:
-                username=tc['displayUserNick']
-                comment1=tc['rateContent']
-                date1=tc['rateDate']
-                tappendc=tc['appendComment']
-                if tappendc:
-                    comment2=tappendc['content']
-                    date2=tappendc['days']
-                else:
-                    comment2=''
-                    date2=''                   
-                tmsku = tc['auctionSku']
-                reply=tc['reply']
-                row = (username,comment1,date1,comment2,str(date2),reply,tmsku,self.url)              
-                forinsert.append(row)
-            self.mdatabase.insert_values(forinsert)
-        time6 = time.time()
-        resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.Tmall.value, "success")
-        JsonResponseToClient.generate_json_response(resp)
-        
-    def getTmallComViaTime(self):
+    def getTmallComment(self,viatime):
         time1 = time.time()
         commenturl = self.getCommentUrl(self.url)
         sellerid = self.getSellerId(self.url)
         timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
-            
+        
         for k in range(1,self.pagenum):
             skiptime = "False"
             forinsert = []
@@ -260,8 +207,11 @@ class TmallSpider():
                 tmjson = json.loads(tmjson)
             except:
                 continue
+
             time4 = time.time()
+
             tmallCom=tmjson['rateDetail']['rateList']
+
             if tmallCom:
                 pass
             else:
@@ -271,10 +221,6 @@ class TmallSpider():
                 username=tc['displayUserNick']
                 comment1=tc['rateContent']
                 date1=tc['rateDate']
-                time1 = time.mktime(time.strptime(date1,'%Y-%m-%d %H:%M:%S'))
-                if time1 < float(timestamp):
-                    skiptime ="True"
-                    break
                 tappendc=tc['appendComment']
                 if tappendc:
                     comment2=tappendc['content']
@@ -284,14 +230,15 @@ class TmallSpider():
                     date2=''                   
                 tmsku = tc['auctionSku']
                 reply=tc['reply']
-                
-                row = (username,comment1,date1,comment2,str(date2),reply,tmsku,self.url)
+                time1 = time.mktime(time.strptime(date1,'%Y-%m-%d %H:%M:%S'))
+                if viatime and time1 < float(timestamp):
+                    skiptime ="True"
+                    break
+                row = (username,comment1,date1,comment2,str(date2),reply,tmsku,self.url)              
                 forinsert.append(row)
-         
             self.mdatabase.insert_values(forinsert)
-            if skiptime is 'True':
+            if viatime and skiptime is 'True':
                 break
-
         time6 = time.time()
         resp = JsonResponseToClient(ResponseEnum.success.value, SourceEnum.Tmall.value, "success")
         JsonResponseToClient.generate_json_response(resp)
@@ -311,10 +258,7 @@ class TmallSpider():
         if result == 1:
             tablename = self.mdatabase.load_table_name()
             self.mdatabase.create_table_with_column(createtable)
-            if self.searchState() is 'True' and continueTask is 'True':
-                self.getTmallComViaTime()
-            else:
-                self.getTmallComment()
+            self.getTmallComment(self.searchState() is 'True' and continueTask is 'True')
         else:
             self.mdatabase.disconnect()
 
