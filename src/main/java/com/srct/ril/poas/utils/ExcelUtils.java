@@ -360,7 +360,6 @@ public class ExcelUtils {
 		int maxline = sheet.getLastRowNum();// 从这行开始写 新的数据
 
 		for (int i = 1; i <= maxline; i++) {// 第一行要跳过，都是title
-			Log.i("Line{}", i);
 			HSSFRow row = sheet.getRow(i);
 			if (row != null) {
 				int id = -1;
