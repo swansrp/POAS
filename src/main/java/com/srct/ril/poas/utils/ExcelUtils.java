@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.ScatteringByteChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,13 +21,26 @@ import org.apache.poi.ss.usermodel.FillPatternType;
 import com.srct.ril.poas.ai.NLPAnalysis;
 import com.srct.ril.poas.ai.NLPAnalysis.Item;
 import com.srct.ril.poas.ai.NLPItem;
-import com.srct.ril.poas.dao.utils.origin.Origin;
+import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
+
 
 
 
 
 public class ExcelUtils {
 	
+	private static void testReadFromExcel(String file)
+	{
+		ArrayList<NLPItem> ma = ReadFromExcel(file);
+		Iterator<NLPItem> it = ma.iterator();
+		int maIndex = 0;
+		System.out.println("maIndex"+maIndex);
+		while(it.hasNext()&& maIndex < ma.size() ) {
+			System.out.println(ma.get(maIndex).getTitle());
+			maIndex++;
+		}
+		System.out.println("maIndex"+maIndex);
+	}
 	
 	private static String baseDir = "excel_log/";
 //	public static void main(String[] args) {
@@ -36,8 +50,12 @@ public class ExcelUtils {
 //		arrayList.add("lacccla");
 //		arrayList.add("ldd");
 //		WriteToExcel(arrayList);
-//		
+//		testReadFromExcel("./src/main/webapp/G9500_ALL_2018-02-26 00_00_00_.xls")
 //	}
+	
+	
+	
+	
 	private static HSSFCellStyle GetNormalCellStyle(HSSFWorkbook wb){
 		
 		
@@ -52,7 +70,7 @@ public class ExcelUtils {
 		return cellStyle;
 	}
 	
-private static HSSFCellStyle GetClolorCellStyle(HSSFWorkbook wb){
+	private static HSSFCellStyle GetClolorCellStyle(HSSFWorkbook wb){
 		
 		
 		HSSFCellStyle cellStyle = wb.createCellStyle(); 
@@ -68,20 +86,20 @@ private static HSSFCellStyle GetClolorCellStyle(HSSFWorkbook wb){
 	}
 	
 	
-private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
+	private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 	
-	HSSFSheet sheet = wb.createSheet("NLP_Item");
-	sheet.setColumnWidth(0, 5 * 512);//ID
-	sheet.setColumnWidth(1, 15 * 512);//Time duration
-	sheet.setColumnWidth(2, 5 * 512);//Origin
-	sheet.setColumnWidth(3, 30 * 512);//title
-	sheet.setColumnWidth(4, 35 * 512);//comment
-	sheet.setColumnWidth(5, 5 * 512);//sentiment
-	sheet.setColumnWidth(6, 5 * 512);//category
-	sheet.setColumnWidth(7, 15 * 512);//URL
-	
-	return sheet;
-}
+		HSSFSheet sheet = wb.createSheet("NLP_Item");
+		sheet.setColumnWidth(0, 5 * 512);//ID
+		sheet.setColumnWidth(1, 15 * 512);//Time duration
+		sheet.setColumnWidth(2, 5 * 512);//Origin
+		sheet.setColumnWidth(3, 30 * 512);//title
+		sheet.setColumnWidth(4, 35 * 512);//comment
+		sheet.setColumnWidth(5, 5 * 512);//sentiment
+		sheet.setColumnWidth(6, 5 * 512);//category
+		sheet.setColumnWidth(7, 15 * 512);//URL
+		
+		return sheet;
+	}
 
 	public static void DelayWriteFile(HSSFWorkbook o,int time){
 		 try {
@@ -513,15 +531,33 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 		sheet=wb.getSheetAt(0);  //获取到工作表，因为一个excel可能有多个工作表  
         int maxline = sheet.getLastRowNum();//从这行开始写 新的数据
         
-        for(int i =0 ; i<= maxline ; i++){
+        for(int i =1 ; i<= maxline ; i++){//第一行要跳过，都是title
         	HSSFRow row = sheet.getRow(i);
         	if (row != null) {
-				Integer id = Integer.parseInt( row.getCell(0).getStringCellValue() );
+				int id =   new Double( row.getCell(0).getNumericCellValue() ).intValue();
 				String origin = row.getCell(2).getStringCellValue();
 				String timestamp = row.getCell(1).getStringCellValue();
 				String title = row.getCell(3).getStringCellValue();
+				String sentiment = row.getCell(5).getStringCellValue();
+				String category = row.getCell(6).getStringCellValue();
 				String link = row.getCell(7).getStringCellValue();
 				NLPItem temp = new NLPItem( id,  timestamp,  origin,  title,  link);
+				temp.setModelName("G9500");
+				temp.setCategory(category);
+				switch(sentiment){
+				case "消极":
+					temp.setSentiment(Sentiment.POSITIVE);
+					break;
+				case "中性":
+					temp.setSentiment(Sentiment.NEUTRAL);
+					break;
+				case "积极":
+					temp.setSentiment(Sentiment.POSITIVE);
+					break;
+				default:
+					temp.setSentiment(Sentiment.UNKNOWN);
+				}
+
 				listNLP.add(temp);
         	}
         }
@@ -530,5 +566,33 @@ private static HSSFSheet GetSheetOfNlpItem(HSSFWorkbook wb){
 		
 	}
 	
+	
+	public static ArrayList<NLPItem> ReadFromExcel(String fileputh ){
+				
+		HSSFWorkbook wb = null;
+		
+		FileInputStream fs;
+		try {
+			fs = new FileInputStream(fileputh);
+			POIFSFileSystem ps=new POIFSFileSystem(fs);  //使用POI提供的方法得到excel的信息  
+	        wb=new HSSFWorkbook(ps);    
+//	        System.out.println("file is reading");
+	        //sheet=wb.getSheetAt(0);  //获取到工作表，因为一个excel可能有多个工作表  
+	        //excel_line = sheet.getLastRowNum()+1;//从这行开始写 新的数据
+	        fs.close();
+		
+		} catch (FileNotFoundException e) {
+			System.out.println("wrong file puth or file name!!!");
+	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}   
+      
+		ArrayList<NLPItem> listNLP = ReadFromExcel(wb);
+		
+		return  listNLP;
+		
+	}
 	
 }
