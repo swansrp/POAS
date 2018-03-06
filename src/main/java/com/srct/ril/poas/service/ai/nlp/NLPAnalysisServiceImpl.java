@@ -336,7 +336,7 @@ public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 				ExcelUtils.NLP_WriteToExcel(NLPAnalysisList, debugMode, fileName+date);
 			}
 		}
-		return ExcelUtils.NLPItem_WriteToExcel(nlpItemList);
+		return ExcelUtils.NLPItem_WriteToExcel(nlpItemList,null);
 	}
 	
 	@Override

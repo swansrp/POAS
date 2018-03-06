@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.ScatteringByteChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,6 +26,8 @@ import com.srct.ril.poas.ai.nlp.NLPItem;
 import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
 
 public class ExcelUtils {
+
+	private static List<String> sColumnTitle = Arrays.asList("ID","Time duration","Origin","title","comment","Sentiment","Category","Url");
 
 	private static void testReadFromExcel(String file) {
 
@@ -137,117 +140,34 @@ public class ExcelUtils {
 		}
 	}
 
-	public static HSSFWorkbook NLPItem_WriteToExcel(Object object) {
-		HSSFWorkbook wb = new HSSFWorkbook();// 建立新HSSFWorkbook对象
-		HSSFSheet sheet = GetSheetOfNlpItem(wb);
-		HSSFCellStyle cellStyle = GetNormalCellStyle(wb);
-		HSSFCellStyle titleStyle = GetClolorCellStyle(wb);
-
-		@SuppressWarnings("unchecked")
-		ArrayList<NLPItem> listNLP = (ArrayList<NLPItem>) object;
-		Iterator<NLPItem> it = listNLP.iterator();
-
-		int NLPIndex = 0;
-		int excel_line = 0;
-		HSSFRow row0 = sheet.createRow(excel_line++);
-		// =================
-		HSSFCell cell00 = row0.createCell(0);
-		cell00.setCellStyle(titleStyle);
-		cell00.setCellValue("ID");
-
-		cell00 = row0.createCell(1);
-		cell00.setCellValue("Time duration");
-
-		cell00 = row0.createCell(2);
-		cell00.setCellValue("Origin");
-
-		cell00 = row0.createCell(3);
-		cell00.setCellValue("title");
-
-		cell00 = row0.createCell(4);
-		cell00.setCellValue("comment");
-
-		cell00 = row0.createCell(5);
-		cell00.setCellValue("Sentiment");
-
-		cell00 = row0.createCell(6);
-		cell00.setCellValue("Category");
-
-		cell00 = row0.createCell(7);
-		cell00.setCellValue("Url");
-
-		// =================
-		// 利用迭代器读取 list中的每个NLPAnalysis
-		while (it.hasNext() && NLPIndex < listNLP.size()) {
-
-			HSSFRow row = sheet.createRow(excel_line++);
-
-			HSSFCell cell = row.createCell(0);
-			cell.setCellStyle(cellStyle);
-			cell.setCellValue(listNLP.get(NLPIndex).getId());
-
-			cell = row.createCell(1);
-			cell.setCellValue(listNLP.get(NLPIndex).getTimestamp());
-
-			cell = row.createCell(2);
-			cell.setCellValue(listNLP.get(NLPIndex).getOrigin());
-
-			cell = row.createCell(3);
-			cell.setCellValue(listNLP.get(NLPIndex).getTitle());
-
-			cell = row.createCell(4);
-			cell.setCellValue(listNLP.get(NLPIndex).getFirstcomment());
-
-			cell = row.createCell(5);
-			switch (listNLP.get(NLPIndex).getSentiment()) {
-			case NEGATIVE:
-				cell.setCellValue("消极");
-				break;
-			case NEUTRAL:
-				cell.setCellValue("中性");
-				break;
-			case POSITIVE:
-				cell.setCellValue("积极");
-				break;
-			default:
-				cell.setCellValue(" ");
-			}
-
-			cell = row.createCell(6);
-			cell.setCellValue(listNLP.get(NLPIndex).getCategory());
-
-			cell = row.createCell(7);
-			cell.setCellValue(listNLP.get(NLPIndex).getLink());
-
-			NLPIndex++;
-		}
-
-		return wb;
-	}
-
 	public static HSSFWorkbook NLPItem_WriteToExcel(Object object, String filename) {
 
-		String puth = baseDir + filename + ".xls";
 		int excel_line = 0;
+		int NLPIndex = 0;
 		HSSFWorkbook wb = null;
 		HSSFSheet sheet = null;
 
-		FileInputStream fs;
-		try {
-			fs = new FileInputStream(puth);
-			POIFSFileSystem ps = new POIFSFileSystem(fs); // 使用POI提供的方法得到excel的信息
-			wb = new HSSFWorkbook(ps);
-			sheet = wb.getSheetAt(0); // 获取到工作表，因为一个excel可能有多个工作表
-			excel_line = sheet.getLastRowNum() + 1;// 从这行开始写 新的数据
-			fs.close();
+		if (filename != null) {
+			String puth = baseDir + filename + ".xls";
+			FileInputStream fs;
+			try {
+				fs = new FileInputStream(puth);
+				POIFSFileSystem ps = new POIFSFileSystem(fs); // 使用POI提供的方法得到excel的信息
+				wb = new HSSFWorkbook(ps);
+				sheet = wb.getSheetAt(0); // 获取到工作表，因为一个excel可能有多个工作表
+				excel_line = sheet.getLastRowNum() + 1;// 从这行开始写 新的数据
+				fs.close();
 
-		} catch (FileNotFoundException e) {
+			} catch (FileNotFoundException e) {
+				wb = new HSSFWorkbook();// 建立新HSSFWorkbook对象
+				sheet = GetSheetOfNlpItem(wb);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
 			wb = new HSSFWorkbook();// 建立新HSSFWorkbook对象
 			sheet = GetSheetOfNlpItem(wb);
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 		HSSFCellStyle cellStyle = GetNormalCellStyle(wb);
@@ -256,33 +176,14 @@ public class ExcelUtils {
 		ArrayList<NLPItem> listNLP = (ArrayList<NLPItem>) object;
 		Iterator<NLPItem> it = listNLP.iterator();
 
-		int NLPIndex = 0;
-		HSSFRow row0 = sheet.createRow(excel_line++);
+		
+		HSSFRow titleRow = sheet.createRow(excel_line++);
 		// =================
-		HSSFCell cell00 = row0.createCell(0);
-		cell00.setCellStyle(titleStyle);
-		cell00.setCellValue("ID");
-
-		cell00 = row0.createCell(1);
-		cell00.setCellValue("Time duration");
-
-		cell00 = row0.createCell(2);
-		cell00.setCellValue("Origin");
-
-		cell00 = row0.createCell(3);
-		cell00.setCellValue("title");
-
-		cell00 = row0.createCell(4);
-		cell00.setCellValue("comment");
-
-		cell00 = row0.createCell(5);
-		cell00.setCellValue("Sentiment");
-
-		cell00 = row0.createCell(6);
-		cell00.setCellValue("Category");
-
-		cell00 = row0.createCell(7);
-		cell00.setCellValue("Url");
+		for (int i = 0; i < sColumnTitle.size(); i++) {
+			HSSFCell titleCell = titleRow.createCell(i);
+			titleCell.setCellStyle(titleStyle);
+			titleCell.setCellValue(sColumnTitle.get(i));
+		}
 
 		// =================
 		// 利用迭代器读取 list中的每个NLPAnalysis
