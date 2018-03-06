@@ -345,7 +345,7 @@ public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 		List<NLPItem> nlpItemList = ExcelUtils.ReadFromExcel(file);
 		int i=1;
 		for(NLPItem nlpIt : nlpItemList) {
-			Log.i("{}/{}",i++, nlpItemList.size());
+			Log.i("nlp upload {}/{}",i++, nlpItemList.size());
 			syncNLPItem2DB(nlpIt);
 		}
 	}
