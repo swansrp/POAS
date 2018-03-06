@@ -33,4 +33,11 @@ public class KeywordsService {
 		Log.dd(catBean);
 	}
 	
+	public List<Keyword> getKeywords() {
+		KeywordExample ex = new KeywordExample();
+		ex.setDistinct(false);
+		List<Keyword> keywordList = keywordDao.selectByExample(ex);
+		return keywordList;
+	}
+	
 }
