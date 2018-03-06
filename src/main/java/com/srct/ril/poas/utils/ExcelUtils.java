@@ -1,5 +1,6 @@
 package com.srct.ril.poas.utils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.nio.channels.ScatteringByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,11 +21,13 @@ import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.srct.ril.poas.ai.nlp.NLPAnalysis;
 import com.srct.ril.poas.ai.nlp.NLPAnalysis.Item;
 import com.srct.ril.poas.ai.nlp.NLPItem;
 import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
+import com.srct.ril.poas.utils.log.Log;
 
 public class ExcelUtils {
 
@@ -208,19 +212,7 @@ public class ExcelUtils {
 			cell.setCellValue(listNLP.get(NLPIndex).getFirstcomment());
 
 			cell = row.createCell(5);
-			switch (listNLP.get(NLPIndex).getSentiment()) {
-			case NEGATIVE:
-				cell.setCellValue("消极");
-				break;
-			case NEUTRAL:
-				cell.setCellValue("中性");
-				break;
-			case POSITIVE:
-				cell.setCellValue("积极");
-				break;
-			default:
-				cell.setCellValue(" ");
-			}
+			cell.setCellValue(listNLP.get(NLPIndex).getSentiment().getDisplay());
 
 			cell = row.createCell(6);
 			cell.setCellValue(listNLP.get(NLPIndex).getCategory());
@@ -313,19 +305,7 @@ public class ExcelUtils {
 					cell3.setCellStyle(cellStyle);
 
 					HSSFCell cell4 = row.createCell(4);
-					switch (itemlist.get(j).getSentiment()) {
-					case NEGATIVE:
-						cell4.setCellValue("消极");
-						break;
-					case NEUTRAL:
-						cell4.setCellValue("中性");
-						break;
-					case POSITIVE:
-						cell4.setCellValue("积极");
-						break;
-					default:
-						cell4.setCellValue("Unknown");
-					}
+					cell4.setCellValue(listNLP.get(NLPIndex).getSentiment().getDisplay());
 					cell4.setCellStyle(cellStyle);
 
 					excelIndex++;
@@ -380,31 +360,22 @@ public class ExcelUtils {
 		int maxline = sheet.getLastRowNum();// 从这行开始写 新的数据
 
 		for (int i = 1; i <= maxline; i++) {// 第一行要跳过，都是title
+			Log.i("Line{}", i);
 			HSSFRow row = sheet.getRow(i);
 			if (row != null) {
-				int id = new Double(row.getCell(0).getNumericCellValue()).intValue();
-				String origin = row.getCell(2).getStringCellValue();
-				String timestamp = row.getCell(1).getStringCellValue();
-				String title = row.getCell(3).getStringCellValue();
-				String sentiment = row.getCell(5).getStringCellValue();
-				String category = row.getCell(6).getStringCellValue();
-				String link = row.getCell(7).getStringCellValue();
-				NLPItem temp = new NLPItem(id, timestamp, origin, title, link);
-				temp.setModelName("G9500");
-				temp.setCategory(category);
-				switch (sentiment) {
-				case "消极":
-					temp.setSentiment(Sentiment.POSITIVE);
-					break;
-				case "中性":
-					temp.setSentiment(Sentiment.NEUTRAL);
-					break;
-				case "积极":
-					temp.setSentiment(Sentiment.POSITIVE);
-					break;
-				default:
-					temp.setSentiment(Sentiment.UNKNOWN);
-				}
+				int id = -1;
+				if(row.getCell(0)!=null)
+					id = new Double(row.getCell(0).getNumericCellValue()).intValue();
+				String origin = null;
+				if(row.getCell(2)!=null)
+					origin = row.getCell(2).getStringCellValue();
+				Sentiment sentiment = Sentiment.UNKNOWN;
+				if(row.getCell(5)!=null)
+					sentiment = Sentiment.getSetiment(row.getCell(5).getStringCellValue());
+				String category = null;
+				if(row.getCell(6)!=null)
+					category = row.getCell(6).getStringCellValue();
+				NLPItem temp = new NLPItem("G9500", id, origin, sentiment, category);
 				listNLP.add(temp);
 			}
 		}
@@ -414,7 +385,7 @@ public class ExcelUtils {
 	public static ArrayList<NLPItem> ReadFromExcel(String fileputh) {
 
 		HSSFWorkbook wb = null;
-
+		Log.i("{}", fileputh);
 		FileInputStream fs;
 		try {
 			fs = new FileInputStream(fileputh);
@@ -433,6 +404,22 @@ public class ExcelUtils {
 		}
 		ArrayList<NLPItem> listNLP = ReadFromExcel(wb);
 		return listNLP;
+	}
+	
+	public static ArrayList<NLPItem> ReadFromExcel(MultipartFile file) {
+		File f;
+		ArrayList<NLPItem> nlpItemList = null;
+		try {
+			f = File.createTempFile("tmp", null);
+			file.transferTo(f);
+			nlpItemList = ReadFromExcel(f.getAbsolutePath());
+			Log.i("{}", f.getAbsolutePath());
+			f.deleteOnExit();
+		} catch (IllegalStateException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return nlpItemList;
 	}
 
 }

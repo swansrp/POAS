@@ -37,6 +37,23 @@ public class Category {
 			default: return UNKNOWN;
 			}
 		}
+		public static Sentiment getSetiment(String value) {
+			switch (value) {
+			case "消极":  return NEGATIVE;		
+			case "中性":  return NEUTRAL;	
+			case "积极":	 return POSITIVE;
+			default: return UNKNOWN;
+			}
+		}
+		public String getDisplay() {
+			switch (this.value) {
+			case 0:  return "消极"	;
+			case 1:  return "中性";	
+			case 2:	 return "积极";
+			default: return "";
+			}
+		}
+		
 	}
 	
 	private List<String> categoryList = new ArrayList<String>();

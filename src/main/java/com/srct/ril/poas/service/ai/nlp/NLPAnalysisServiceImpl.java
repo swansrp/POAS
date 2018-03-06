@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.srct.ril.poas.ai.baidunlp.BaiduNLPCommentTag;
@@ -341,22 +342,10 @@ public class NLPAnalysisServiceImpl implements NLPAnalysisService {
 	
 	@Override
 	public void nlpUpload(MultipartFile file) throws ServiceException {
-		String uploadDir = "/excel_log/";
-		File dir = new File(uploadDir);
-		if(!dir.exists()) {
-			dir.mkdir();
-		}
-		String fileName = (new Date()).getTime() + "_" + file.getOriginalFilename();
-		File excelFile = new File(uploadDir + fileName);
-		try {
-			file.transferTo(excelFile);
-		} catch (IllegalStateException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		List<NLPItem> nlpItemList = ExcelUtils.ReadFromExcel(fileName);
+		List<NLPItem> nlpItemList = ExcelUtils.ReadFromExcel(file);
+		int i=1;
 		for(NLPItem nlpIt : nlpItemList) {
+			Log.i("{}/{}",i++, nlpItemList.size());
 			syncNLPItem2DB(nlpIt);
 		}
 	}

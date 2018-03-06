@@ -25,12 +25,12 @@ public class NLPItem {
 
 	private Sentiment sentiment;
 	private String category;
-	public NLPItem (Integer id, String timestamp, String origin, String title, String link ) {
+	public NLPItem (String modelName, Integer id, String origin, Sentiment sentiment, String category ) {
+		this.modelName = modelName;
 		this.id = id;
-		this.timestamp = timestamp;
 		this.origin = origin;
-		this.title = title;
-		this.link = link;
+		this.sentiment = sentiment;
+		this.category = category;
 	}
 
 	public NLPItem(String modelName, String origin, StoreBbsPojoBase obj, Class<?> clazz) {
