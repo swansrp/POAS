@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.srct.ril.poas.ai.nlp.NLPItem;
 import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
@@ -15,6 +16,7 @@ import com.srct.ril.poas.http.Response;
 import com.srct.ril.poas.service.ai.nlp.NLPAnalysisServiceImpl;
 import com.srct.ril.poas.service.storebbs.StoreBbsService;
 import com.srct.ril.poas.utils.ServiceException;
+import com.srct.ril.poas.utils.log.Log;
 
 @RestController
 
@@ -31,7 +33,7 @@ public class NLPAnalysisController {
 		return Response.generateResponse(nlpService.nlp(content).getCategory(Sentiment.getSetiment(sentiment)));
 	}
 	
-	@RequestMapping("/nlp/JD")
+	@RequestMapping("/nlp/model")
 	public CommonResponse nlpList() throws ServiceException {
 		
 		List<NLPItem> nlpItemList = storeBbsService.select("G9500", "2018-02-23 00:00:00", "2018-02-24 00:00:00");
@@ -40,5 +42,13 @@ public class NLPAnalysisController {
 			contentList.add(it.getFirstcomment());
 		}
 		return Response.generateResponse(nlpService.nlpList(contentList));
+	}
+	
+	@RequestMapping("/nlp/upload")
+	public void nlpUpload(MultipartFile file) throws ServiceException {
+		if(file.isEmpty()){  
+            return;  
+        }
+		nlpService.nlpUpload(file);
 	}
 }

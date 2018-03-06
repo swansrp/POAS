@@ -3,6 +3,7 @@ package com.srct.ril.poas.service.ai.nlp;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.srct.ril.poas.ai.nlp.NLPAnalysis;
 import com.srct.ril.poas.ai.nlp.NLPItem;
@@ -30,6 +31,9 @@ public interface NLPAnalysisService {
 			throws ServiceException;
 
 	public HSSFWorkbook saveExcel(String modelName, List<NLPItem> nlpItemList) 
+			throws ServiceException;
+
+	void nlpUpload(MultipartFile file) 
 			throws ServiceException;
 
 }
