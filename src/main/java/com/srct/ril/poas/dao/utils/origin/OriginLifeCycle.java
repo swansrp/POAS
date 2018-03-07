@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
 
-import com.srct.ril.poas.dao.dbconfig.DataSourceConfig;
 import com.srct.ril.poas.service.config.SourceMapService;
 
 @Component

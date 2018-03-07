@@ -5,8 +5,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.srct.ril.poas.utils.log.Log;
-
 @Controller
 public class IndexController {
 	@RequestMapping("")

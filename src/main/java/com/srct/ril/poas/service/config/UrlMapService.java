@@ -1,9 +1,7 @@
 package com.srct.ril.poas.service.config;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jasper.tagplugins.jstl.core.Url;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +9,6 @@ import com.srct.ril.poas.dao.dbconfig.DS;
 import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 import com.srct.ril.poas.dao.mapper.UrlJoinMapper;
 import com.srct.ril.poas.dao.mapper.UrlMapMapper;
-import com.srct.ril.poas.dao.pojo.SourceMap;
-import com.srct.ril.poas.dao.pojo.SourceMapExample;
 import com.srct.ril.poas.dao.pojo.UrlJoinMap;
 import com.srct.ril.poas.dao.pojo.UrlMap;
 import com.srct.ril.poas.dao.pojo.UrlMapExample;

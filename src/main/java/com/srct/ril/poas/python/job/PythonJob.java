@@ -6,10 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Date;
 import java.util.List;
 
-import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
 import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -20,7 +18,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.ResourceUtils;
 
 import com.srct.ril.poas.dao.pojo.UrlJoinMap;
-import com.srct.ril.poas.dao.pojo.UrlMap;
 import com.srct.ril.poas.python.callback.PythonJobCallBack;
 import com.srct.ril.poas.python.model.PythonResponseModel;
 import com.srct.ril.poas.service.config.UrlMapService;

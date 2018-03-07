@@ -1,9 +1,11 @@
 package com.srct.ril.poas.dao.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.srct.ril.poas.dao.pojo.DaoAMZ;
 import com.srct.ril.poas.dao.pojo.DaoAMZExample;
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
 public interface DaoAMZMapper {
     /**

@@ -1,7 +1,6 @@
 package com.srct.ril.poas.python.crontask;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,7 +8,6 @@ import java.io.InputStreamReader;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.util.ResourceUtils;
 
 import com.srct.ril.poas.python.callback.PythonJobCallBack;
 import com.srct.ril.poas.python.model.PythonResponseModel;

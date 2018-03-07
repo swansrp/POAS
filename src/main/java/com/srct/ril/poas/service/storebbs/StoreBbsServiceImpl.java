@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.srct.ril.poas.ai.nlp.NLPItem;
 import com.srct.ril.poas.dao.dbconfig.DS;
-import com.srct.ril.poas.dao.dbconfig.DataSourceConfig;
 import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 import com.srct.ril.poas.dao.pojo.StoreBbsPojoBase;
 import com.srct.ril.poas.dao.utils.category.Category;

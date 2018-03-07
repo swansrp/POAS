@@ -5,10 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.ScatteringByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -412,7 +410,6 @@ public class ExcelUtils {
 			f = File.createTempFile("tmp", null);
 			file.transferTo(f);
 			nlpItemList = ReadFromExcel(f.getAbsolutePath());
-			Log.i("{}", f.getAbsolutePath());
 			f.deleteOnExit();
 		} catch (IllegalStateException | IOException e) {
 			// TODO Auto-generated catch block

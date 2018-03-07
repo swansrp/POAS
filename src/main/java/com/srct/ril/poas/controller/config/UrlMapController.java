@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.srct.ril.poas.dao.dbconfig.DS;
-import com.srct.ril.poas.dao.dbconfig.DataSourceEnum;
 import com.srct.ril.poas.dao.pojo.UrlMap;
 import com.srct.ril.poas.service.config.UrlMapService;
 import com.srct.ril.poas.utils.ServiceException;

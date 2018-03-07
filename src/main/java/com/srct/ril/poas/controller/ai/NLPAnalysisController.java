@@ -1,6 +1,8 @@
 package com.srct.ril.poas.controller.ai;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import com.srct.ril.poas.http.Response;
 import com.srct.ril.poas.service.ai.nlp.NLPAnalysisServiceImpl;
 import com.srct.ril.poas.service.storebbs.StoreBbsService;
 import com.srct.ril.poas.utils.ServiceException;
-import com.srct.ril.poas.utils.log.Log;
 
 @RestController
 
@@ -28,15 +29,16 @@ public class NLPAnalysisController {
 	
 	@RequestMapping("/nlp")
 	public CommonResponse nlp(
-			@RequestParam(value="text") String content,
-			@RequestParam(value="Sentiment") Integer sentiment) throws ServiceException {
-		return Response.generateResponse(nlpService.nlp(content).getCategory(Sentiment.getSetiment(sentiment)));
+			@RequestParam(value="text") String content) throws ServiceException {
+		return Response.generateResponse(nlpService.nlp(content).getSentiment());
 	}
 	
 	@RequestMapping("/nlp/model")
 	public CommonResponse nlpList() throws ServiceException {
-		
-		List<NLPItem> nlpItemList = storeBbsService.select("G9500", "2018-02-23 00:00:00", "2018-02-24 00:00:00");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+		String startTime = df.format(new Date(new Date().getTime()-24*60*60*1000));
+		String endTime = df.format(new Date());// new Date()为获取当前系统时间，也可使用当前时间戳
+		List<NLPItem> nlpItemList = storeBbsService.select("G9500", startTime, endTime);
 		List<String> contentList = new ArrayList<>();
 		for(NLPItem it : nlpItemList) {
 			contentList.add(it.getFirstcomment());

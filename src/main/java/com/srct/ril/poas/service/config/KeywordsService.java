@@ -58,4 +58,8 @@ public class KeywordsService {
 		}		
 	}
 	
+	public Map<String, List<String>> getKeywordsMap() {
+		return catBean.getAlias2catMap();
+	}
+	
 }
