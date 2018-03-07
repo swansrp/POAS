@@ -42,7 +42,7 @@ class JifengSpider():
         
     def updatetime(self):
         todays = time.strftime('%Y%m%d%H%M%S',time.localtime())
-        self.mdatabase.update_time(str(todays))        
+        #self.mdatabase.update_time(str(todays))        
 
     def getProductId(self,url):
 
@@ -103,6 +103,8 @@ class JifengSpider():
             return
         #for p in range(1, totalPage):#全部版
         skiptime = "False"
+        if totalPage < self.pagenum:
+            self.pagenum = totalPage
         for p in range(1,self.pagenum):#演示版 
             forinsert = []        
             if self.state is 'True':

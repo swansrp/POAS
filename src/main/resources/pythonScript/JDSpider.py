@@ -179,7 +179,9 @@ class JingDongSpider():
     def getJDComment(self,viatime):
         time1 = time.time()
         commenturl =  self.getCommentUrl(self.url)
-        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
+        timestamp = '0'
+        if self.lasttime is not '0':
+            timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
         
         for k in range(0,self.pagenum):
             skiptime = "False"

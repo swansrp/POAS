@@ -90,7 +90,9 @@ class AmazonSpider():
     def getAmazonCommnet(self,viatime):
         baseurl = 'https://www.amazon.cn'
         p = 1
-        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
+        timestamp = '0'
+        if self.lasttime is not '0':
+            timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
                     
         skiptime = "False"
         while True:
@@ -126,7 +128,6 @@ class AmazonSpider():
                     time1 = time.mktime(time.strptime(time_comment,u'%Y年%m月%d日'))
                     time_comment = TimeUtils.convert_timestamp_to_date(time1)
                     if viatime and time1 < float(timestamp):
-                        print("time1 is less")
                         break
                     row = (subject,comment,star_comment,time_comment,type_comment,self.url)
                     forinsert.append(row)                          

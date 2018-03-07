@@ -183,7 +183,9 @@ class TaoBaoSpider():
         time1 = time.time()
         commenturl = self.getCommentUrl(self.url)
         sellerid = self.getSellerId(self.url)
-        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))   
+        timestamp = '0'
+        if self.lasttime is not '0':
+            timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))   
         
         for k in range(1, self.pagenum):
             skiptime = "False"
