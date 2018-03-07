@@ -15,6 +15,7 @@ import com.srct.ril.poas.utils.BeanUtil;
 public class Origin {
 	
 	private static Map<String, Integer> originIdMap = new HashMap<>();
+	private static Map<String, Integer> originDisplayIdMap = new HashMap<>();
 	private static Map<Integer, String> originMap = new HashMap<>();
 	private static Map<Integer, String> originDisplayMap = new HashMap<>();
 	private static List<String> originList = new ArrayList<>();
@@ -62,12 +63,16 @@ public class Origin {
 
 	public void addOrigin(SourceMap source) {
 		originIdMap.put(source.getSourceEn(), source.getId());
+		originDisplayIdMap.put(source.getSourceCn(), source.getId());
 		originMap.put(source.getId(),source.getSourceEn());
 		originList.add(source.getSourceEn());
 		originDisplayMap.put(source.getId(), source.getSourceCn());
 	}
 	public Integer getId(String src) {
 		return originIdMap.get(src);
+	}
+	public static String getOrigin(String srcCn) {
+		return originMap.get(originDisplayIdMap.get(srcCn));
 	}
 	public String getOrigin(Integer id) {
 		return originMap.get(id);
@@ -80,6 +85,12 @@ public class Origin {
 	}
 	public void setOriginIdMap(Map<String, Integer> originIdMap) {
 		Origin.originIdMap = originIdMap;
+	}
+	public Map<String, Integer> getOriginDisplayIdMap() {
+		return originDisplayIdMap;
+	}
+	public void setOriginDisplayIdMap(Map<String, Integer> originDisplayIdMap) {
+		Origin.originDisplayIdMap = originDisplayIdMap;
 	}
 	public Map<Integer, String> getOriginMap() {
 		return originMap;

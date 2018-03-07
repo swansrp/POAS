@@ -25,6 +25,7 @@ import com.srct.ril.poas.ai.nlp.NLPAnalysis;
 import com.srct.ril.poas.ai.nlp.NLPAnalysis.Item;
 import com.srct.ril.poas.ai.nlp.NLPItem;
 import com.srct.ril.poas.dao.utils.category.Category.Sentiment;
+import com.srct.ril.poas.dao.utils.origin.Origin;
 import com.srct.ril.poas.utils.log.Log;
 
 public class ExcelUtils {
@@ -201,7 +202,7 @@ public class ExcelUtils {
 			cell.setCellValue(listNLP.get(NLPIndex).getTimestamp());
 
 			cell = row.createCell(2);
-			cell.setCellValue(listNLP.get(NLPIndex).getOrigin());
+			cell.setCellValue(Origin.displayOrigin(listNLP.get(NLPIndex).getOrigin()));
 
 			cell = row.createCell(3);
 			cell.setCellValue(listNLP.get(NLPIndex).getTitle());
@@ -365,13 +366,16 @@ public class ExcelUtils {
 					id = new Double(row.getCell(0).getNumericCellValue()).intValue();
 				String origin = null;
 				if(row.getCell(2)!=null)
-					origin = row.getCell(2).getStringCellValue();
+					origin = Origin.getOrigin(row.getCell(2).getStringCellValue());
 				Sentiment sentiment = Sentiment.UNKNOWN;
 				if(row.getCell(5)!=null)
 					sentiment = Sentiment.getSetiment(row.getCell(5).getStringCellValue());
 				String category = null;
-				if(row.getCell(6)!=null)
-					category = row.getCell(6).getStringCellValue();
+				if(row.getCell(8)!=null) {
+					category = row.getCell(8).getStringCellValue();
+					if(!category.equals(""))
+						sentiment = Sentiment.NEGATIVE;
+				}
 				NLPItem temp = new NLPItem("G9500", id, origin, sentiment, category);
 				listNLP.add(temp);
 			}
