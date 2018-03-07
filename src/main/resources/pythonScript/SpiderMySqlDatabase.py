@@ -128,22 +128,26 @@ class SpiderMySqlDatabase():
             value:list
         '''
         sql = ''
-        try:
-            if len(value) == 0:
-                return
-            self.db.select_db(self.dbname)
-            cursor = self.db.cursor()
-            #self.db.set_character_set('utf8')
-            cursor.execute('SET NAMES utf8;') 
-            cursor.execute('SET CHARACTER SET utf8;')
-            cursor.execute('SET character_set_connection=utf8;')
-            for x in value:
-                sql = 'insert into ' + self.tablename + ' values (null,"' + '","'.join(x) + '",-1,0)'
+        if len(value) == 0:
+            return
+        self.db.select_db(self.dbname)
+        cursor = self.db.cursor()
+        #self.db.set_character_set('utf8')
+        cursor.execute('SET NAMES utf8;') 
+        cursor.execute('SET CHARACTER SET utf8;')
+        cursor.execute('SET character_set_connection=utf8;')
+        for x in value:
+            format_list = []
+            for i in range(len(x)):
+                format_list.append(x[i].replace('\'','').replace('\"',''))
+            sql = 'insert into ' + self.tablename + ' values (null,"' + '","'.join(format_list) + '",-1,0)'
+            try:
                 cursor.execute(sql)
-            self.db.commit()
-        except MySQLdb.Error as e:
-            self.print_sql_error(self.get_func_name(),e)
-
+            except MySQLdb.Error as e:
+                self.print_sql_error(self.get_func_name(),e)
+                continue
+        self.db.commit() 
+        
     def get_time(self):
         '''
         Get last_fetch_time from Configuration.urlmap_ by url

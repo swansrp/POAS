@@ -87,11 +87,16 @@ class GalaxyClubSpider():
         html = self.get_htmlviaCom(self.url, headers)
         #answer = html.decode("UTF-8","replace")
         answer = html
-        #page_total = re.search(r"<span class='last-no'>.*?</span>",answer)
-        #total = page_total.group()
-        #total = re.sub('<.*?>','',total)
+        page_total = re.search(r"<span class='last-no'>.*?</span>",answer)
+        total = page_total.group()
+        total = re.sub('<.*?>','',total)
+        total = int(total) + 1
+        if self.pagenum > total:
+                self.pagenum = total
         #for page_num in range(1,int(total)+1):#全部版
-        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
+        timestamp = '0'
+        if self.lasttime is not '0':
+            timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
         skiptime = "False"
         for page_num in range(1,self.pagenum):#演示版
             forinsert = []
@@ -200,7 +205,7 @@ class GalaxyClubSpider():
         return Instance
 
 if __name__ == '__main__':
-   url ='http://www.galaxyclub.cn/bbs/galaxys_s8.html'
+   url ='http://www.galaxyclub.cn/bbs/galaxys_s9.html'
    if len(sys.argv) > 1:
        url = sys.argv[1]
    galaxy = GalaxyClubSpider(url)
