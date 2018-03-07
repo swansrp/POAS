@@ -16,6 +16,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.util.ResourceUtils;
 
 import com.srct.ril.poas.dao.pojo.UrlJoinMap;
@@ -39,6 +40,9 @@ public class PythonJob implements Job{
 	private int mSourceAlreadyFetchIndex;
 	@Autowired
 	UrlMapService urlMapService;
+	
+	@Autowired
+	private Environment mEnv;
 	private PythonJobCallBack mInternalPythonJobCallBack = new PythonJobCallBack() {
 		
 		@Override
@@ -82,11 +86,13 @@ public class PythonJob implements Job{
 		try {
 			List<UrlJoinMap> urlJoinMaps = urlMapService.getUrlJoinList();
 			Log.i("fetchByCurrentIndex url = "+ urlJoinMaps.get(mSourceAlreadyFetchIndex).getUrl() + " sourceen = " + urlJoinMaps.get(mSourceAlreadyFetchIndex).getSourceMap().getSourceEn());
-			//for server
-			//file = ResourceUtils.getFile("~/Resource/pythonScript/" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getSourceMap().getSourceEn() + "Spider.py");
-			//fetchScarProcess = Runtime.getRuntime().exec(new String[] { "/bin/sh","-c", "python3 " + file.toString() + " \"" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getUrl() + "\""});
-			file = ResourceUtils.getFile("classpath:pythonScript/" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getSourceMap().getSourceEn() + "Spider.py");
-            fetchScarProcess = Runtime.getRuntime().exec(new String[] { "cmd","/c", "python " + file.toString() + " \"" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getUrl() + "\""});
+			if (mEnv != null && "Linux".equals(mEnv.getProperty("Linux"))) {
+				file = ResourceUtils.getFile("~/Resource/pythonScript/" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getSourceMap().getSourceEn() + "Spider.py");
+				fetchScarProcess = Runtime.getRuntime().exec(new String[] { "/bin/sh","-c", "python3 " + file.toString() + " \"" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getUrl() + "\""});
+			} else {
+				file = ResourceUtils.getFile("classpath:pythonScript/" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getSourceMap().getSourceEn() + "Spider.py");
+	            fetchScarProcess = Runtime.getRuntime().exec(new String[] { "cmd","/c", "python " + file.toString() + " \"" + urlJoinMaps.get(mSourceAlreadyFetchIndex).getUrl() + "\""});
+			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
