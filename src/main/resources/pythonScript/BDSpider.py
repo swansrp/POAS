@@ -102,8 +102,9 @@ class BaiduSpider():
         
         baseurl = 'http://tieba.baidu.com'
         pattern = re.compile('<li class=" j_thread_list clearfix".*?</li>',re.S)
-        
-        timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
+        timestamp = '0'
+        if self.lasttime is not '0':
+            timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
         
         for num in range(0,self.pagenums):
             forinsert = []
