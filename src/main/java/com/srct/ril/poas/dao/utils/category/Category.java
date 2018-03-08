@@ -80,9 +80,11 @@ public class Category {
 		cat2IdMap.put(key.getCategory(), key.getId());
 		id2CatMap.put(key.getId(),key.getCategory());
 		keywordMap.put(key.getCategory(), new ArrayList<String>());
-		String[] strArray = key.getKeywords().split(",");
-		for(String str : strArray) {
-			keywordMap.get(key.getCategory()).add(str);
+		if(key.getKeywords()!=null) {
+			String[] strArray = key.getKeywords().split(",");
+			for(String str : strArray) {
+				keywordMap.get(key.getCategory()).add(str);
+			}
 		}
 		if(!alias2catMap.containsKey(key.getAlias())) {
 			alias2catMap.put(key.getAlias(), new ArrayList<String>());
