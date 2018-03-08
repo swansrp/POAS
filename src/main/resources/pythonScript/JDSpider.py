@@ -26,7 +26,6 @@ class JingDongSpider():
         self.url = url
         self.proxyIP = ""
         self.ProxyPort = ""
-        self.state = "False"
         self.productId = ''
         self.pagenum = num
     
@@ -84,9 +83,7 @@ class JingDongSpider():
             opener = urllib2.build_opener(nullproxy)
 
         urllib2.install_opener(opener)
-    
-    def setState(self,value):
-        self.state = value
+
     
     def searchState(self):
         flag = 'False'
@@ -179,6 +176,7 @@ class JingDongSpider():
     def getJDComment(self,viatime):
         time1 = time.time()
         commenturl =  self.getCommentUrl(self.url)
+        totalpage = 0
         timestamp = '0'
         if self.lasttime is not '0':
             timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
@@ -186,9 +184,8 @@ class JingDongSpider():
         for k in range(0,self.pagenum):
             skiptime = "False"
             forinsert = []
-            if self.state is 'True':
-                break
-
+            if totalpage !=0 and totalpage !='' and k >= totalpage :
+                break;
             url = commenturl%(self.productId,k)
             headers = {'User-Agent':self.choiceUseragent()}
 #             res = urllib2.Request(url, headers =headers)
@@ -207,7 +204,7 @@ class JingDongSpider():
 
             for tc in content:
                 comment = tc['comments']
-
+                totalpage  = tc['maxPage']
                 for hot in comment:
                     username=hot['nickname']
                     goldUser = hot['userLevelName']

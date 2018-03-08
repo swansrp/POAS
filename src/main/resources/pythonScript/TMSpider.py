@@ -29,7 +29,6 @@ class TmallSpider():
         self.url = url
         self.proxyIP = ""
         self.ProxyPort = ""
-        self.state = "False"
         self.productId = ""
         self.pagenum = num
         requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -89,10 +88,6 @@ class TmallSpider():
             opener = urllib2.build_opener(nullproxy)
 
         urllib2.install_opener(opener)
-
-    # 设置断点状态
-    def setState(self,value):
-        self.state = value
 
     # 设置***商品是否被搜索过
     def searchState(self):
@@ -194,8 +189,7 @@ class TmallSpider():
         for k in range(1,self.pagenum):
             skiptime = "False"
             forinsert = []
-            if self.state is 'True':
-                break
+
             time2 = time.time()
             url = commenturl%(self.productId,sellerid,k)
             headers = {'User-Agent':self.choiceUseragent()}
