@@ -27,12 +27,8 @@ class AmazonSpider():
         self.url = url
         self.ProxyPort =''
         self.proxyIP =''
-        self.state = "False"
         self.productId = ""
         self.pagenum = num
-    
-    def setState(self,value):
-        self.state = value
     
     def searchState(self):
         flag = 'False'
@@ -97,8 +93,7 @@ class AmazonSpider():
         skiptime = "False"
         while True:
             forinsert = []
-            if self.state is 'True':
-                break
+
             
             comment_url = self.get_commentUrl(self.url, p)
             headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36'}

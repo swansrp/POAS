@@ -28,7 +28,6 @@ class TaoBaoSpider():
         self.url = url
         self.proxyIP = ""
         self.ProxyPort = ""
-        self.state = "False"
         self.productId = ""
         self.pagenum = num
 
@@ -87,9 +86,6 @@ class TaoBaoSpider():
 
         urllib2.install_opener(opener)
 
-    def setState(self,value):
-        self.state = value
-
     def searchState(self):
         flag = 'False'
         self.lasttime = self.mdatabase.get_time()
@@ -144,7 +140,7 @@ class TaoBaoSpider():
 
         base_url = url
         if  url.find('taobao') != -1:
-            base_url ='https://rate.taobao.com/feedRateList.htm?auctionNumId=%s&userNumId=%s&currentPageNum=%s&orderType=feedbackdate'
+            base_url ='https://rate.taobao.com/feedRateList.htm?auctionNumId=%s&userNumId=%s&currentPageNum=%s&orderType=feedbackdate&folded=0'
         elif  url.find('tmall') != -1:
             base_url = 'https://rate.tmall.com/list_detail_rate.htm?itemId=%s&sellerId=%s&content=1&order=1&currentPage=%s'
         elif url.find('jd') != -1:
@@ -190,8 +186,6 @@ class TaoBaoSpider():
         for k in range(1, self.pagenum):
             skiptime = "False"
             forinsert = []
-            if self.state is 'True':
-                break
             time3 = time.time()
             url = commenturl % (self.productId, sellerid, k)
             headers = {'User-Agent': self.choiceUseragent()}
@@ -207,6 +201,8 @@ class TaoBaoSpider():
                 #tbjson = json.loads(tbjson, "utf-8")
                 tbjson = json.loads(tbjson)
                 tbcomment = tbjson['comments']
+                currentpage = tbjson['currentPageNum']
+                totalpage = tbjson['maxPage']
             except:
                 continue
 
@@ -247,6 +243,8 @@ class TaoBaoSpider():
                 row = (name,comment1,date1,comment2,str(date2),replay,productinfo,self.url)
                 forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
+            if currentpage == totalpage :
+                break
             if viatime and skiptime is 'True':
                 break
         time4 = time.time()

@@ -21,13 +21,9 @@ class GalaxyClubSpider():
         self.url = url
         self.ProxyPort =''
         self.proxyIP =''
-        self.state = "False"
         self.productId = ""
         self.pagenum = num
-        
-    def setState(self,value):
-        self.state = value
-            
+
     def searchState(self):
         flag = 'False'
         self.lasttime = self.mdatabase.get_time()
@@ -100,8 +96,6 @@ class GalaxyClubSpider():
         skiptime = "False"
         for page_num in range(1,self.pagenum):#演示版
             forinsert = []
-            if self.state is 'True':
-                break
             url_base = re.sub(".html","",self.url)
             url_last = url_base+'-0-last-0'+'-p'+str(page_num)+".html"
             html = self.get_htmlviaCom(url_last, headers)
@@ -116,8 +110,7 @@ class GalaxyClubSpider():
                 try:
                     if li.find('<a href="javascript:void(0)">置顶</a>') != -1:
                         continue
-                    if self.state is 'True':
-                        break
+
                     #time.sleep(2)
                     #href = re.search(r'<a href=\"(.*?)\" class=\"tit\" .*?>(.*?)</a>',li)
                     href = re.search(r'<a href=\"(.*?)\" style="cursor: pointer;" target="_blank">(.*?)</a>',li)
@@ -205,7 +198,7 @@ class GalaxyClubSpider():
         return Instance
 
 if __name__ == '__main__':
-   url ='http://www.galaxyclub.cn/bbs/galaxys_s9.html'
+   url ='http://www.galaxyclub.cn/bbs/galaxys_s8.html'
    if len(sys.argv) > 1:
        url = sys.argv[1]
    galaxy = GalaxyClubSpider(url)

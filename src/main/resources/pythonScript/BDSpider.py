@@ -27,7 +27,6 @@ class BaiduSpider():
         self.url = url
         self.proxyIP = ""
         self.ProxyPort = ""
-        self.state = "False"
         self.productId = ''
         self.pagenums = num
         #self.header = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'
@@ -43,9 +42,6 @@ class BaiduSpider():
             opener = urllib2.build_opener(nullproxy)
 
         urllib2.install_opener(opener)
-        
-    def setState(self,value):
-        self.state = value
 
     def searchState(self):
         flag = 'False'
@@ -65,6 +61,10 @@ class BaiduSpider():
             result = self.get_htmlviaCom(url)
             product_content = re.search('<title>(.*?)-(.*?)</title>',result)
             productId = product_content.group(1)
+            totalpage = re.search(r'pn=(.*?)" class="last pagination-item',result).group(1)
+            totalpage = int(totalpage)/50 + 1
+            if self.pagenums > totalpage:
+                self.pagenums = totalpage
             return productId
         except:
             return 'error'
@@ -108,8 +108,6 @@ class BaiduSpider():
         
         for num in range(0,self.pagenums):
             forinsert = []
-            if self.state is 'True':
-                break
                 
             url1 = self.url + '&pn='
             url1 = url1+str(num*50)
@@ -122,8 +120,6 @@ class BaiduSpider():
             postinfo_rule =re.compile('<span class=\"threadlist_rep_num center_text\"(.*?)>(.*?)</span>',re.S)
             for result in results:
                 try:
-                    if self.state is 'True':
-                        break
                     result = result.replace("\n","")
                     num = re.search(postinfo_rule,result)
                     title = re.search(title_rule,result )

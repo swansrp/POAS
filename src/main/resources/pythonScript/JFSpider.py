@@ -25,12 +25,8 @@ class JifengSpider():
         self.url = url
         self.ProxyPort =''
         self.proxyIP =''
-        self.state = "False"
         self.productId = ""
         self.pagenum = num
-    
-    def setState(self,value):
-        self.state = value
     
     def searchState(self):
         flag = 'False'
@@ -42,7 +38,7 @@ class JifengSpider():
         
     def updatetime(self):
         todays = time.strftime('%Y%m%d%H%M%S',time.localtime())
-        #self.mdatabase.update_time(str(todays))        
+        self.mdatabase.update_time(str(todays))        
 
     def getProductId(self,url):
 
@@ -107,8 +103,6 @@ class JifengSpider():
             self.pagenum = totalPage
         for p in range(1,self.pagenum):#演示版 
             forinsert = []        
-            if self.state is 'True':
-                break
             data=urllib.parse.urlencode(datas)
             new_url = 'http://bbs.gfan.com/forum.php?mod=forumdisplay&'+data+'&orderby=dateline&filter=author&page='+str(p)
             html = self.get_htmlviaCom(new_url, headers)  
@@ -124,8 +118,7 @@ class JifengSpider():
             title_rule = re.compile('<a href=\"http://bbs.gfan.com/.*?\".*?onclick=\"atarget\(this\)\" class=\"xst\" >(.*?)</a>', re.S)
             for result in results:
                 try:
-                    if self.state is 'True':
-                        break
+
                     result = result.replace("\n","")
                     time_g = re.search(time_rule,result)
                     posttime = time_g.group()
