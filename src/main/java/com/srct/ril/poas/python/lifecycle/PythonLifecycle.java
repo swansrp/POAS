@@ -11,6 +11,8 @@ import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.SmartLifecycle;
@@ -70,12 +72,12 @@ public class PythonLifecycle implements SmartLifecycle  {
 		isRunning = true;
 		mPythonJob.setCallBack(mPythonJobCallBack);
 		JobDetail job = JobBuilder.newJob(PythonJob.class).withIdentity(PythonJob.class.getSimpleName(), "Python").usingJobData("job", "fetch") .build();
-        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0 1 * * ?");
-        CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(PythonJob.class.getSimpleName(),"Python") .withSchedule(scheduleBuilder).build();
-//        SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(2)
-//                .withRepeatCount(0);
-//        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(PythonJob.class.getSimpleName(), "Python").startNow()
-//                .withSchedule(builder).build();
+//        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0 1 * * ?");
+//        CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(PythonJob.class.getSimpleName(),"Python") .withSchedule(scheduleBuilder).build();
+        SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(2)
+                .withRepeatCount(0);
+        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(PythonJob.class.getSimpleName(), "Python").startNow()
+                .withSchedule(builder).build();
         try {
         	scheduler.scheduleJob(job, trigger);
 		} catch (SchedulerException e) {
