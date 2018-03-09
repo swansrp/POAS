@@ -182,6 +182,7 @@ class TmallSpider():
         time1 = time.time()
         commenturl = self.getCommentUrl(self.url)
         sellerid = self.getSellerId(self.url)
+        totalpage = 0
         timestamp = '0'
         if self.lasttime is not '0':
             timestamp = time.mktime(time.strptime(self.lasttime,'%Y%m%d%H%M%S'))
@@ -189,7 +190,7 @@ class TmallSpider():
         for k in range(1,self.pagenum):
             skiptime = "False"
             forinsert = []
-
+            time.sleep(1)
             time2 = time.time()
             url = commenturl%(self.productId,sellerid,k)
             headers = {'User-Agent':self.choiceUseragent()}
@@ -207,6 +208,7 @@ class TmallSpider():
             time4 = time.time()
 
             tmallCom=tmjson['rateDetail']['rateList']
+            totalpage = tmjson['rateDetail']['paginator']['lastPage']
 
             if tmallCom:
                 pass
@@ -233,6 +235,8 @@ class TmallSpider():
                 row = (username,comment1,date1,comment2,str(date2),reply,tmsku,self.url)              
                 forinsert.append(row)
             self.mdatabase.insert_values(forinsert)
+            if(totalpage != 0 and totalpage != '' and k >= totalpage):
+                break
             if viatime and skiptime is 'True':
                 break
         time6 = time.time()
