@@ -32,7 +32,13 @@ public class UrlMapService {
 	public int addUrl(String url, String modelName, String srcCN) throws ServiceException {
 		UrlMap urlMap = new UrlMap();
 		urlMap.setUrl(url);
-		urlMap.setModelId(modelMapService.getId(modelName));
+		Integer modelId = null;
+		try {
+			modelId = modelMapService.getId(modelName);
+		} catch (ServiceException e) {
+			modelId = modelMapService.addModel(modelName);
+		}
+		urlMap.setModelId(modelId);
 		urlMap.setSourceId(sourceMapService.getId(srcCN));
 		urlMapDao.insertSelective(urlMap);
 		return urlMap.getId();
