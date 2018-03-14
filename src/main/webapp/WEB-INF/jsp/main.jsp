@@ -82,6 +82,9 @@
                         <a  href="/test"><i class="fa fa-square-o "></i>Test Page</a>
                     </li>
                     <li>
+						<a  href="/category"><i class="fa fa-plus "></i>Category</a>
+                    </li>
+                    <li>
                         <a href="login.html"><i class="fa fa-sign-in "></i>Login Page</a>
                     </li> 
                 </ul>
@@ -130,7 +133,7 @@
                                      
                             </div>
                             <div class="form-group col-md-6">
-						   	         <button id="submit" type="submit" class="btn btn-danger">确定 </button>
+						   	         <button id="submit" type="submit" class="btn btn-danger" onclick="submit()">确定 </button>
 							         <button id="download" type="submit" class="btn btn-danger" onclick="download()">下载 </button>
 							         <!-- <a href="../workbook1.xls" class="btn btn-success ">点击下载</a> -->
                                      
@@ -140,7 +143,7 @@
                             
                         </div>
             </div>
-			 <div class="row">
+			<!--  <div class="row">
                     <div class="col-md-12">
                         <div class="alert alert-info">
                            
@@ -150,25 +153,31 @@
                             COMMENTS
                         </div>
                         
-                        <!-- test -->
+                        test
                         
-                        <!-- test end -->
+                        test end
                         <div class="panel-body">
                             <div class="table-responsive">
-                            
+                               
                                
                             </div>
-                        </div>
+                            
                     </div>
                     </div>
-                </div>
+                </div> -->
 
                <!-- test -->
                      <div class="row-fluid">
-                        COMMENTS
-                        <div class="block">
+                        <div >
+                                            <select id="atti" class="form-control">
+                                            <option>消极</option>
+                                            <option>积极</option>
+                                            </select>
+                                        </div>
+                                        
+                         <!-- <div class="block">  -->
                             <div class="navbar navbar-inner block-header">
-                                <div class="muted pull-left">Bootstrap dataTables</div>
+                                <div class="muted pull-left">COMMENTS </div>
                             </div>
                             <div class="block-content collapse in">
                                 <div class="span12" id="add_table">
@@ -176,7 +185,7 @@
   								
                                 </div>
                             </div>
-                        </div>
+                       <!--  </div>  -->
                         
                     </div> 
                    
@@ -252,36 +261,10 @@
     	});
     	
     }/* end show_model_sselect() */
-    
-    function test() { 
-    	var strFullPath=window.document.location.href;  
-        var strPath=window.document.location.pathname;  
-        var pos=strFullPath.indexOf(strPath);  
-        var prePath=strFullPath.substring(0,pos);  
-        var postPath=strPath.substring(0,strPath.substr(1).indexOf('/')+1);  
-        var basePath = prePath;  
-        basePath = prePath + postPath;    
-        $("#path").text(basePath);  
-        //以上内容为获取项目根路径的完整代码  
-          
-        //以下内容为测试内容  
-        var port  = window.location.port;  
-        var protocol  = window.location.protocol;  
-        var hash  = window.location.hash;  
-        var host  = window.location.host;  
-        var search  = window.location.search;  
-        $("#href").text(strFullPath);  
-        $("#pathname").text(strPath);  
-        $("#protocol").text(protocol);  
-        $("#hash").text(hash);  
-        $("#host").text(host);  
-        $("#port").text(port);  
-        $("#search").text(search);  
-    }
+ 
     
     
-    
-    function submit() { 
+    /* function submit() { 
     	$('#cTable').html("");
 	    var modelname=$('#ModelName').val();
     	var webname=$('#WebName').val();
@@ -324,13 +307,15 @@
     			$.each(json,function(i,result){
     				var id=json[i].id;
     				var comment=json[i].firstcomment;
+    				var sentiment=json[i].sentiment;
+    				var category=json[i].category;
     				var link;
     				if (url="/BD/modelinfo"){link=json[i].link;}
-    				item="<tr><td>"+id+"</td><td>"+comment+"</td><td><a href=' "+link+" 'target= '_Blank'> "+link+"</a></td></tr>"; 
+    				item="<tr><td>"+id+"</td><td>"+comment+"</td><td>"+sentiment+"</td><td>"+category+"</td><td><a href=' "+link+" 'target= '_Blank'> "+link+"</a></td></tr>"; 
     				$('#cTable').append(item);  
     				}); 
-    			/*  alert(JSON.stringify(msg.data)); */
-    			$("#Pagination").pagination(id, {
+    			 /*  alert(JSON.stringify(msg.data));  */
+    			/*$("#Pagination").pagination(id, {
     	    	    num_edge_entries: 2,
     	    	    num_display_entries: 4,
     	    	    callback: pageselectCallback,
@@ -342,7 +327,87 @@
             }
     	
     	});
-	}  /* end search */   
+	} */  /* end submit */  
+	
+	function submit() { 
+		 $('#add_table').html("");
+ 	    
+		 var modelname=$('#ModelName').val();
+     	var webname=$('#WebName').val();
+     	var start=$('#stime').val();
+     	var end=$('#etime').val();
+     	var url;
+     	var json={"modelname":modelname,"start":start,"end":end};
+     	if(webname=="京东") {
+             url="/JD/modelinfo";
+         } else if(webname=="淘宝") {
+              url="/TB/modelinfo";
+         } else if(webname=="天猫") {
+              url="/TM/modelinfo";
+         } else if(webname=="亚马逊") {
+             url="/AMZ/modelinfo";
+         } else if(webname=="百度贴吧") {
+             url="/BD/modelinfo";
+         } else if(webname=="盖乐世社区") {
+             url="/GC/modelinfo";
+         } else if(webname=="机锋") {
+             url="/JF/modelinfo";
+         } else if(webname=="国美") {
+             url="/GM/modelinfo";
+         } else if(webname=="苏宁易购") {
+             url="/SN/modelinfo";
+         } else if(webname=="全部") {
+             url="/StoreBbs/modelinfo";
+         }
+     	 
+     	$.ajax({
+     		type:"post",
+     		async:true,
+     		url:url,
+     		data:json,
+     		dataType: "json",
+     		success:function(msg){
+     			var json = eval(JSON.stringify(msg.data));
+     			var item;
+     			var num=msg.code;
+     			
+     			item="<table cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered' id='example'><thead><tr><td>#</td><td>Comments</td><td>sentiment</td><td>category</td><td>Link</td></tr></thead><tbody>";
+     			$('#add_table').append(item);
+     			item="</tbody></table>";
+     			$('#add_table').append(item);
+     			$.each(json,function(i,result){
+     				var id=json[i].id;
+     				var comment=json[i].firstcomment;
+     				var sentiment=json[i].sentiment;
+     				var category=json[i].category;
+     				var link;
+     				if (url="/BD/modelinfo"){link=json[i].link;}
+     				item="<tr><td>"+id+"</td><td>"+comment+"</td><td>"+sentiment+"</td><td>"+category+"</td><td><a href=' "+link+" 'target= '_Blank'> "+link+"</a></td></tr>"; 
+     				$('#example').append(item);  
+     				}); 
+     			
+     			 $('#example').dataTable( {
+     				"sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+     				"sPaginationType": "bootstrap",
+     				"oLanguage": {
+     					"sLengthMenu": "_MENU_ records per page"
+     				}
+     			
+     			} ); 
+     			
+     			
+     			
+     			/*  alert(JSON.stringify(msg.data)); */
+     			
+             },
+             error: function (msg) {
+                 alert("err");
+             }
+     	
+     	});
+
+} 
+	
 	function download() { 
 		$('#cTable').html("");
 	    var modelname=$('#ModelName').val();
@@ -378,11 +443,129 @@
     			+ "&start=" + start
     			+ "&end=" + end;		
 	}  /* end download */ 
+	
+	
+	 $('#atti').change(function(){
+		/* var attitufr=$('#atti').val();
+		var url;
+		if(atti="积极"){
+			url="/sentiment";
+		}else{
+			url="/category";
+		}
+		$.ajax({
+    		type:"post",
+    		async:true,
+    		url:url,
+    		data:json,
+    		dataType: "json",
+    		success:function(data){
+                //data是你从后端获取的数据
+    			var result = data;
+    			alert(JSON.stringify(data));
+    			}
+    			
+        } */ 
+        
+        
+		$('#add_table').html("");
+    	var atti=$('#atti').children('option:selected').val();
+  	    
+		var modelname=$('#ModelName').val();
+     	var webname=$('#WebName').val();
+     	var start=$('#stime').val();
+     	var end=$('#etime').val();
+     	var url;
+     	var json={"modelname":modelname,"start":start,"end":end};
+     	if(webname=="京东") {
+             url="/JD/modelinfo";
+         } else if(webname=="淘宝") {
+              url="/TB/modelinfo";
+         } else if(webname=="天猫") {
+              url="/TM/modelinfo";
+         } else if(webname=="亚马逊") {
+             url="/AMZ/modelinfo";
+         } else if(webname=="百度贴吧") {
+             url="/BD/modelinfo";
+         } else if(webname=="盖乐世社区") {
+             url="/GC/modelinfo";
+         } else if(webname=="机锋") {
+             url="/JF/modelinfo";
+         } else if(webname=="国美") {
+             url="/GM/modelinfo";
+         } else if(webname=="苏宁易购") {
+             url="/SN/modelinfo";
+         } else if(webname=="全部") {
+             url="/StoreBbs/modelinfo";
+         }
+     	 
+     	$.ajax({
+     		type:"post",
+     		async:true,
+     		url:url,
+     		data:json,
+     		dataType: "json",
+     		success:function(msg){
+     			var json = eval(JSON.stringify(msg.data));
+     			var item;
+     			var num=msg.code;
+     			
+     			item="<table cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered' id='example'><thead><tr><td>#</td><td>Comments</td><td>sentiment</td><td>category</td><td>Link</td></tr></thead><tbody>";
+     			$('#add_table').append(item);
+     			item="</tbody></table>";
+     			$('#add_table').append(item);
+     			$.each(json,function(i,result){
+     				var id=json[i].id;
+     				var comment=json[i].firstcomment;
+     				var sentiment=json[i].sentiment;
+     				var category=json[i].category;
+     				var link;
+     				 if (url="/BD/modelinfo"){link=json[i].link;}
+     				if(atti=="积极"&&sentiment==2){
+     					item="<tr><td>"+id+"</td><td>"+comment+"</td><td>"+sentiment+"</td><td>"+category+"</td><td><a href=' "+link+" 'target= '_Blank'> "+link+"</a></td></tr>"; 
+         				$('#example').append(item);  
+     				}
+     				if(atti=="消极"&&sentiment==0){
+     					item="<tr><td>"+id+"</td><td>"+comment+"</td><td>"+sentiment+"</td><td>"+category+"</td><td><a href=' "+link+" 'target= '_Blank'> "+link+"</a></td></tr>"; 
+         				$('#example').append(item);  
+     				} 
+     				}); 
+     			
+     			 $('#example').dataTable( {
+     				"sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+     				"sPaginationType": "bootstrap",
+     				"oLanguage": {
+     					"sLengthMenu": "_MENU_ records per page"
+     				}
+     			} ); 
+     			
+     			
+     			
+     			/*  alert(JSON.stringify(msg.data)); */
+     			
+             },
+             error: function (msg) {
+                 alert("err");
+             }
+    			
+        });
+        
+        
+        /* $('#atti').change(function(){
+    		
+        	
+        	}) */
+        
+        
+        
+	 })  /* end getAtti */ 
+	
+	
 
     
     $(function(){
     	show_model_sselect();
-     	test();
+     	
     	$( "#stime" ).datepicker({
     	      defaultDate: "+1w",
     	       changeMonth: true,
@@ -403,80 +586,7 @@
     	    });
     		
     	
-        $("#submit").click(function(){
-        	    $('#add_table').html("");
-        	    
-    		    var modelname=$('#ModelName').val();
-            	var webname=$('#WebName').val();
-            	var start=$('#stime').val();
-            	var end=$('#etime').val();
-            	var url;
-            	var json={"modelname":modelname,"start":start,"end":end};
-            	if(webname=="京东") {
-                    url="/JD/modelinfo";
-                } else if(webname=="淘宝") {
-                     url="/TB/modelinfo";
-                } else if(webname=="天猫") {
-                     url="/TM/modelinfo";
-                } else if(webname=="亚马逊") {
-                    url="/AMZ/modelinfo";
-                } else if(webname=="百度贴吧") {
-                    url="/BD/modelinfo";
-                } else if(webname=="盖乐世社区") {
-                    url="/GC/modelinfo";
-                } else if(webname=="机锋") {
-                    url="/JF/modelinfo";
-                } else if(webname=="国美") {
-                    url="/GM/modelinfo";
-                } else if(webname=="苏宁易购") {
-                    url="/SN/modelinfo";
-                } else if(webname=="全部") {
-                    url="/StoreBbs/modelinfo";
-                }
-            	 
-            	$.ajax({
-            		type:"post",
-            		async:true,
-            		url:url,
-            		data:json,
-            		dataType: "json",
-            		success:function(msg){
-            			var json = eval(JSON.stringify(msg.data));
-            			var item;
-            			var num=msg.code;
-            			
-            			item="<table cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered' id='example'><thead><tr><th>#</th><th>Comments</th><th>Link</th></tr></thead><tbody>";
-            			$('#add_table').append(item);
-            			item="</tbody></table>";
-            			$('#add_table').append(item);
-            			$.each(json,function(i,result){
-            				var id=json[i].id;
-            				var comment=json[i].firstcomment;
-            				var link;
-            				if (url="/BD/modelinfo"){link=json[i].link;}
-            				item="<tr><td>"+id+"</td><td>"+comment+"</td><td><a href=' "+link+" 'target= '_Blank'> "+link+"</a></td></tr>"; 
-            				$('#example').append(item);  
-            				}); 
-            			
-            			 $('#example').dataTable( {
-            				"sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
-            				"sPaginationType": "bootstrap",
-            				"oLanguage": {
-            					"sLengthMenu": "_MENU_ records per page"
-            				}
-            			} ); 
-            			
-            			
-            			
-            			/*  alert(JSON.stringify(msg.data)); */
-            			
-                    },
-                    error: function (msg) {
-                        alert("err");
-                    }
-            	
-            	});
-        });  /* end search */ 
+    
         
      
         

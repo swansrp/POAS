@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.srct.ril.poas.dao.pojo.Keyword;
 import com.srct.ril.poas.utils.log.Log;
 
@@ -21,9 +23,11 @@ public class Category {
 		ALL(3);
 		
 		private Integer value;
+		@JsonCreator
 		private Sentiment(Integer v) {
 			this.value = v;
 		}
+		@JsonValue
 		public Integer getValue() {
 			return this.value;
 		}
