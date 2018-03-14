@@ -27,5 +27,15 @@ public class IndexController {
         return "testpage";
         
     }
+	@RequestMapping("/category")
+	public String catepage() {
+        return "catepage";
+        
+    }
+	@RequestMapping("/login")
+	public String loginpage() {
+        return "loginpage";
+        
+    }
 
 }
