@@ -28,9 +28,11 @@
         <link rel="stylesheet" href="../j-radio-checkbox/css/jquery-labelauty.css">
         <style>
              ul { list-style-type: none;}
-             li { display: inline-block;}
-             li { margin: 10px 0;}
-             input.labelauty + label { font: 12px "Microsoft Yahei";}
+             li { display: inline-block;
+           /*  background-color:#efefef;color:#949494; */
+             }
+             li { margin: 6px 10px;}
+             input.labelauty + label { font: 16px "Microsoft Yahei";height: 20px;}
            </style>
         <!-- end radio -->
         
@@ -205,7 +207,7 @@
                                         </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">确认</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                                             <button type="button" class="btn btn-primary" onclick="key_submit()" data-dismiss="modal">保存</button>
                                         </div>
                                     </div>
@@ -302,12 +304,12 @@
                    $.each(data,function(key,value){ 
                 	   /*  alert("key:"+key+";value:"+value); */ 
                 	    var idname="id"+id;
-                	    item="<tr><td><a id='item'  class='btn btn-warning'>"+key+"</a></td><td><ul class='dowebok' id='"+idname+"'></ul></td></tr><br/>";  
+                	   item="<tr><td><a id='item'  class='btn btn-info ' disabled>"+key+"</a></td><td id='"+idname+"'></td></tr><br/>"; 
                 	    $('#add_keyword').append(item); 
                 	    /* add keyword */
                 	      for(var i =0;i<value.length;i++){
                 	    	   /* alert(idname+"i:"+i+"list:"+value[i]); */   
-                	    	  item="<li><input type='radio' name='radio' value='"+value[i]+"' data-labelauty='"+value[i]+"'></li>";
+                	    	  item="<li><input type='radio' class='in_radio' name='radio' value='"+value[i]+"' data-labelauty='"+value[i]+"'></li>";
                 	    	  
                 	    	  $("#"+idname).append(item);
                 	      }
@@ -329,7 +331,7 @@
     	 var category=$('input:radio:checked').val();
     	 
     	 $("input[id="+itemId+"]").val(category);
-    	 alert(modelname+"  "+origin+" "+id+" "+sentiment+" "+category);
+    	 //alert(modelname+"  "+origin+" "+id+" "+sentiment+" "+category);
     	 var url="/StoreBbs/modelinfo/update/analysis";
 	     var json={"modelname":modelname,"origin":origin,"id":id,"sentiment":sentiment,"category":category};
     	 $.ajax({
@@ -350,11 +352,15 @@
     	
     }
     
-    function selt_bt(id,itemId,origin,sent){
+    function selt_bt(id,itemId,origin,sent,category){
+    	
     	 $("#category1").val(id); 
      	 $("#category2").val(itemId);
     	 $("#category3").val(origin); 
     	 $("#category4").val(sent);
+    	 
+    	 $(".in_radio").removeAttr("checked");
+    	// $browsers.attr("checked",false);
    	
    }
  
@@ -410,9 +416,9 @@
     				} 
     				/* add category */
     				 if(category==null){
-    					item="<td><input type='button' id='"+itemId+"' class='btn btn-primary btn-lg' data-toggle='modal' data-target='#myModal' value='选择分类' onclick='selt_bt("+id+","+itemId+",\""+origin+"\",\""+sentiment+"\")'/></td>";
+    					item="<td><input type='button' id='"+itemId+"' class='btn btn-info btn-lg' data-toggle='modal' data-target='#myModal' value='选择分类' onclick='selt_bt("+id+","+itemId+",\""+origin+"\",\""+sentiment+"\",\""+category+"\")'/></td>";
     				}else{
-    					item="<td><input type='button' id='"+itemId+"' class='btn btn-primary btn-lg' data-toggle='modal' data-target='#myModal' value='"+category+"' onclick='selt_bt("+id+","+itemId+",\""+origin+"\",\""+sentiment+"\")'/></td>";
+    					item="<td><input type='button' id='"+itemId+"' class='btn btn-info btn-lg' data-toggle='modal' data-target='#myModal' value='"+category+"' onclick='selt_bt("+id+","+itemId+",\""+origin+"\",\""+sentiment+"\",\""+category+"\")'/></td>";
     				} 
     				$('#tr_'+itemId).append(item);
     				/* add link origin */
