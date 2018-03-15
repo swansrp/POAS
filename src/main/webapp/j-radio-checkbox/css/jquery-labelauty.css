@@ -20,13 +20,13 @@ input.labelauty { display: none !important; }
  */
 input.labelauty + label
 {
-	display: table;
+	display: table-cell;
 	font-size: 11px;
-	padding: 10px;
-	background-color: #efefef;
-	color: #b3b3b3;
+	padding: 8px;
+	background-color: #F3BA60;
+	color: #ffffef;
 	cursor: pointer;
-
+    vertical-align:middle;
 	border-radius: 3px 3px 3px 3px;
 	-moz-border-radius: 3px 3px 3px 3px;
 	-webkit-border-radius: 3px 3px 3px 3px;
