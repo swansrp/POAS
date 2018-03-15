@@ -32,9 +32,9 @@ public class ExcelUtils {
 
 	private static List<String> sColumnTitle = Arrays.asList("ID","Time duration","Origin","title","comment","Sentiment","Category","Url");
 
-	private static void testReadFromExcel(String file) {
+	private static void testReadFromExcel(String modelName, String file) {
 
-		ArrayList<NLPItem> ma = ReadFromExcel(file);
+		ArrayList<NLPItem> ma = ReadFromExcel(modelName, file);
 		Iterator<NLPItem> it = ma.iterator();
 		int maIndex = 0;
 		System.out.println("maIndex" + maIndex);
@@ -350,7 +350,7 @@ public class ExcelUtils {
 		wf(wb);
 	}
 
-	public static ArrayList<NLPItem> ReadFromExcel(HSSFWorkbook wb) {
+	public static ArrayList<NLPItem> ReadFromExcel(String modelName, HSSFWorkbook wb) {
 
 		ArrayList<NLPItem> listNLP = new ArrayList<NLPItem>();
 
@@ -376,20 +376,20 @@ public class ExcelUtils {
 					if(!category.equals(""))
 						sentiment = Sentiment.NEGATIVE;
 				}
-				NLPItem temp = new NLPItem("G9500", id, origin, sentiment, category);
+				NLPItem temp = new NLPItem(modelName, id, origin, sentiment, category);
 				listNLP.add(temp);
 			}
 		}
 		return listNLP;
 	}
 
-	public static ArrayList<NLPItem> ReadFromExcel(String fileputh) {
+	public static ArrayList<NLPItem> ReadFromExcel(String modelName,String filepath) {
 
 		HSSFWorkbook wb = null;
-		Log.i("{}", fileputh);
+		Log.i("{}--{}",modelName, filepath);
 		FileInputStream fs;
 		try {
-			fs = new FileInputStream(fileputh);
+			fs = new FileInputStream(filepath);
 			POIFSFileSystem ps = new POIFSFileSystem(fs); // 使用POI提供的方法得到excel的信息
 			wb = new HSSFWorkbook(ps);
 			// System.out.println("file is reading");
@@ -403,7 +403,7 @@ public class ExcelUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ArrayList<NLPItem> listNLP = ReadFromExcel(wb);
+		ArrayList<NLPItem> listNLP = ReadFromExcel(modelName,wb);
 		return listNLP;
 	}
 	
@@ -413,7 +413,8 @@ public class ExcelUtils {
 		try {
 			f = File.createTempFile("tmp", null);
 			file.transferTo(f);
-			nlpItemList = ReadFromExcel(f.getAbsolutePath());
+			String modelName = file.getOriginalFilename().substring(0, 5);
+			nlpItemList = ReadFromExcel(modelName, f.getAbsolutePath());
 			f.deleteOnExit();
 		} catch (IllegalStateException | IOException e) {
 			// TODO Auto-generated catch block

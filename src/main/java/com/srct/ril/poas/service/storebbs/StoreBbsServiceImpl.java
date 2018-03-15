@@ -210,6 +210,7 @@ public class StoreBbsServiceImpl implements StoreBbsService {
 		try {
 			dao = originBean.getDaoFromSource(origin);
 		} catch (NoSuchBeanDefinitionException e) {
+			Log.w("NoSuchBeanDefinitionException");
 			return;
 		}
 		Class<?> daoClass = originBean.getDaoClassFromSource(origin);
