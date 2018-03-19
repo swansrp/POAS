@@ -198,6 +198,8 @@
                                             <input type='button' id='category2' type="text" style="visibility: hidden;"/>
                                             <input type='button' id='category3' type="text" style="visibility: hidden;"/>
                                             <input type='button' id='category4' type="text" style="visibility: hidden;"/>
+                                            <input type='button' id='category5' type="text" style="visibility: hidden;"/>
+                                            <button id='delete' class='btn btn-warning' onclick="cate_delete()"data-dismiss="modal">取消分类</button>
                                         </div>
                                         <div class="modal-body">
                                         <div class="panel-body">
@@ -208,7 +210,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                                            <button type="button" class="btn btn-primary" onclick="key_submit()" data-dismiss="modal">保存</button>
+                                            <!-- <button type="button" class="btn btn-primary" onclick="key_submit()" data-dismiss="modal">保存</button> -->
                                         </div>
                                     </div>
                                 </div>
@@ -309,7 +311,7 @@
                 	    /* add keyword */
                 	      for(var i =0;i<value.length;i++){
                 	    	   /* alert(idname+"i:"+i+"list:"+value[i]); */   
-                	    	  item="<li><input type='radio' class='in_radio' name='radio' value='"+value[i]+"' data-labelauty='"+value[i]+"'></li>";
+                	    	  item="<li><input type='radio' class='in_radio' name='radio' onclick='radio_change()' data-dismiss='modal' value='"+value[i]+"' data-labelauty='"+value[i]+"' ></li>";
                 	    	  
                 	    	  $("#"+idname).append(item);
                 	      }
@@ -321,6 +323,32 @@
     	
     }/* end show_model_sselect() */
     
+    function cate_delete(){
+    	var modelname=$('#ModelName').val();
+   	    var id= $("#category1").val();
+   	    var itemId= $("#category2").val(); 
+     	var origin=$("#category3").val();
+    	var sentiment=$('#Sti_'+itemId).val();
+     	var category=$("#category5").val();
+    	if(category!=null){
+    		category='UK';
+    		$("input[id="+itemId+"]").val("选择分类");
+    		var url="/StoreBbs/modelinfo/update/analysis";
+    	    var json={"modelname":modelname,"origin":origin,"id":id,"sentiment":sentiment,"category":category};
+    	    $.ajax({
+         		type:"post",
+         		async:true,
+         		url:url,
+         		data:json,
+         		dataType: "json",
+         		success:function(){
+        			alert("yes"); 
+                }
+         	});
+    		
+    	}
+    }
+    /* end cate_delete */
     
     function key_submit(){
     	 var modelname=$('#ModelName').val();
@@ -349,8 +377,9 @@
      	
      	});
     	 
-    	
     }
+    /* end key_submit() */
+     
     
     function selt_bt(id,itemId,origin,sent,category){
     	
@@ -358,12 +387,56 @@
      	 $("#category2").val(itemId);
     	 $("#category3").val(origin); 
     	 $("#category4").val(sent);
+    	 $("#category5").val(category);
     	 
     	 $(".in_radio").removeAttr("checked");
     	// $browsers.attr("checked",false);
    	
    }
- 
+     /* end selt_bt */
+     
+   function select_change(id,itemId,origin,sentiment){
+	 var modelname=$('#ModelName').val();
+	 var sentiment=$('#Sti_'+itemId).val();
+	 var category=null;
+	 var url="/StoreBbs/modelinfo/update/analysis";
+	    var json={"modelname":modelname,"origin":origin,"id":id,"sentiment":sentiment,"category":category};
+	    $.ajax({
+  		type:"post",
+  		async:true,
+  		url:url,
+  		data:json,
+  		dataType: "json",
+  		success:function(){
+ 			alert("yes"); 
+         }
+  	});
+   } 
+   /* end select_change */
+   
+    function radio_change(){
+	 var modelname=$('#ModelName').val();
+  	 var id= $("#category1").val();
+  	 var itemId= $("#category2").val(); 
+  	 var origin=$("#category3").val();
+  	 var sentiment=$('#Sti_'+itemId).val();
+  	 var category=$('input:radio:checked').val();
+  	 
+  	 $("input[id="+itemId+"]").val(category);
+  	 var url="/StoreBbs/modelinfo/update/analysis";
+	 var json={"modelname":modelname,"origin":origin,"id":id,"sentiment":sentiment,"category":category};
+  	 $.ajax({
+   		type:"post",
+   		async:true,
+   		url:url,
+   		data:json,
+   		dataType: "json",
+   	
+   	});
+   } 
+   
+   
+   /* end radio_change */
 	
 	function submit() { 
 		 $('#add_table').html("");
@@ -403,7 +476,7 @@
     				item="<tr id='tr_"+itemId+"'><td>"+id+"</td><td>"+title+"</td><td>"+comment+"</td></tr>";
     				$('#example').append(item);
     				/* add sentiment */
-    				item="<td><select id='Sti_"+itemId+"'class='form-control'><option value='2'>积极</option><option value='1'>中性</option><option value='0'>消极</option><option value='3'>不知道</option></select></td>";
+    				item="<td><select id='Sti_"+itemId+"'class='form-control' onchange='select_change("+id+","+itemId+",\""+origin+"\",\""+sentiment+"\")'><option value='2'>积极</option><option value='1'>中性</option><option value='0'>消极</option><option value='3'>不知道</option></select></td>";
     				$('#tr_'+itemId).append(item);
     				if(sentiment==2){
     					$('#Sti_'+itemId).val(2);
@@ -471,9 +544,7 @@
   	      }
   	    });
     		
-    	 
-  
-        
+  	
      
         
     });
