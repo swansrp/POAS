@@ -76,6 +76,9 @@
                         <a  class="active-menu" ><i class="fa fa-square-o "></i>Test Page</a>
                     </li>
                     <li>
+						<a  href="/category"><i class="fa fa-plus "></i>Category</a>
+                    </li>
+                    <li>
                         <a href="login.html"><i class="fa fa-sign-in "></i>Login Page</a>
                     </li> 
                 </ul>
