@@ -1,0 +1,4 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Fri Mar 09 16:41:53 CST 2018
+@default-nexus-http\://maven.aliyun.com/nexus/content/groups/public/.lastUpdated=1520584913486
+http\://maven.aliyun.com/nexus/content/groups/public/.error=Could not transfer artifact com.squareup.okio\:okio\:jar\:sources\:1.6.0 from/to nexus (http\://maven.aliyun.com/nexus/content/groups/public/)\: connect timed out
