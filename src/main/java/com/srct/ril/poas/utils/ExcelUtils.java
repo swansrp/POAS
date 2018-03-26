@@ -32,9 +32,9 @@ public class ExcelUtils {
 
 	private static List<String> sColumnTitle = Arrays.asList("ID","Time duration","Origin","title","comment","Sentiment","Category","Url");
 
-	private static void testReadFromExcel(String modelName, String file) {
+	private static void testReadFromExcel(String file) {
 
-		ArrayList<NLPItem> ma = ReadFromExcel(modelName, file);
+		ArrayList<NLPItem> ma = ReadFromExcel(file);
 		Iterator<NLPItem> it = ma.iterator();
 		int maIndex = 0;
 		System.out.println("maIndex" + maIndex);
@@ -199,24 +199,31 @@ public class ExcelUtils {
 			cell.setCellValue(listNLP.get(NLPIndex).getId());
 
 			cell = row.createCell(1);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getTimestamp());
 
 			cell = row.createCell(2);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(Origin.displayOrigin(listNLP.get(NLPIndex).getOrigin()));
 
 			cell = row.createCell(3);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getTitle());
 
 			cell = row.createCell(4);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getFirstcomment());
 
 			cell = row.createCell(5);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getSentiment().getDisplay());
 
 			cell = row.createCell(6);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getCategory());
 
 			cell = row.createCell(7);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getLink());
 
 			NLPIndex++;
@@ -350,7 +357,7 @@ public class ExcelUtils {
 		wf(wb);
 	}
 
-	public static ArrayList<NLPItem> ReadFromExcel(String modelName, HSSFWorkbook wb) {
+	public static ArrayList<NLPItem> ReadFromExcel(HSSFWorkbook wb) {
 
 		ArrayList<NLPItem> listNLP = new ArrayList<NLPItem>();
 
@@ -376,20 +383,20 @@ public class ExcelUtils {
 					if(!category.equals(""))
 						sentiment = Sentiment.NEGATIVE;
 				}
-				NLPItem temp = new NLPItem(modelName, id, origin, sentiment, category);
+				NLPItem temp = new NLPItem("G9500", id, origin, sentiment, category);
 				listNLP.add(temp);
 			}
 		}
 		return listNLP;
 	}
 
-	public static ArrayList<NLPItem> ReadFromExcel(String modelName,String filepath) {
+	public static ArrayList<NLPItem> ReadFromExcel(String fileputh) {
 
 		HSSFWorkbook wb = null;
-		Log.i("{}--{}",modelName, filepath);
+		Log.i("{}", fileputh);
 		FileInputStream fs;
 		try {
-			fs = new FileInputStream(filepath);
+			fs = new FileInputStream(fileputh);
 			POIFSFileSystem ps = new POIFSFileSystem(fs); // 使用POI提供的方法得到excel的信息
 			wb = new HSSFWorkbook(ps);
 			// System.out.println("file is reading");
@@ -403,7 +410,7 @@ public class ExcelUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ArrayList<NLPItem> listNLP = ReadFromExcel(modelName,wb);
+		ArrayList<NLPItem> listNLP = ReadFromExcel(wb);
 		return listNLP;
 	}
 	
@@ -413,8 +420,7 @@ public class ExcelUtils {
 		try {
 			f = File.createTempFile("tmp", null);
 			file.transferTo(f);
-			String modelName = file.getOriginalFilename().substring(0, 5);
-			nlpItemList = ReadFromExcel(modelName, f.getAbsolutePath());
+			nlpItemList = ReadFromExcel(f.getAbsolutePath());
 			f.deleteOnExit();
 		} catch (IllegalStateException | IOException e) {
 			// TODO Auto-generated catch block
