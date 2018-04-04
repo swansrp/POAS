@@ -1,0 +1,4 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Fri Mar 09 16:41:33 CST 2018
+@default-nexus-http\://maven.aliyun.com/nexus/content/groups/public/.lastUpdated=1520584893343
+http\://maven.aliyun.com/nexus/content/groups/public/.error=Could not transfer artifact io.takari.aether\:aether-connector-okhttp\:jar\:sources\:0.16.0 from/to nexus (http\://maven.aliyun.com/nexus/content/groups/public/)\: connect timed out

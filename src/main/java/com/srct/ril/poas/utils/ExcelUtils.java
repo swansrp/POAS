@@ -199,24 +199,31 @@ public class ExcelUtils {
 			cell.setCellValue(listNLP.get(NLPIndex).getId());
 
 			cell = row.createCell(1);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getTimestamp());
 
 			cell = row.createCell(2);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(Origin.displayOrigin(listNLP.get(NLPIndex).getOrigin()));
 
 			cell = row.createCell(3);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getTitle());
 
 			cell = row.createCell(4);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getFirstcomment());
 
 			cell = row.createCell(5);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getSentiment().getDisplay());
 
 			cell = row.createCell(6);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getCategory());
 
 			cell = row.createCell(7);
+			cell.setCellStyle(cellStyle);
 			cell.setCellValue(listNLP.get(NLPIndex).getLink());
 
 			NLPIndex++;
