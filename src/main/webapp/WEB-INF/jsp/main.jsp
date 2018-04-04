@@ -26,9 +26,8 @@
         <link href="assets/styles.css" rel="stylesheet" media="screen">
         <link href="assets/DT_bootstrap.css" rel="stylesheet" media="screen">
         <!--end data table-->
-        
-        
-    <!-- GOOGLE FONTS-->
+       
+       <!-- GOOGLE FONTS-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 </head>
 <body>
@@ -41,7 +40,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Sumsung Mobile Phone</a>
+                <a class="navbar-brand" href="index.html"> Mobile Phone</a>
             </div>
 
             <div class="header-right">
@@ -72,7 +71,7 @@
 
 
                     <li>
-                        <a  href="index.html"><i class="fa fa-dashboard "></i>Dashboard</a>
+                        <a  href="#"><i class="fa fa-dashboard "></i>Dashboard</a>
                     </li>
 					<li>
 						<a class="active-menu" href="/main"><i class="fa fa-square-o "></i>MainPage</a>
@@ -203,8 +202,9 @@
     </div>
     <!-- /. WRAPPER  -->
     <div id="footer-sec">
-        &copy; 2018 <a>Samsung</a>
-    </div>
+            <a href="http://www.miitbeian.gov.cn/"> 津ICP备18002110号</a>
+    </div> 
+   
     <!-- /. FOOTER  -->
     <!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
     <!-- JQUERY SCRIPTS -->

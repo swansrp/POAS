@@ -52,7 +52,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Sumsung Mobile Phone</a>
+                <a class="navbar-brand" href="index.html"> Mobile Phone</a>
             </div>
 
             <div class="header-right">
@@ -83,7 +83,7 @@
 
 
                     <li>
-                        <a  href="index.html"><i class="fa fa-dashboard "></i>Dashboard</a>
+                        <a  href="#"><i class="fa fa-dashboard "></i>Dashboard</a>
                     </li>
 					<li>
 						<a href="/main"><i class="fa fa-square-o "></i>MainPage</a>
@@ -132,7 +132,7 @@
                                         </div>
 							<div class="form-group col-md-2">
                                             <label>Select Website</label>
-                                            <select id="WebName" class="form-control">
+                                            <select id="WebName" class="form-control"  >
                                             <option>全部</option>
                                             </select>
                                         </div>
@@ -235,7 +235,7 @@
     </div>
     <!-- /. WRAPPER  -->
     <div id="footer-sec">
-        &copy; 2018 <a>Samsung</a>
+        <a href="http://www.miitbeian.gov.cn/"> 津ICP备18002110号</a>
     </div>
     <!-- /. FOOTER  -->
     <!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
@@ -280,7 +280,7 @@
         }
     	});
     	
-    	 /* $.ajax({
+    	 $.ajax({
     		type:"post",
     		url:"/config/source/name",
      		data: {},
@@ -292,7 +292,8 @@
     			}
     			
         }
-    	});  */
+    	});
+    	 
     	$.ajax({
     		type:"post",
     		url:"/config/keyword/getmap",
@@ -446,6 +447,28 @@
 	     	var end=$('#etime').val();
 	    	var url="/StoreBbs/modelinfo";
 	    	var json={"modelname":modelname,"start":start,"end":end};
+	    	
+	    	if(webname=="京东") {
+	             url="/JD/modelinfo";
+	         } else if(webname=="淘宝") {
+	              url="/TB/modelinfo";
+	         } else if(webname=="天猫") {
+	              url="/TM/modelinfo";
+	         } else if(webname=="亚马逊") {
+	             url="/AMZ/modelinfo";
+	         } else if(webname=="百度贴吧") {
+	             url="/BD/modelinfo";
+	         } else if(webname=="盖乐世社区") {
+	             url="/GC/modelinfo";
+	         } else if(webname=="机锋") {
+	             url="/JF/modelinfo";
+	         } else if(webname=="国美") {
+	             url="/GM/modelinfo";
+	         } else if(webname=="苏宁易购") {
+	             url="/SN/modelinfo";
+	         } else if(webname=="全部") {
+	             url="/StoreBbs/modelinfo";
+	         }
     	 
     	$.ajax({
     		type:"post",
@@ -524,7 +547,7 @@
     
     $(function(){
     	show_model_sselect();
-    
+        console.log('Yuuni');
     	$( "#stime" ).datepicker({
   	      defaultDate: "+1w",
   	       changeMonth: true,
