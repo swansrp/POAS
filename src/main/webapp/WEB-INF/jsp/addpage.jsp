@@ -28,7 +28,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Sumsung Mobile Phone</a>
+                <a class="navbar-brand" href="index.html"> Mobile Phone</a>
             </div>
 
             <div class="header-right">
@@ -59,7 +59,7 @@
 
 
                     <li>
-                        <a  href="index.html"><i class="fa fa-dashboard "></i>Dashboard</a>
+                        <a  href="#"><i class="fa fa-dashboard "></i>Dashboard</a>
                     </li>
 					<li>
 						<a  href="/main"><i class="fa fa-square-o "></i>MainPage</a>
@@ -75,7 +75,7 @@
                     </li>
                     
                     <li>
-                        <a href="login.html"><i class="fa fa-sign-in "></i>Login Page</a>
+                        <a href="/login"><i class="fa fa-sign-in "></i>Login Page</a>
                     </li>
                 </ul>
             </div>
@@ -137,7 +137,7 @@
     </div>
     <!-- /. WRAPPER  -->
     <div id="footer-sec">
-        &copy; 2018 <a>Samsung</a>
+        <a href="http://www.miitbeian.gov.cn/"> 津ICP备18002110号</a>
     </div>
     <!-- /. FOOTER  -->
     <!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
