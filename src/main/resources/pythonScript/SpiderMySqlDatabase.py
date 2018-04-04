@@ -26,7 +26,7 @@ class SpiderMySqlDatabase():
         Doesnt specify database here
         '''
         try:
-            self.db = MySQLdb.connect("106.14.115.34","root","admin",use_unicode=True, charset="utf8")
+            self.db = MySQLdb.connect("localhost","root","admin",use_unicode=True, charset="utf8")
         except MySQLdb.Error as e:
             self.print_sql_error(self.get_func_name(),e)
 
